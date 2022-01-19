@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace NintrollerLib
 {
-    public struct WiiGuitar : INintrollerState
+    public struct Guitar : INintrollerState
     {
         private bool SpecialButtonSelect => wiimote.buttons.A;
         private bool SpecialButtonTiltCalibMin => wiimote.buttons.One;
@@ -60,9 +60,9 @@ namespace NintrollerLib
         private byte CALIB_Whammy_Min;
         private byte CALIB_Whammy_Max;
 
-        public WiiGuitar(Wiimote wm)
+        public Guitar(Wiimote wm)
         {
-            this = new WiiGuitar();
+            this = new Guitar();
             wiimote = wm;
 
             CALIB_Whammy_Min = 0xFF;
@@ -70,7 +70,7 @@ namespace NintrollerLib
 
             CALIB_Enable_TouchStrip = false;
 
-            oldTouchStripValue = WGT_TOUCH_STRIP_None;
+            oldTouchStripValue = GTR_TOUCH_STRIP_None;
 
             IsGH3SetYet = false;
             IsGH3 = false;
@@ -82,7 +82,7 @@ namespace NintrollerLib
             DebugLastData = new byte[] { 0 };
 #endif
 
-            Joy.Calibrate(Calibrations.Defaults.WiiGuitarDefault.Joy);
+            Joy.Calibrate(Calibrations.Defaults.GuitarDefault.Joy);
         }
 
         public bool Start
@@ -103,40 +103,40 @@ namespace NintrollerLib
         public float CALIB_Tilt_TiltedREEEE;
         public float CALIB_Tilt_StartingZ;
 
-        private const byte WGT_TOUCH_STRIP_None = 0x0F;
-        private const byte WGT_TOUCH_STRIP_Green = 0x04;
-        private const byte WGT_TOUCH_STRIP_Green2 = 0x05;
-        private const byte WGT_TOUCH_STRIP_GreenToRed = 0x06;
-        private const byte WGT_TOUCH_STRIP_GreenToRed2 = 0x07;
-        private const byte WGT_TOUCH_STRIP_GreenToRed3 = 0x08;
-        private const byte WGT_TOUCH_STRIP_GreenToRed4 = 0x09;
-        private const byte WGT_TOUCH_STRIP_Red = 0x0A;
-        private const byte WGT_TOUCH_STRIP_Red2 = 0x0B;
-        private const byte WGT_TOUCH_STRIP_Red3 = 0x0C;
-        private const byte WGT_TOUCH_STRIP_RedToYellow = 0x0D;
-        private const byte WGT_TOUCH_STRIP_RedToYellow2 = 0x0E;
-        //private const byte WGT_TOUCH_STRIP_RedToYellow3 = 0x0F; //conflicts with None
-        private const byte WGT_TOUCH_STRIP_RedToYellow4 = 0x10;
-        private const byte WGT_TOUCH_STRIP_RedToYellow5 = 0x11;
-        private const byte WGT_TOUCH_STRIP_Yellow = 0x12;
-        private const byte WGT_TOUCH_STRIP_Yellow2 = 0x13;
-        private const byte WGT_TOUCH_STRIP_YellowToBlue = 0x14;
-        private const byte WGT_TOUCH_STRIP_YellowToBlue2 = 0x15;
-        private const byte WGT_TOUCH_STRIP_YellowToBlue3 = 0x16;
-        private const byte WGT_TOUCH_STRIP_Blue = 0x17;
-        private const byte WGT_TOUCH_STRIP_Blue2 = 0x18;
-        private const byte WGT_TOUCH_STRIP_Blue3 = 0x19;
-        private const byte WGT_TOUCH_STRIP_BlueToOrange = 0x1A;
-        private const byte WGT_TOUCH_STRIP_BlueToOrange2 = 0x1B;
-        private const byte WGT_TOUCH_STRIP_BlueToOrange3 = 0x1C;
-        private const byte WGT_TOUCH_STRIP_BlueToOrange4 = 0x1D;
-        private const byte WGT_TOUCH_STRIP_BlueToOrange5 = 0x1E;
-        private const byte WGT_TOUCH_STRIP_Orange = 0x1F;
+        private const byte GTR_TOUCH_STRIP_None = 0x0F;
+        private const byte GTR_TOUCH_STRIP_Green = 0x04;
+        private const byte GTR_TOUCH_STRIP_Green2 = 0x05;
+        private const byte GTR_TOUCH_STRIP_GreenToRed = 0x06;
+        private const byte GTR_TOUCH_STRIP_GreenToRed2 = 0x07;
+        private const byte GTR_TOUCH_STRIP_GreenToRed3 = 0x08;
+        private const byte GTR_TOUCH_STRIP_GreenToRed4 = 0x09;
+        private const byte GTR_TOUCH_STRIP_Red = 0x0A;
+        private const byte GTR_TOUCH_STRIP_Red2 = 0x0B;
+        private const byte GTR_TOUCH_STRIP_Red3 = 0x0C;
+        private const byte GTR_TOUCH_STRIP_RedToYellow = 0x0D;
+        private const byte GTR_TOUCH_STRIP_RedToYellow2 = 0x0E;
+        //private const byte GTR_TOUCH_STRIP_RedToYellow3 = 0x0F; //conflicts with None
+        private const byte GTR_TOUCH_STRIP_RedToYellow4 = 0x10;
+        private const byte GTR_TOUCH_STRIP_RedToYellow5 = 0x11;
+        private const byte GTR_TOUCH_STRIP_Yellow = 0x12;
+        private const byte GTR_TOUCH_STRIP_Yellow2 = 0x13;
+        private const byte GTR_TOUCH_STRIP_YellowToBlue = 0x14;
+        private const byte GTR_TOUCH_STRIP_YellowToBlue2 = 0x15;
+        private const byte GTR_TOUCH_STRIP_YellowToBlue3 = 0x16;
+        private const byte GTR_TOUCH_STRIP_Blue = 0x17;
+        private const byte GTR_TOUCH_STRIP_Blue2 = 0x18;
+        private const byte GTR_TOUCH_STRIP_Blue3 = 0x19;
+        private const byte GTR_TOUCH_STRIP_BlueToOrange = 0x1A;
+        private const byte GTR_TOUCH_STRIP_BlueToOrange2 = 0x1B;
+        private const byte GTR_TOUCH_STRIP_BlueToOrange3 = 0x1C;
+        private const byte GTR_TOUCH_STRIP_BlueToOrange4 = 0x1D;
+        private const byte GTR_TOUCH_STRIP_BlueToOrange5 = 0x1E;
+        private const byte GTR_TOUCH_STRIP_Orange = 0x1F;
 
-        private const float WGT_JOY_DIGITAL_THRESH = 0.5f;
+        private const float GTR_JOY_DIGITAL_THRESH = 0.5f;
 
-        //private const byte WGT_WHAMMY_MIN = 0x10;
-        //private const byte WGT_WHAMMY_MAX = 0x1B;
+        //private const byte GTR_WHAMMY_MIN = 0x10;
+        //private const byte GTR_WHAMMY_MAX = 0x1B;
 
         private static float _MapRange(float s, float a1, float a2, float b1, float b2)
         {
@@ -237,7 +237,7 @@ namespace NintrollerLib
 
                     Joy.Normalize();
 
-                    bool isJoyPressed = (((Joy.X * Joy.X) + (Joy.Y * Joy.Y)) >= (WGT_JOY_DIGITAL_THRESH * WGT_JOY_DIGITAL_THRESH));
+                    bool isJoyPressed = (((Joy.X * Joy.X) + (Joy.Y * Joy.Y)) >= (GTR_JOY_DIGITAL_THRESH * GTR_JOY_DIGITAL_THRESH));
                     double joyDirection = (int)((Math.Atan2(Joy.Y, Joy.X) + (Math.PI / 2)) / (Math.PI / 8));
                     int joyDirStep = (int)(Math.Abs(joyDirection));
 
@@ -327,7 +327,7 @@ namespace NintrollerLib
                 {
                     if (G || R || Y || B || O)
                     {
-                        if (data[offset + 2] != WGT_TOUCH_STRIP_None && oldTouchStripValue == WGT_TOUCH_STRIP_None)
+                        if (data[offset + 2] != GTR_TOUCH_STRIP_None && oldTouchStripValue == GTR_TOUCH_STRIP_None)
                         {
                             Down = true;
                         }
@@ -336,54 +336,54 @@ namespace NintrollerLib
                     {
                         switch (data[offset + 2] & 0x1F)
                         {
-                            case WGT_TOUCH_STRIP_Green:
-                            case WGT_TOUCH_STRIP_Green2:
+                            case GTR_TOUCH_STRIP_Green:
+                            case GTR_TOUCH_STRIP_Green2:
                                 G = true;
                                 break;
-                            case WGT_TOUCH_STRIP_GreenToRed:
-                            case WGT_TOUCH_STRIP_GreenToRed2:
-                            case WGT_TOUCH_STRIP_GreenToRed3:
-                            case WGT_TOUCH_STRIP_GreenToRed4:
+                            case GTR_TOUCH_STRIP_GreenToRed:
+                            case GTR_TOUCH_STRIP_GreenToRed2:
+                            case GTR_TOUCH_STRIP_GreenToRed3:
+                            case GTR_TOUCH_STRIP_GreenToRed4:
                                 G = true;
                                 R = true;
                                 break;
-                            case WGT_TOUCH_STRIP_Red:
-                            case WGT_TOUCH_STRIP_Red2:
-                            case WGT_TOUCH_STRIP_Red3:
+                            case GTR_TOUCH_STRIP_Red:
+                            case GTR_TOUCH_STRIP_Red2:
+                            case GTR_TOUCH_STRIP_Red3:
                                 R = true;
                                 break;
-                            case WGT_TOUCH_STRIP_RedToYellow:
-                            case WGT_TOUCH_STRIP_RedToYellow2:
-                            //case WGT_TOUCH_STRIP_RedToYellow3: //conflicts with None
-                            case WGT_TOUCH_STRIP_RedToYellow4:
-                            case WGT_TOUCH_STRIP_RedToYellow5:
+                            case GTR_TOUCH_STRIP_RedToYellow:
+                            case GTR_TOUCH_STRIP_RedToYellow2:
+                            //case GTR_TOUCH_STRIP_RedToYellow3: //conflicts with None
+                            case GTR_TOUCH_STRIP_RedToYellow4:
+                            case GTR_TOUCH_STRIP_RedToYellow5:
                                 R = true;
                                 Y = true;
                                 break;
-                            case WGT_TOUCH_STRIP_Yellow:
-                            case WGT_TOUCH_STRIP_Yellow2:
+                            case GTR_TOUCH_STRIP_Yellow:
+                            case GTR_TOUCH_STRIP_Yellow2:
                                 Y = true;
                                 break;
-                            case WGT_TOUCH_STRIP_YellowToBlue:
-                            case WGT_TOUCH_STRIP_YellowToBlue2:
-                            case WGT_TOUCH_STRIP_YellowToBlue3:
+                            case GTR_TOUCH_STRIP_YellowToBlue:
+                            case GTR_TOUCH_STRIP_YellowToBlue2:
+                            case GTR_TOUCH_STRIP_YellowToBlue3:
                                 Y = true;
                                 B = true;
                                 break;
-                            case WGT_TOUCH_STRIP_Blue:
-                            case WGT_TOUCH_STRIP_Blue2:
-                            case WGT_TOUCH_STRIP_Blue3:
+                            case GTR_TOUCH_STRIP_Blue:
+                            case GTR_TOUCH_STRIP_Blue2:
+                            case GTR_TOUCH_STRIP_Blue3:
                                 B = true;
                                 break;
-                            case WGT_TOUCH_STRIP_BlueToOrange:
-                            case WGT_TOUCH_STRIP_BlueToOrange2:
-                            case WGT_TOUCH_STRIP_BlueToOrange3:
-                            case WGT_TOUCH_STRIP_BlueToOrange4:
-                            case WGT_TOUCH_STRIP_BlueToOrange5:
+                            case GTR_TOUCH_STRIP_BlueToOrange:
+                            case GTR_TOUCH_STRIP_BlueToOrange2:
+                            case GTR_TOUCH_STRIP_BlueToOrange3:
+                            case GTR_TOUCH_STRIP_BlueToOrange4:
+                            case GTR_TOUCH_STRIP_BlueToOrange5:
                                 B = true;
                                 O = true;
                                 break;
-                            case WGT_TOUCH_STRIP_Orange:
+                            case GTR_TOUCH_STRIP_Orange:
                                 O = true;
                                 break;
                         }
@@ -575,7 +575,7 @@ namespace NintrollerLib
 
 
 
-            Joy.Calibrate(Calibrations.Defaults.WiiGuitarDefault.Joy);
+            Joy.Calibrate(Calibrations.Defaults.GuitarDefault.Joy);
 
             //SetCalibration(Calibrations.Defaults.ClassicControllerProDefault);
         }
@@ -588,9 +588,9 @@ namespace NintrollerLib
             //    return;
             //}
 
-            //if (from.GetType() == typeof(WiiGuitar))
+            //if (from.GetType() == typeof(Guitar))
             //{
-            //    Joy.Calibrate(((WiiGuitar)from).Joy);
+            //    Joy.Calibrate(((Guitar)from).Joy);
             //}
             //else if (from.GetType() == typeof(ClassicControllerPro))
             //{
@@ -644,7 +644,7 @@ namespace NintrollerLib
         public string GetCalibrationString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("-wgt");
+            sb.Append("-gtr");
             sb.Append(":joy");
             sb.Append("|"); sb.Append(Joy.centerX);
             sb.Append("|"); sb.Append(Joy.minX);
@@ -680,25 +680,25 @@ namespace NintrollerLib
                 yield return input;
             }
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.G, G ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.R, R ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.Y, Y ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.B, B ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.O, O ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.G, G ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.R, R ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.Y, Y ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.B, B ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.O, O ? 1.0f : 0.0f);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.UP, (Up ? 1.0f : 0.0f));
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.DOWN, (Down ? 1.0f : 0.0f));
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.LEFT, (Left ? 1.0f : 0.0f));
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.RIGHT, (Right ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.UP, (Up ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.DOWN, (Down ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.LEFT, (Left ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.RIGHT, (Right ? 1.0f : 0.0f));
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.START, Start ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.SELECT, Select ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.START, Start ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.SELECT, Select ? 1.0f : 0.0f);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.WHAMMYHIGH, WhammyHigh);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.WHAMMYLOW, WhammyLow);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.WHAMMYHIGH, WhammyHigh);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.WHAMMYLOW, WhammyLow);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.TILTHIGH, TiltHigh);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_GUITAR.TILTLOW, TiltLow);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.TILTHIGH, TiltHigh);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.TILTLOW, TiltLow);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

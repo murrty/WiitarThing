@@ -237,26 +237,26 @@ namespace WiinUSoft.Holders
 
                 case ControllerType.Guitar:
 
-                    result.Add(Inputs.WiiGuitar.G, Inputs.Xbox360.A);
-                    result.Add(Inputs.WiiGuitar.R, Inputs.Xbox360.B);
-                    result.Add(Inputs.WiiGuitar.Y, Inputs.Xbox360.Y);
-                    result.Add(Inputs.WiiGuitar.B, Inputs.Xbox360.X);
-                    result.Add(Inputs.WiiGuitar.O, Inputs.Xbox360.LB);
+                    result.Add(Inputs.Guitar.G, Inputs.Xbox360.A);
+                    result.Add(Inputs.Guitar.R, Inputs.Xbox360.B);
+                    result.Add(Inputs.Guitar.Y, Inputs.Xbox360.Y);
+                    result.Add(Inputs.Guitar.B, Inputs.Xbox360.X);
+                    result.Add(Inputs.Guitar.O, Inputs.Xbox360.LB);
 
-                    result.Add(Inputs.WiiGuitar.UP, Inputs.Xbox360.UP);
-                    result.Add(Inputs.WiiGuitar.DOWN, Inputs.Xbox360.DOWN);
-                    result.Add(Inputs.WiiGuitar.LEFT, Inputs.Xbox360.LEFT);
-                    result.Add(Inputs.WiiGuitar.RIGHT, Inputs.Xbox360.RIGHT);
+                    result.Add(Inputs.Guitar.UP, Inputs.Xbox360.UP);
+                    result.Add(Inputs.Guitar.DOWN, Inputs.Xbox360.DOWN);
+                    result.Add(Inputs.Guitar.LEFT, Inputs.Xbox360.LEFT);
+                    result.Add(Inputs.Guitar.RIGHT, Inputs.Xbox360.RIGHT);
 
-                    result.Add(Inputs.WiiGuitar.SELECT, Inputs.Xbox360.BACK);
-                    result.Add(Inputs.WiiGuitar.START, Inputs.Xbox360.START);
-                    result.Add(Inputs.WiiGuitar.HOME, Inputs.Xbox360.GUIDE);
+                    result.Add(Inputs.Guitar.SELECT, Inputs.Xbox360.BACK);
+                    result.Add(Inputs.Guitar.START, Inputs.Xbox360.START);
+                    result.Add(Inputs.Guitar.HOME, Inputs.Xbox360.GUIDE);
 
-                    result.Add(Inputs.WiiGuitar.WHAMMYLOW, Inputs.Xbox360.RLEFT);
-                    result.Add(Inputs.WiiGuitar.WHAMMYHIGH, Inputs.Xbox360.RRIGHT);
+                    result.Add(Inputs.Guitar.WHAMMYLOW, Inputs.Xbox360.RLEFT);
+                    result.Add(Inputs.Guitar.WHAMMYHIGH, Inputs.Xbox360.RRIGHT);
 
-                    result.Add(Inputs.WiiGuitar.TILTLOW, Inputs.Xbox360.RDOWN);
-                    result.Add(Inputs.WiiGuitar.TILTHIGH, Inputs.Xbox360.RUP);
+                    result.Add(Inputs.Guitar.TILTLOW, Inputs.Xbox360.RDOWN);
+                    result.Add(Inputs.Guitar.TILTHIGH, Inputs.Xbox360.RUP);
 
                     //result.Add(Inputs.Wiimote.UP, "");
                     //result.Add(Inputs.Wiimote.DOWN, "");
@@ -284,21 +284,21 @@ namespace WiinUSoft.Holders
                     break;
 
                 case ControllerType.Drums:
-                    result.Add(Inputs.WiiDrums.G, Inputs.Xbox360.A);
-                    result.Add(Inputs.WiiDrums.R, Inputs.Xbox360.B);
-                    result.Add(Inputs.WiiDrums.Y, Inputs.Xbox360.Y);
-                    result.Add(Inputs.WiiDrums.B, Inputs.Xbox360.X);
-                    result.Add(Inputs.WiiDrums.O, Inputs.Xbox360.RB);
-                    result.Add(Inputs.WiiDrums.BASS, Inputs.Xbox360.LB);
+                    result.Add(Inputs.Drums.G, Inputs.Xbox360.A);
+                    result.Add(Inputs.Drums.R, Inputs.Xbox360.B);
+                    result.Add(Inputs.Drums.Y, Inputs.Xbox360.Y);
+                    result.Add(Inputs.Drums.B, Inputs.Xbox360.X);
+                    result.Add(Inputs.Drums.O, Inputs.Xbox360.RB);
+                    result.Add(Inputs.Drums.BASS, Inputs.Xbox360.LB);
 
-                    result.Add(Inputs.WiiDrums.UP, Inputs.Xbox360.UP);
-                    result.Add(Inputs.WiiDrums.DOWN, Inputs.Xbox360.DOWN);
-                    result.Add(Inputs.WiiDrums.LEFT, Inputs.Xbox360.LEFT);
-                    result.Add(Inputs.WiiDrums.RIGHT, Inputs.Xbox360.RIGHT);
+                    result.Add(Inputs.Drums.UP, Inputs.Xbox360.UP);
+                    result.Add(Inputs.Drums.DOWN, Inputs.Xbox360.DOWN);
+                    result.Add(Inputs.Drums.LEFT, Inputs.Xbox360.LEFT);
+                    result.Add(Inputs.Drums.RIGHT, Inputs.Xbox360.RIGHT);
 
-                    result.Add(Inputs.WiiDrums.SELECT, Inputs.Xbox360.BACK);
-                    result.Add(Inputs.WiiDrums.START, Inputs.Xbox360.START);
-                    result.Add(Inputs.WiiDrums.HOME, Inputs.Xbox360.GUIDE);
+                    result.Add(Inputs.Drums.SELECT, Inputs.Xbox360.BACK);
+                    result.Add(Inputs.Drums.START, Inputs.Xbox360.START);
+                    result.Add(Inputs.Drums.HOME, Inputs.Xbox360.GUIDE);
                     break;
             }
 

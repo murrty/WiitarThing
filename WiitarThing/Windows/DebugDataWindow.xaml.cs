@@ -37,21 +37,21 @@ namespace WiinUSoft.Windows
         private void Nintroller_StateUpdate(object sender, NintrollerStateEventArgs e)
         {
 #if DEBUG
-            var wgt = new WiiGuitar();
+            var gtr = new Guitar();
 
             var sb = new StringBuilder();
 
             if (!Cancelled)
             {
-                if (e.state is WiiGuitar)
+                if (e.state is Guitar)
                 {
-                    wgt = (WiiGuitar)e.state;
+                    gtr = (Guitar)e.state;
 
                     sb.Clear();
 
-                    for (int i = 0; i < wgt.DebugLastData.Length; i++)
+                    for (int i = 0; i < gtr.DebugLastData.Length; i++)
                     {
-                        sb.Append(wgt.DebugLastData[i].ToString("X2"));
+                        sb.Append(gtr.DebugLastData[i].ToString("X2"));
                         sb.Append(" ");
                     }
 

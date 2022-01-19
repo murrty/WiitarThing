@@ -879,7 +879,7 @@ namespace NintrollerLib
                                         break;
 
                                     case ControllerType.Guitar:
-                                        _state = new WiiGuitar(_calibrations.WiimoteCalibration);
+                                        _state = new Guitar(_calibrations.WiimoteCalibration);
 
                                         if (_calibrations.ClassicProCalibration.CalibrationEmpty)
                                         {
@@ -918,7 +918,7 @@ namespace NintrollerLib
                                         //break;
 
                                     case ControllerType.Drums:
-                                        _state = new WiiDrums(_calibrations.WiimoteCalibration);
+                                        _state = new Drums(_calibrations.WiimoteCalibration);
 
                                         if (_calibrations.ClassicProCalibration.CalibrationEmpty) {
                                           _state.SetCalibration(Calibrations.CalibrationPreset.None);

@@ -604,7 +604,7 @@
                 }
             };
 
-            public WiiGuitar WiiGuitarDefault = new WiiGuitar()
+            public Guitar GuitarDefault = new Guitar()
             {
                 Joy = new Joystick()
                 {

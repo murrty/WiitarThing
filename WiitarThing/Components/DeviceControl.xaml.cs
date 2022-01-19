@@ -492,50 +492,50 @@ namespace WiinUSoft
 
                 case ControllerType.Guitar:
 #region Wii Guitar
-                    WiiGuitar wgt = (WiiGuitar)e.state;
+                    Guitar gtr = (Guitar)e.state;
 
-                    //SetWiimoteInputs(wgt.wiimote);
+                    //SetWiimoteInputs(gtr.wiimote);
 
-                    holder.SetValue(Inputs.WiiGuitar.G, wgt.G);
-                    holder.SetValue(Inputs.WiiGuitar.R, wgt.R);
-                    holder.SetValue(Inputs.WiiGuitar.Y, wgt.Y);
-                    holder.SetValue(Inputs.WiiGuitar.B, wgt.B);
-                    holder.SetValue(Inputs.WiiGuitar.O, wgt.O);
+                    holder.SetValue(Inputs.Guitar.G, gtr.G);
+                    holder.SetValue(Inputs.Guitar.R, gtr.R);
+                    holder.SetValue(Inputs.Guitar.Y, gtr.Y);
+                    holder.SetValue(Inputs.Guitar.B, gtr.B);
+                    holder.SetValue(Inputs.Guitar.O, gtr.O);
 
-                    holder.SetValue(Inputs.WiiGuitar.UP, wgt.Up);
-                    holder.SetValue(Inputs.WiiGuitar.DOWN, wgt.Down);
-                    holder.SetValue(Inputs.WiiGuitar.LEFT, wgt.Left);
-                    holder.SetValue(Inputs.WiiGuitar.RIGHT, wgt.Right);
+                    holder.SetValue(Inputs.Guitar.UP, gtr.Up);
+                    holder.SetValue(Inputs.Guitar.DOWN, gtr.Down);
+                    holder.SetValue(Inputs.Guitar.LEFT, gtr.Left);
+                    holder.SetValue(Inputs.Guitar.RIGHT, gtr.Right);
 
-                    holder.SetValue(Inputs.WiiGuitar.WHAMMYHIGH, wgt.WhammyHigh);
-                    holder.SetValue(Inputs.WiiGuitar.WHAMMYLOW, wgt.WhammyLow);
+                    holder.SetValue(Inputs.Guitar.WHAMMYHIGH, gtr.WhammyHigh);
+                    holder.SetValue(Inputs.Guitar.WHAMMYLOW, gtr.WhammyLow);
 
-                    holder.SetValue(Inputs.WiiGuitar.TILTHIGH, wgt.TiltHigh);
-                    holder.SetValue(Inputs.WiiGuitar.TILTLOW, wgt.TiltLow);
+                    holder.SetValue(Inputs.Guitar.TILTHIGH, gtr.TiltHigh);
+                    holder.SetValue(Inputs.Guitar.TILTLOW, gtr.TiltLow);
 
-                    holder.SetValue(Inputs.WiiGuitar.START, wgt.Start);
-                    holder.SetValue(Inputs.WiiGuitar.SELECT, wgt.Select);
+                    holder.SetValue(Inputs.Guitar.START, gtr.Start);
+                    holder.SetValue(Inputs.Guitar.SELECT, gtr.Select);
 #endregion
                     break;
 
                 case ControllerType.Drums:
 #region Wii Drums
-                    WiiDrums wdr = (WiiDrums)e.state;
+                    Drums drm = (Drums)e.state;
 
-                    holder.SetValue(Inputs.WiiDrums.G, wdr.G);
-                    holder.SetValue(Inputs.WiiDrums.R, wdr.R);
-                    holder.SetValue(Inputs.WiiDrums.Y, wdr.Y);
-                    holder.SetValue(Inputs.WiiDrums.B, wdr.B);
-                    holder.SetValue(Inputs.WiiDrums.O, wdr.O);
-                    holder.SetValue(Inputs.WiiDrums.BASS, wdr.Bass);
+                    holder.SetValue(Inputs.Drums.G, drm.G);
+                    holder.SetValue(Inputs.Drums.R, drm.R);
+                    holder.SetValue(Inputs.Drums.Y, drm.Y);
+                    holder.SetValue(Inputs.Drums.B, drm.B);
+                    holder.SetValue(Inputs.Drums.O, drm.O);
+                    holder.SetValue(Inputs.Drums.BASS, drm.Bass);
 
-                    holder.SetValue(Inputs.WiiDrums.UP, wdr.Up);
-                    holder.SetValue(Inputs.WiiDrums.DOWN, wdr.Down);
-                    holder.SetValue(Inputs.WiiDrums.LEFT, wdr.Left);
-                    holder.SetValue(Inputs.WiiDrums.RIGHT, wdr.Right);
+                    holder.SetValue(Inputs.Drums.UP, drm.Up);
+                    holder.SetValue(Inputs.Drums.DOWN, drm.Down);
+                    holder.SetValue(Inputs.Drums.LEFT, drm.Left);
+                    holder.SetValue(Inputs.Drums.RIGHT, drm.Right);
 
-                    holder.SetValue(Inputs.WiiDrums.START, wdr.Start);
-                    holder.SetValue(Inputs.WiiDrums.SELECT, wdr.Select);
+                    holder.SetValue(Inputs.Drums.START, drm.Start);
+                    holder.SetValue(Inputs.Drums.SELECT, drm.Select);
 #endregion
                 break;
             }
@@ -766,13 +766,13 @@ namespace WiinUSoft
                     break;
 
                 case ControllerType.Guitar:
-                    icon.Source = (ImageSource)Application.Current.Resources["WGTIcon"];
-                    UserPrefs.Instance.UpdateDeviceIcon(devicePath, "WGTIcon");
+                    icon.Source = (ImageSource)Application.Current.Resources["GTRIcon"];
+                    UserPrefs.Instance.UpdateDeviceIcon(devicePath, "GTRIcon");
                     break;
 
                 case ControllerType.Drums:
-                    icon.Source = (ImageSource)Application.Current.Resources["WDRIcon"];
-                    UserPrefs.Instance.UpdateDeviceIcon(devicePath, "WDRIcon");
+                    icon.Source = (ImageSource)Application.Current.Resources["DRMIcon"];
+                    UserPrefs.Instance.UpdateDeviceIcon(devicePath, "DRMIcon");
                     break;
 
                 default:

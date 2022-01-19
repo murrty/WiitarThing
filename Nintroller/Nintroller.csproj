@@ -63,8 +63,8 @@
     <Compile Include="Controllers/ClassicControllerPro.cs" />
     <Compile Include="Controllers/Nunchuk.cs" />
     <Compile Include="Controllers/ProController.cs" />
-    <Compile Include="Controllers/WiiDrums.cs" />
-    <Compile Include="Controllers/WiiGuitar.cs" />
+    <Compile Include="Controllers/Drums.cs" />
+    <Compile Include="Controllers/Guitar.cs" />
     <Compile Include="Controllers/Wiimote.cs" />
     <Compile Include="Controllers/WiimotePlus.cs" />
     <Compile Include="Constants.cs" />

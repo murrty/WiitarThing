@@ -99,8 +99,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Inputs\WiiDrums.cs" />
-    <Compile Include="Inputs\WiiGuitar.cs" />
+    <Compile Include="Inputs\Drums.cs" />
+    <Compile Include="Inputs\Guitar.cs" />
     <Compile Include="WiitarDebug.cs" />
     <Compile Include="Windows\RemoveAllWiimotesWindow.xaml.cs">
       <DependentUpon>RemoveAllWiimotesWindow.xaml</DependentUpon>

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 namespace NintrollerLib
 {
     //Source of mapping info: https://wiibrew.org/wiki/Wiimote/Extension_Controllers/Guitar_Hero_World_Tour_(Wii)_Drums
-    public struct WiiDrums : INintrollerState
+    public struct Drums : INintrollerState
     {
         private bool SpecialButtonSelect => wiimote.buttons.A;
         private bool SpecialButtonTiltCalibMin => wiimote.buttons.One;
@@ -47,16 +47,16 @@ namespace NintrollerLib
         private bool DebugButton_Dump;
 #endif
 
-        public WiiDrums(Wiimote wm)
+        public Drums(Wiimote wm)
         {
-            this = new WiiDrums();
+            this = new Drums();
             wiimote = wm;
 
 #if DEBUG
             DebugLastData = new byte[] { 0 };
 #endif
 
-            Joy.Calibrate(Calibrations.Defaults.WiiGuitarDefault.Joy);
+            Joy.Calibrate(Calibrations.Defaults.GuitarDefault.Joy);
         }
 
         public bool Start
@@ -71,7 +71,7 @@ namespace NintrollerLib
             set { Minus = value; }
         }
         
-        private const float WGT_JOY_DIGITAL_THRESH = 0.5f;
+        private const float GTR_JOY_DIGITAL_THRESH = 0.5f;
 
         private static float _MapRange(float s, float a1, float a2, float b1, float b2)
         {
@@ -185,7 +185,7 @@ namespace NintrollerLib
 
                     Joy.Normalize();
 
-                    bool isJoyPressed = (((Joy.X * Joy.X) + (Joy.Y * Joy.Y)) >= (WGT_JOY_DIGITAL_THRESH * WGT_JOY_DIGITAL_THRESH));
+                    bool isJoyPressed = (((Joy.X * Joy.X) + (Joy.Y * Joy.Y)) >= (GTR_JOY_DIGITAL_THRESH * GTR_JOY_DIGITAL_THRESH));
                     double joyDirection = (int)((Math.Atan2(Joy.Y, Joy.X) + (Math.PI / 2)) / (Math.PI / 8));
                     int joyDirStep = (int)(Math.Abs(joyDirection));
 
@@ -368,7 +368,7 @@ namespace NintrollerLib
 
 
 
-            Joy.Calibrate(Calibrations.Defaults.WiiGuitarDefault.Joy);
+            Joy.Calibrate(Calibrations.Defaults.GuitarDefault.Joy);
 
             //SetCalibration(Calibrations.Defaults.ClassicControllerProDefault);
         }
@@ -381,9 +381,9 @@ namespace NintrollerLib
             //    return;
             //}
 
-            //if (from.GetType() == typeof(WiiGuitar))
+            //if (from.GetType() == typeof(Guitar))
             //{
-            //    Joy.Calibrate(((WiiGuitar)from).Joy);
+            //    Joy.Calibrate(((Guitar)from).Joy);
             //}
             //else if (from.GetType() == typeof(ClassicControllerPro))
             //{
@@ -437,7 +437,7 @@ namespace NintrollerLib
         public string GetCalibrationString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("-wdr");
+            sb.Append("-drm");
             sb.Append(":joy");
             sb.Append("|"); sb.Append(Joy.centerX);
             sb.Append("|"); sb.Append(Joy.minX);
@@ -473,20 +473,20 @@ namespace NintrollerLib
                 yield return input;
             }
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_DRUMS.G, G ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_DRUMS.R, R ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_DRUMS.Y, Y ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_DRUMS.B, B ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_DRUMS.O, O ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_DRUMS.BASS, Bass ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.G, G ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.R, R ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.Y, Y ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.B, B ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.O, O ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.BASS, Bass ? 1.0f : 0.0f);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_DRUMS.UP, (Up ? 1.0f : 0.0f));
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_DRUMS.DOWN, (Down ? 1.0f : 0.0f));
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_DRUMS.LEFT, (Left ? 1.0f : 0.0f));
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_DRUMS.RIGHT, (Right ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.UP, (Up ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.DOWN, (Down ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.LEFT, (Left ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.RIGHT, (Right ? 1.0f : 0.0f));
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_DRUMS.START, Start ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WII_DRUMS.SELECT, Select ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.START, Start ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.SELECT, Select ? 1.0f : 0.0f);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
