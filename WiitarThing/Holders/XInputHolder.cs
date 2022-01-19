@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nefarius.ViGEm.Client;
@@ -640,6 +640,11 @@ namespace WiitarThing.Holders
 
         public void Plugin(int id, ushort vid = 0, ushort pid = 0)
         {
+            if (targets.ContainsKey(id))
+            {
+                return;
+            }
+
             if (vid != 0 && pid != 0)
             {
                 targets.Add(id, Client.CreateXbox360Controller(vid, pid));
@@ -655,7 +660,7 @@ namespace WiitarThing.Holders
 
         public bool Unplug(int id)
         {
-            if (targets.Count > id && targets[id] != null)
+            if (targets.ContainsKey(id) && targets[id] != null)
             {
                 if (connected.Contains(targets[id]))
                 {
@@ -727,7 +732,7 @@ namespace WiitarThing.Holders
         public virtual bool Report(byte[] input, byte[] output)
         {
             byte id = (byte)(input[4]);
-            if (targets.Count <= id || targets[id] == null)
+            if (!targets.ContainsKey(id) || targets[id] == null)
             {
                 return false;
             }
