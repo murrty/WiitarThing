@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nefarius.ViGEm.Client;
@@ -491,12 +491,12 @@ namespace WiitarThing.Holders
             Flags[Inputs.Flags.RUMBLE] = false;
             bus.Unplug(ID);
 
-            if (ID > 0 && ID < 5)
+            if (ID > -1 && ID < 4)
             {
-                availabe[ID - 1] = true;
+                availabe[ID] = true;
             }
 
-            ID = 0;
+            ID = -1;
             connected = false;
         }
 
@@ -515,9 +515,9 @@ namespace WiitarThing.Holders
 
         public bool ConnectXInput(int id)
         {
-            if (id > 0 && id < 5)
+            if (id > -1 && id < 4)
             {
-                availabe[id - 1] = false;
+                availabe[id] = false;
             }
             else
             {
@@ -534,16 +534,16 @@ namespace WiitarThing.Holders
 
         public bool RemoveXInput(int id)
         {
-            if (id > 0 && id < 5)
+            if (id > -1 && id < 4)
             {
-                availabe[id - 1] = true;
+                availabe[id] = true;
             }
 
 
             Flags[Inputs.Flags.RUMBLE] = false;
             if (bus.Unplug(id))
             {
-                ID = 0;
+                ID = -1;
                 connected = false;
                 return true;
             }
@@ -640,7 +640,6 @@ namespace WiitarThing.Holders
 
         public void Plugin(int id, ushort vid = 0, ushort pid = 0)
         {
-            id -= 1;
             if (vid != 0 && pid != 0)
             {
                 targets.Add(id, Client.CreateXbox360Controller(vid, pid));
@@ -656,7 +655,6 @@ namespace WiitarThing.Holders
 
         public bool Unplug(int id)
         {
-            id -= 1;
             if (targets.Count > id && targets[id] != null)
             {
                 if (connected.Contains(targets[id]))
@@ -728,7 +726,7 @@ namespace WiitarThing.Holders
 
         public virtual bool Report(byte[] input, byte[] output)
         {
-            byte id = (byte)(input[4] - 1);
+            byte id = (byte)(input[4]);
             if (targets.Count <= id || targets[id] == null)
             {
                 return false;
