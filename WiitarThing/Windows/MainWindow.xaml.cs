@@ -17,7 +17,7 @@ using Shared.Windows;
 using System.Diagnostics;
 using Nefarius.ViGEm.Client;
 
-namespace WiinUSoft
+namespace WiitarThing
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -563,11 +563,11 @@ namespace WiinUSoft
         {
             IShellLink link = (IShellLink)new ShellLink();
 
-            link.SetDescription("WiinUSoft");
+            link.SetDescription("WiitarThing");
             link.SetPath(new Uri(System.Reflection.Assembly.GetEntryAssembly().CodeBase).LocalPath);
 
             IPersistFile file = (IPersistFile)link;
-            file.Save(Path.Combine(path, "WiinUSoft.lnk"), false);
+            file.Save(Path.Combine(path, "WiitarThing.lnk"), false);
         }
 
         [ComImport]

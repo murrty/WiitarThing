@@ -3,15 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 
-namespace WiinUSoft
+namespace WiitarThing
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application, ISingleInstanceApp
     {
-        internal const string PROFILE_FILTER = "WiinUSoft Profile|*.wsp";
-        private const string Unique = "wiinupro-or-wiinusoft-instance";
+        internal const string PROFILE_FILTER = "WiitarThing Profile|*.wsp";
+        private const string Unique = "wiitarthing-instance";
 
         [STAThread]
         public static void Main()

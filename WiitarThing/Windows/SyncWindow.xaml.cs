@@ -7,7 +7,7 @@ using Shared.Windows;
 using System.ComponentModel;
 using System.Windows.Interop;
 
-namespace WiinUSoft.Windows
+namespace WiitarThing.Windows
 {
     /// <summary>
     /// Interaction logic for SyncWindow.xaml

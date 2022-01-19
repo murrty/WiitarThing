@@ -6,7 +6,7 @@ using Nefarius.ViGEm.Client.Targets;
 using Nefarius.ViGEm.Client.Targets.Xbox360;
 using NintrollerLib;
 
-namespace WiinUSoft.Holders
+namespace WiitarThing.Holders
 {
     public class XInputHolder : Holder
     {

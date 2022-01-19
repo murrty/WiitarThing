@@ -4,7 +4,7 @@ using System.Windows;
 
 using NintrollerLib;
 
-namespace WiinUSoft
+namespace WiitarThing
 {
     /// <summary>
     /// Interaction logic for CalibrateWindow.xaml

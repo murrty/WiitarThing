@@ -8,7 +8,7 @@ using System.ComponentModel;
 using System.Windows.Interop;
 using NintrollerLib;
 
-namespace WiinUSoft.Windows
+namespace WiitarThing.Windows
 {
     /// <summary>
     /// Interaction logic for DebugDataWindow.xaml

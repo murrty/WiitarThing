@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace WiinUSoft.Inputs
+namespace WiitarThing.Inputs
 {
     public static class Guitar
     {

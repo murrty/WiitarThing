@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 using System.IO;
 using Shared.Windows;
 
-namespace WiinUSoft
+namespace WiitarThing
 {
     public enum DeviceState
     {
