@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 
 using NintrollerLib;
 
-namespace WiinUSoft
+namespace WiitarThing
 {
     /// <summary>
     /// Interaction logic for ConfigWindow.xaml

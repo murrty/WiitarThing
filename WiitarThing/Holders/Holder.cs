@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using WindowsInput;
 #endif
 
-namespace WiinUSoft.Holders
+namespace WiitarThing.Holders
 {
     public abstract class Holder
     {

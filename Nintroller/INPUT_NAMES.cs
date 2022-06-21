@@ -144,47 +144,47 @@
             public const string HOME   = "ccpHOME";
         }
 
-        public static class WII_GUITAR
+        public static class GUITAR
         {
-            public const string G = "wgtG";
-            public const string R = "wgtR";
-            public const string Y = "wgtY";
-            public const string B = "wgtB";
-            public const string O = "wgtO";
+            public const string G = "gtrG";
+            public const string R = "gtrR";
+            public const string Y = "gtrY";
+            public const string B = "gtrB";
+            public const string O = "gtrO";
 
-            public const string UP = "wgtUP";
-            public const string DOWN = "wgtDOWN";
-            public const string LEFT = "wgtLEFT";
-            public const string RIGHT = "wgtRIGHT";
+            public const string UP = "gtrUP";
+            public const string DOWN = "gtrDOWN";
+            public const string LEFT = "gtrLEFT";
+            public const string RIGHT = "gtrRIGHT";
 
-            public const string WHAMMYLOW = "wgtWHAMMYLOW";
-            public const string WHAMMYHIGH = "wgtWHAMMYHIGH";
+            public const string WHAMMYLOW = "gtrWHAMMYLOW";
+            public const string WHAMMYHIGH = "gtrWHAMMYHIGH";
 
-            public const string TILTLOW = "wgtTILTLOW";
-            public const string TILTHIGH = "wgtTILTHIGH";
+            public const string TILTLOW = "gtrTILTLOW";
+            public const string TILTHIGH = "gtrTILTHIGH";
 
-            public const string SELECT = "wgtSELECT";
-            public const string START = "wgtSTART";
-            public const string HOME = "wgtHOME";
+            public const string SELECT = "gtrSELECT";
+            public const string START = "gtrSTART";
+            public const string HOME = "gtrHOME";
         }
 
-        public static class WII_DRUMS
+        public static class DRUMS
         {
-            public const string G = "wdrG";
-            public const string R = "wdrR";
-            public const string Y = "wdrY";
-            public const string B = "wdrB";
-            public const string O = "wdrO";
-            public const string BASS = "wdrBASS";
+            public const string G = "drmG";
+            public const string R = "drmR";
+            public const string Y = "drmY";
+            public const string B = "drmB";
+            public const string O = "drmO";
+            public const string BASS = "drmBASS";
 
-            public const string UP = "wdrUP";
-            public const string DOWN = "wdrDOWN";
-            public const string LEFT = "wdrLEFT";
-            public const string RIGHT = "wdrRIGHT";
+            public const string UP = "drmUP";
+            public const string DOWN = "drmDOWN";
+            public const string LEFT = "drmLEFT";
+            public const string RIGHT = "drmRIGHT";
 
-            public const string SELECT = "wdrSELECT";
-            public const string START = "wdrSTART";
-            public const string HOME = "wdrHOME";
+            public const string SELECT = "drmSELECT";
+            public const string START = "drmSTART";
+            public const string HOME = "drmHOME";
         }
 
         public static class PRO_CONTROLLER

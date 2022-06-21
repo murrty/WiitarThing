@@ -7,7 +7,7 @@
     <ProjectGuid>{4ED3CDAC-B467-497B-A80D-AAB4A395A7EE}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WiinUSoft</RootNamespace>
+    <RootNamespace>WiitarThing</RootNamespace>
     <AssemblyName>WiitarThing</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -41,7 +41,7 @@
     <ApplicationIcon>GHWT_Wii_Guitar.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>WiinUSoft.App</StartupObject>
+    <StartupObject>WiitarThing.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -99,8 +99,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Inputs\WiiDrums.cs" />
-    <Compile Include="Inputs\WiiGuitar.cs" />
+    <Compile Include="Inputs\Drums.cs" />
+    <Compile Include="Inputs\Guitar.cs" />
     <Compile Include="WiitarDebug.cs" />
     <Compile Include="Windows\RemoveAllWiimotesWindow.xaml.cs">
       <DependentUpon>RemoveAllWiimotesWindow.xaml</DependentUpon>

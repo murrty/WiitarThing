@@ -17,7 +17,7 @@ using Shared.Windows;
 using System.Diagnostics;
 using Nefarius.ViGEm.Client;
 
-namespace WiinUSoft
+namespace WiitarThing
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -40,21 +40,6 @@ namespace WiinUSoft
             return activeProcId == procId;
         }
 
-        /// <summary>Returns true if ViGEmBus is installed, false otherwise</summary>
-        public static bool ViGEmBusIsInstalled()
-        {
-            try
-            {
-                var client = new ViGEmClient();
-                client.Dispose();
-                return true;
-            }
-            catch (Nefarius.ViGEm.Client.Exceptions.VigemBusNotFoundException)
-            {
-                return false;
-            }
-        }
-
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         private static extern IntPtr GetForegroundWindow();
 
@@ -71,6 +56,31 @@ namespace WiinUSoft
 
         public MainWindow()
         {
+            // Check for ViGEmBus upon startup
+            try
+            {
+                var client = new ViGEmClient();
+                client.Dispose();
+                WiitarDebug.Log("ViGEmBus found");
+            }
+            catch (Nefarius.ViGEm.Client.Exceptions.VigemBusNotFoundException)
+            {
+                WiitarDebug.Log("ViGEmBus not found");
+                if (MessageBox.Show(
+                    "WiitarThing requires the ViGEmBus driver to function.\nClick OK to get it from its releases page.",
+                    "ViGEmBus Not Found",
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Error,
+                    MessageBoxResult.Cancel
+                  ) == MessageBoxResult.OK
+                )
+                {
+                    Process.Start("https://github.com/ViGEm/ViGEmBus/releases");
+                }
+                Application.Current.Shutdown();
+                return;
+            }
+
             hidList = new List<DeviceInfo>();
             deviceList = new List<DeviceControl>();
 
@@ -324,12 +334,6 @@ namespace WiinUSoft
 
             Refresh();
             AutoRefresh(menu_AutoRefresh.IsChecked && ApplicationIsActivated());
-            if (!ViGEmBusIsInstalled())
-            {
-                MessageBox.Show("This program requires the ViGEmBus driver to function.",
-                "ViGEmBus Not Found", MessageBoxButton.OK, MessageBoxImage.Error);
-                Application.Current.Shutdown();
-            }
         }
 
         private void DeviceControl_OnConnectStateChange(DeviceControl sender, DeviceState oldState, DeviceState newState)
@@ -563,11 +567,11 @@ namespace WiinUSoft
         {
             IShellLink link = (IShellLink)new ShellLink();
 
-            link.SetDescription("WiinUSoft");
+            link.SetDescription("WiitarThing");
             link.SetPath(new Uri(System.Reflection.Assembly.GetEntryAssembly().CodeBase).LocalPath);
 
             IPersistFile file = (IPersistFile)link;
-            file.Save(Path.Combine(path, "WiinUSoft.lnk"), false);
+            file.Save(Path.Combine(path, "WiitarThing.lnk"), false);
         }
 
         [ComImport]
