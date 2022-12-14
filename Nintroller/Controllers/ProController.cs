@@ -8,6 +8,46 @@ namespace NintrollerLib
 {
     public struct ProController : INintrollerState
     {
+        public static class InputNames
+        {
+            public const string A      = "proA";
+            public const string B      = "proB";
+            public const string X      = "proX";
+            public const string Y      = "proY";
+
+            public const string UP     = "proUP";
+            public const string DOWN   = "proDOWN";
+            public const string LEFT   = "proLEFT";
+            public const string RIGHT  = "proRIGHT";
+
+            public const string L      = "proL";
+            public const string R      = "proR";
+            public const string ZL     = "proZL";
+            public const string ZR     = "proZR";
+
+            public const string LX     = "proLX";
+            public const string LY     = "proLY";
+            public const string RX     = "proRX";
+            public const string RY     = "proRY";
+
+            public const string LUP    = "proLUP";
+            public const string LDOWN  = "proLDOWN";
+            public const string LLEFT  = "proLLEFT";
+            public const string LRIGHT = "proLRIGHT";
+
+            public const string RUP    = "proRUP";
+            public const string RDOWN  = "proRDOWN";
+            public const string RLEFT  = "proRLEFT";
+            public const string RRIGHT = "proRRIGHT";
+
+            public const string LS     = "proLS";
+            public const string RS     = "proRS";
+
+            public const string SELECT = "proSELECT";
+            public const string START  = "proSTART";
+            public const string HOME   = "proHOME";
+        }
+
 #if DEBUG
         private bool _debugViewActive;
         public bool DebugViewActive
@@ -270,44 +310,44 @@ namespace NintrollerLib
 
         public IEnumerator<KeyValuePair<string, float>> GetEnumerator()
         {
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.A, A ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.B, B ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.X, X ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.Y, Y ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.A, A ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.B, B ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.X, X ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.Y, Y ? 1.0f : 0.0f);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.L,  L  ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.R,  R  ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.ZL, ZL ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.ZR, ZR ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.L,  L  ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.R,  R  ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.ZL, ZL ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.ZR, ZR ? 1.0f : 0.0f);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.UP,    Up    ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.DOWN,  Down  ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.LEFT,  Left  ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.RIGHT, Right ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.UP,    Up    ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.DOWN,  Down  ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.LEFT,  Left  ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.RIGHT, Right ? 1.0f : 0.0f);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.START,  Start  ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.SELECT, Select ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.HOME,   Home   ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.START,  Start  ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.SELECT, Select ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.HOME,   Home   ? 1.0f : 0.0f);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.LS, LStick ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.RS, RStick ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.LS, LStick ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.RS, RStick ? 1.0f : 0.0f);
 
             LJoy.Normalize();
             RJoy.Normalize();
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.LX, LJoy.X);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.LY, LJoy.Y);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.RX, RJoy.X);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.RY, RJoy.X);
+            yield return new KeyValuePair<string, float>(InputNames.LX, LJoy.X);
+            yield return new KeyValuePair<string, float>(InputNames.LY, LJoy.Y);
+            yield return new KeyValuePair<string, float>(InputNames.RX, RJoy.X);
+            yield return new KeyValuePair<string, float>(InputNames.RY, RJoy.X);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.LUP,    LJoy.Y > 0f ? LJoy.Y : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.LDOWN,  LJoy.Y > 0f ? 0.0f : -LJoy.Y); // These are inverted
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.LLEFT,  LJoy.X > 0f ? 0.0f : -LJoy.X); // because they
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.LRIGHT, LJoy.X > 0f ? LJoy.X : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.LUP,    LJoy.Y > 0f ? LJoy.Y : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.LDOWN,  LJoy.Y > 0f ? 0.0f : -LJoy.Y); // These are inverted
+            yield return new KeyValuePair<string, float>(InputNames.LLEFT,  LJoy.X > 0f ? 0.0f : -LJoy.X); // because they
+            yield return new KeyValuePair<string, float>(InputNames.LRIGHT, LJoy.X > 0f ? LJoy.X : 0.0f);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.RUP,    RJoy.Y > 0f ? RJoy.Y : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.RDOWN,  RJoy.Y > 0f ? 0.0f : -RJoy.Y); // represents how far the
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.RLEFT,  RJoy.X > 0f ? 0.0f : -RJoy.X); // input is left or down
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.PRO_CONTROLLER.RRIGHT, RJoy.X > 0f ? RJoy.X : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.RUP,    RJoy.Y > 0f ? RJoy.Y : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.RDOWN,  RJoy.Y > 0f ? 0.0f : -RJoy.Y); // represents how far the
+            yield return new KeyValuePair<string, float>(InputNames.RLEFT,  RJoy.X > 0f ? 0.0f : -RJoy.X); // input is left or down
+            yield return new KeyValuePair<string, float>(InputNames.RRIGHT, RJoy.X > 0f ? RJoy.X : 0.0f);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

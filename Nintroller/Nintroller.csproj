@@ -71,7 +71,6 @@
     <Compile Include="Constants.cs" />
     <Compile Include="DeviceManagement.cs" />
     <Compile Include="Enumerators.cs" />
-    <Compile Include="INPUT_NAMES.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="Nintroller.cs" />
   </ItemGroup>

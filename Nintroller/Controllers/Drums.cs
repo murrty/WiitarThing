@@ -11,6 +11,25 @@ namespace NintrollerLib
     //Source of mapping info: https://wiibrew.org/wiki/Wiimote/Extension_Controllers/Guitar_Hero_World_Tour_(Wii)_Drums
     public struct Drums : INintrollerState
     {
+        public static class InputNames
+        {
+            public const string G = "drmG";
+            public const string R = "drmR";
+            public const string Y = "drmY";
+            public const string B = "drmB";
+            public const string O = "drmO";
+            public const string BASS = "drmBASS";
+
+            public const string UP = "drmUP";
+            public const string DOWN = "drmDOWN";
+            public const string LEFT = "drmLEFT";
+            public const string RIGHT = "drmRIGHT";
+
+            public const string SELECT = "drmSELECT";
+            public const string START = "drmSTART";
+            public const string HOME = "drmHOME";
+        }
+
         private bool SpecialButtonSelect => wiimote.buttons.A;
         private bool SpecialButtonTiltCalibMin => wiimote.buttons.One;
         private bool SpecialButtonTiltCalibMax => wiimote.buttons.Two;
@@ -473,20 +492,20 @@ namespace NintrollerLib
                 yield return input;
             }
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.G, G ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.R, R ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.Y, Y ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.B, B ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.O, O ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.BASS, Bass ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.G, G ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.R, R ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.Y, Y ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.B, B ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.O, O ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.BASS, Bass ? 1.0f : 0.0f);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.UP, (Up ? 1.0f : 0.0f));
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.DOWN, (Down ? 1.0f : 0.0f));
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.LEFT, (Left ? 1.0f : 0.0f));
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.RIGHT, (Right ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(InputNames.UP, (Up ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(InputNames.DOWN, (Down ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(InputNames.LEFT, (Left ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(InputNames.RIGHT, (Right ? 1.0f : 0.0f));
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.START, Start ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.DRUMS.SELECT, Select ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.START, Start ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.SELECT, Select ? 1.0f : 0.0f);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

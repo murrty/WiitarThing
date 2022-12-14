@@ -8,6 +8,31 @@ namespace NintrollerLib
 {
     public struct Nunchuk : INintrollerState
     {
+        public static class InputNames
+        {
+            public const string C            = "nC";
+            public const string Z            = "nZ";
+
+            public const string JOY_X        = "nJoyX";
+            public const string JOY_Y        = "nJoyY";
+
+            public const string UP           = "nUP";
+            public const string DOWN         = "nDOWN";
+            public const string LEFT         = "nLEFT";
+            public const string RIGHT        = "nRIGHT";
+
+            public const string ACC_X        = "nAccX";
+            public const string ACC_Y        = "nAccY";
+            public const string ACC_Z        = "nAccZ";
+            // tilting the controler with the wrist
+            public const string TILT_RIGHT   = "nTILTRIGHT";
+            public const string TILT_LEFT    = "nTILTLEFT";
+            public const string TILT_UP      = "nTILTUP";
+            public const string TILT_DOWN    = "nTILTDOWN";
+            public const string FACE_UP      = "nTILTFACEUP";
+            public const string FACE_DOWN    = "nTILTFACEDOWN";
+        }
+
 #if DEBUG
         private bool _debugViewActive;
         public bool DebugViewActive
@@ -278,29 +303,29 @@ namespace NintrollerLib
             }
             
             // Buttons
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.C, C ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.Z, Z ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.C, C ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.Z, Z ? 1.0f : 0.0f);
 
             // Joystick
             joystick.Normalize();
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.JOY_X, joystick.X);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.JOY_Y, joystick.Y);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.UP, joystick.Y > 0 ? joystick.Y : 0);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.DOWN, joystick.Y > 0 ? 0 : -joystick.Y);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.LEFT, joystick.X > 0 ? 0 : -joystick.X);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.RIGHT, joystick.X > 0 ? joystick.X : 0);
+            yield return new KeyValuePair<string, float>(InputNames.JOY_X, joystick.X);
+            yield return new KeyValuePair<string, float>(InputNames.JOY_Y, joystick.Y);
+            yield return new KeyValuePair<string, float>(InputNames.UP, joystick.Y > 0 ? joystick.Y : 0);
+            yield return new KeyValuePair<string, float>(InputNames.DOWN, joystick.Y > 0 ? 0 : -joystick.Y);
+            yield return new KeyValuePair<string, float>(InputNames.LEFT, joystick.X > 0 ? 0 : -joystick.X);
+            yield return new KeyValuePair<string, float>(InputNames.RIGHT, joystick.X > 0 ? joystick.X : 0);
 
             // Accelerometer
             accelerometer.Normalize();
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.ACC_X, accelerometer.X);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.ACC_Y, accelerometer.Y);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.ACC_Z, accelerometer.Z);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.TILT_LEFT, accelerometer.X > 0 ? 0 : -accelerometer.X);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.TILT_RIGHT, accelerometer.X > 0 ? accelerometer.X : 0);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.TILT_UP, accelerometer.Y > 0 ? accelerometer.Y : 0);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.TILT_DOWN, accelerometer.Y > 0 ? 0 : -accelerometer.Y);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.FACE_UP, accelerometer.Z > 0 ? accelerometer.Z : 0);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.NUNCHUK.FACE_DOWN, accelerometer.Z > 0 ? 0 : -accelerometer.Z);
+            yield return new KeyValuePair<string, float>(InputNames.ACC_X, accelerometer.X);
+            yield return new KeyValuePair<string, float>(InputNames.ACC_Y, accelerometer.Y);
+            yield return new KeyValuePair<string, float>(InputNames.ACC_Z, accelerometer.Z);
+            yield return new KeyValuePair<string, float>(InputNames.TILT_LEFT, accelerometer.X > 0 ? 0 : -accelerometer.X);
+            yield return new KeyValuePair<string, float>(InputNames.TILT_RIGHT, accelerometer.X > 0 ? accelerometer.X : 0);
+            yield return new KeyValuePair<string, float>(InputNames.TILT_UP, accelerometer.Y > 0 ? accelerometer.Y : 0);
+            yield return new KeyValuePair<string, float>(InputNames.TILT_DOWN, accelerometer.Y > 0 ? 0 : -accelerometer.Y);
+            yield return new KeyValuePair<string, float>(InputNames.FACE_UP, accelerometer.Z > 0 ? accelerometer.Z : 0);
+            yield return new KeyValuePair<string, float>(InputNames.FACE_DOWN, accelerometer.Z > 0 ? 0 : -accelerometer.Z);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
