@@ -147,12 +147,6 @@ namespace WiitarThing
             mapValues.Add(x_noneClick, "");
             #endregion
 
-#if MouseMode
-            // Mouse Mode
-            mapShapes.Add("MouseMode", mouseClick);
-            mapValues.Add(mouseClick, "MouseMode");
-#endif
-
             deviceShapes = new Dictionary<Shape, string>();
             if (deviceType == ControllerType.ProController)
             {
