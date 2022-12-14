@@ -143,15 +143,7 @@
     <Resource Include="Images\wrench-icon.png" />
     <Resource Include="Images\xbox_360_controller-small.png" />
     <Resource Include="Images\xboxlogob64.png" />
-    <Compile Include="Inputs\ClassicController.cs" />
-    <Compile Include="Inputs\ClassicControllerPro.cs" />
-    <Compile Include="Inputs\Drums.cs" />
     <Compile Include="Inputs\Flags.cs" />
-    <Compile Include="Inputs\Guitar.cs" />
-    <Compile Include="Inputs\MotionPlus.cs" />
-    <Compile Include="Inputs\Nunchuk.cs" />
-    <Compile Include="Inputs\ProController.cs" />
-    <Compile Include="Inputs\Wiimote.cs" />
     <Compile Include="Inputs\Xbox360.cs" />
     <AppDesigner Include="Properties\" />
     <Compile Include="Properties\AssemblyInfo.cs">

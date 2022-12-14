@@ -24,6 +24,20 @@ namespace NintrollerLib
             public const string ACC_X        = "nAccX";
             public const string ACC_Y        = "nAccY";
             public const string ACC_Z        = "nAccZ";
+
+            // Swinging
+            public const string ACC_UP       = "nACCUP";
+            public const string ACC_DOWN     = "nACCDOWN";
+            public const string ACC_LEFT     = "nACCLEFT";
+            public const string ACC_RIGHT    = "nACCRIGHT";
+            public const string ACC_FORWARD  = "nACCFORWARD";
+            public const string ACC_BACKWARD = "nACCBACKWARD";
+
+            // Shaking
+            public const string ACC_SHAKE_X  = "nSHAKEX";
+            public const string ACC_SHAKE_Y  = "nSHAKEY";
+            public const string ACC_SHAKE_Z  = "nSHAKEZ";
+
             // tilting the controler with the wrist
             public const string TILT_RIGHT   = "nTILTRIGHT";
             public const string TILT_LEFT    = "nTILTLEFT";
