@@ -195,39 +195,39 @@ namespace Shared.Windows
 
         #endregion
 
-        #region bthprops.cpl & irprops.cpl
-        [DllImport("irprops.cpl", SetLastError = true)]
+        #region bthprops.cpl
+        [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothGetRadioInfo(
             IntPtr hRadio, 
             ref BLUETOOTH_RADIO_INFO pRadioInfo);
 
-        [DllImport("irprops.cpl", SetLastError = true)]
+        [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern IntPtr BluetoothFindFirstRadio(
             ref BLUETOOTH_FIND_RADIO_PARAMS pbtfrp, 
             out IntPtr phRadio);
 
-        [DllImport("irprops.cpl", SetLastError = true)]
+        [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern bool BluetoothFindNextRadio(
             ref BLUETOOTH_FIND_RADIO_PARAMS hFind, 
             out IntPtr phRadio);
 
-        [DllImport("irprops.cpl", SetLastError = true)]
+        [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern bool BluetoothFindRadioClose(ref IntPtr hFind);
 
-        [DllImport("irprops.cpl", SetLastError = true)]
+        [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern IntPtr BluetoothFindFirstDevice(
             ref BLUETOOTH_DEVICE_SEARCH_PARAMS searchParams, 
             ref BLUETOOTH_DEVICE_INFO deviceInfo);
 
-        [DllImport("Irprops.cpl", SetLastError = true)]
+        [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern bool BluetoothFindNextDevice(
             IntPtr hFind, 
             ref BLUETOOTH_DEVICE_INFO pbtdi);
 
-        [DllImport("irprops.cpl", SetLastError = true)]
+        [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothRemoveDevice(ref ulong pAddress);
 
-        [DllImport("irprops.cpl", SetLastError = true, CharSet = CharSet.Unicode)]
+        [DllImport("bthprops.cpl", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern uint BluetoothAuthenticateDevice(
             IntPtr hwndParent, 
             IntPtr hRadio, 
@@ -243,21 +243,21 @@ namespace Shared.Windows
             /*BLUETOOTH_OOB_DATA*/ object pbtOobData,
             AUTHENTICATION_REQUIREMENTS authenticationRequirement);
 
-        [DllImport("irprops.cpl", SetLastError = true)]
+        [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothEnumerateInstalledServices(
             IntPtr hRadio, 
             ref BLUETOOTH_DEVICE_INFO pbtdi, 
             ref uint pcServices, 
             Guid[] pGuidServices);
 
-        [DllImport("irprops.cpl", SetLastError = true)]
+        [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothSetServiceState(
             IntPtr hRadio, 
             ref BLUETOOTH_DEVICE_INFO pbtdi, 
             ref Guid pGuidService, 
             byte dwServiceFlags);
 
-        [DllImport("irprops.cpl", EntryPoint = "BluetoothEnableDiscovery", SetLastError = true)]
+        [DllImport("bthprops.cpl", EntryPoint = "BluetoothEnableDiscovery", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool BluetoothEnableDiscovery(
             IntPtr hRadio,
