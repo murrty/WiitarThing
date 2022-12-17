@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -87,16 +87,14 @@ namespace WiitarThing.Windows
         {
             WiitarDebug.Log("FUNC BEGIN - RemoveAllWiimotes");
 
-            var radioParams = new NativeImports.BLUETOOTH_FIND_RADIO_PARAMS();
+            var radioParams = NativeImports.BLUETOOTH_FIND_RADIO_PARAMS.Create();
             Guid HidServiceClass = NativeImports.HidServiceClassGuid;
             List<IntPtr> btRadios = new List<IntPtr>();
             IntPtr foundRadio;
             IntPtr foundResult;
 
-            radioParams.Initialize();
-
             // Get first BT Radio
-            foundResult = NativeImports.BluetoothFindFirstRadio(ref radioParams, out foundRadio);
+            foundResult = NativeImports.BluetoothFindFirstRadio(in radioParams, out foundRadio);
             bool more = foundResult != IntPtr.Zero;
 
             do
@@ -107,7 +105,7 @@ namespace WiitarThing.Windows
                 }
 
                 // Find more
-                more = NativeImports.BluetoothFindNextRadio(ref radioParams, out foundRadio);
+                more = NativeImports.BluetoothFindNextRadio(foundResult, out foundRadio);
             } while (more);
 
             if (btRadios.Count > 0)
@@ -115,13 +113,9 @@ namespace WiitarThing.Windows
                 foreach (var radio in btRadios)
                 {
                     IntPtr found;
-                    var radioInfo = new NativeImports.BLUETOOTH_RADIO_INFO();
-                    var deviceInfo = new NativeImports.BLUETOOTH_DEVICE_INFO();
-                    var searchParams = new NativeImports.BLUETOOTH_DEVICE_SEARCH_PARAMS();
-
-                    radioInfo.Initialize();
-                    deviceInfo.Initialize();
-                    searchParams.Initialize();
+                    var radioInfo = NativeImports.BLUETOOTH_RADIO_INFO.Create();
+                    var deviceInfo = NativeImports.BLUETOOTH_DEVICE_INFO.Create();
+                    var searchParams = NativeImports.BLUETOOTH_DEVICE_SEARCH_PARAMS.Create();
 
                     // Access radio information
                     WiitarDebug.Log("BEF - BluetoothGetRadioInfo");
@@ -141,7 +135,7 @@ namespace WiitarThing.Windows
 
                         // Search for a device
                         WiitarDebug.Log("BEF - BluetoothFindFirstDevice");
-                        found = NativeImports.BluetoothFindFirstDevice(ref searchParams, ref deviceInfo);
+                        found = NativeImports.BluetoothFindFirstDevice(in searchParams, ref deviceInfo);
                         WiitarDebug.Log("AFT - BluetoothFindFirstDevice");
 
                         // Success
@@ -163,7 +157,7 @@ namespace WiitarThing.Windows
                                     if (/*!ConnectedDeviceAddresses.Contains(deviceInfo.Address) && */(deviceInfo.fRemembered || deviceInfo.fConnected))
                                     {
                                         WiitarDebug.Log("BEF - BluetoothRemoveDevice");
-                                        errForget = NativeImports.BluetoothRemoveDevice(ref deviceInfo.Address);
+                                        errForget = NativeImports.BluetoothRemoveDevice(in deviceInfo.Address);
                                         WiitarDebug.Log("AFT - BluetoothRemoveDevice");
                                         success = errForget == 0;
                                     }
@@ -190,18 +184,15 @@ namespace WiitarThing.Windows
             WiitarDebug.Log("FUNC BEGIN - Sync");
 
             WiitarDebug.Log("BEF - BLUETOOTH_FIND_RADIO_PARAMS");
-            var radioParams = new NativeImports.BLUETOOTH_FIND_RADIO_PARAMS();
+            var radioParams = NativeImports.BLUETOOTH_FIND_RADIO_PARAMS.Create();
             WiitarDebug.Log("AFT - BLUETOOTH_FIND_RADIO_PARAMS");
-            Guid HidServiceClass = NativeImports.HidServiceClassGuid;
             List<IntPtr> btRadios = new List<IntPtr>();
             IntPtr foundRadio;
             IntPtr foundResult;
 
-            radioParams.Initialize();
-
             // Get first BT Radio
             WiitarDebug.Log("BEF - BluetoothGetRadioInfo");
-            foundResult = NativeImports.BluetoothFindFirstRadio(ref radioParams, out foundRadio);
+            foundResult = NativeImports.BluetoothFindFirstRadio(in radioParams, out foundRadio);
             WiitarDebug.Log("AFT - BluetoothGetRadioInfo");
             bool more = foundResult != IntPtr.Zero;
 
@@ -214,7 +205,7 @@ namespace WiitarThing.Windows
 
                 // Find more
                 WiitarDebug.Log("BEF - BluetoothFindNextRadio");
-                more = NativeImports.BluetoothFindNextRadio(ref radioParams, out foundRadio);
+                more = NativeImports.BluetoothFindNextRadio(foundResult, out foundRadio);
                 WiitarDebug.Log("AFT - BluetoothFindNextRadio");
             } while (more);
 
@@ -230,20 +221,16 @@ namespace WiitarThing.Windows
                         IntPtr found;
 
                         WiitarDebug.Log("BEF - BLUETOOTH_RADIO_INFO");
-                        var radioInfo = new NativeImports.BLUETOOTH_RADIO_INFO();
+                        var radioInfo = NativeImports.BLUETOOTH_RADIO_INFO.Create();
                         WiitarDebug.Log("AFT - BLUETOOTH_RADIO_INFO");
 
                         WiitarDebug.Log("BEF - BLUETOOTH_DEVICE_INFO");
-                        var deviceInfo = new NativeImports.BLUETOOTH_DEVICE_INFO();
+                        var deviceInfo = NativeImports.BLUETOOTH_DEVICE_INFO.Create();
                         WiitarDebug.Log("AFT - BLUETOOTH_DEVICE_INFO");
 
                         WiitarDebug.Log("BEF - BLUETOOTH_DEVICE_SEARCH_PARAMS");
-                        var searchParams = new NativeImports.BLUETOOTH_DEVICE_SEARCH_PARAMS();
+                        var searchParams = NativeImports.BLUETOOTH_DEVICE_SEARCH_PARAMS.Create();
                         WiitarDebug.Log("AFT - BLUETOOTH_DEVICE_SEARCH_PARAMS");
-
-                        radioInfo.Initialize();
-                        deviceInfo.Initialize();
-                        searchParams.Initialize();
 
                         // Access radio information
                         WiitarDebug.Log("BEF - BluetoothGetRadioInfo");
@@ -264,7 +251,7 @@ namespace WiitarThing.Windows
 
                             // Search for a device
                             WiitarDebug.Log("BEF - BluetoothFindFirstDevice");
-                            found = NativeImports.BluetoothFindFirstDevice(ref searchParams, ref deviceInfo);
+                            found = NativeImports.BluetoothFindFirstDevice(in searchParams, ref deviceInfo);
                             WiitarDebug.Log("AFT - BluetoothFindFirstDevice");
 
                             // Success
@@ -362,9 +349,9 @@ namespace WiitarThing.Windows
                                         if (success)
                                         {
                                             WiitarDebug.Log("BEF - BluetoothAuthenticateDevice [SYNC]");
-                                            errAuth = NativeImports.BluetoothAuthenticateDevice(IntPtr.Zero, radio, ref deviceInfo, password.ToString(), 6);
+                                            errAuth = NativeImports.BluetoothAuthenticateDevice(IntPtr.Zero, radio, in deviceInfo, password.ToString(), 6);
                                             WiitarDebug.Log("AFT - BluetoothAuthenticateDevice [SYNC]");
-                                            //errAuth = NativeImports.BluetoothAuthenticateDeviceEx(IntPtr.Zero, radio, ref deviceInfo, null, NativeImports.AUTHENTICATION_REQUIREMENTS.MITMProtectionNotRequired);
+                                            //errAuth = NativeImports.BluetoothAuthenticateDeviceEx(IntPtr.Zero, radio, in deviceInfo, null, NativeImports.AUTHENTICATION_REQUIREMENTS.MITMProtectionNotRequired);
                                             success = errAuth == 0;
                                         }
 
@@ -386,10 +373,10 @@ namespace WiitarThing.Windows
                                             }
 
                                             WiitarDebug.Log("BEF - BluetoothAuthenticateDevice [1+2]");
-                                            errAuth = NativeImports.BluetoothAuthenticateDevice(IntPtr.Zero, radio, ref deviceInfo, password.ToString(), 6);
+                                            errAuth = NativeImports.BluetoothAuthenticateDevice(IntPtr.Zero, radio, in deviceInfo, password.ToString(), 6);
                                             WiitarDebug.Log("AFT - BluetoothAuthenticateDevice [1+2]");
 
-                                            //errAuth = NativeImports.BluetoothAuthenticateDeviceEx(IntPtr.Zero, radio, ref deviceInfo, null, NativeImports.AUTHENTICATION_REQUIREMENTS.MITMProtectionNotRequired);
+                                            //errAuth = NativeImports.BluetoothAuthenticateDeviceEx(IntPtr.Zero, radio, in deviceInfo, null, NativeImports.AUTHENTICATION_REQUIREMENTS.MITMProtectionNotRequired);
                                             success = errAuth == 0;
                                         }
 
@@ -397,7 +384,7 @@ namespace WiitarThing.Windows
                                         if (success)
                                         {
                                             WiitarDebug.Log("BEF - BluetoothEnumerateInstalledServices");
-                                            errService = NativeImports.BluetoothEnumerateInstalledServices(radio, ref deviceInfo, ref pcService, guids);
+                                            errService = NativeImports.BluetoothEnumerateInstalledServices(radio, in deviceInfo, ref pcService, guids);
                                             WiitarDebug.Log("AFT - BluetoothEnumerateInstalledServices");
                                             success = errService == 0;
                                         }
@@ -406,7 +393,7 @@ namespace WiitarThing.Windows
                                         if (success)
                                         {
                                             WiitarDebug.Log("BEF - BluetoothSetServiceState");
-                                            errActivate = NativeImports.BluetoothSetServiceState(radio, ref deviceInfo, ref HidServiceClass, 0x01);
+                                            errActivate = NativeImports.BluetoothSetServiceState(radio, in deviceInfo, in NativeImports.HidServiceClassGuid, 0x01);
                                             WiitarDebug.Log("AFT - BluetoothSetServiceState");
                                             success = errActivate == 0;
                                         }
