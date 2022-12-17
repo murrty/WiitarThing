@@ -134,12 +134,12 @@ namespace Shared.Windows
             {
                 if (OverrideSharingMode)
                 {
-                    _fileHandle = CreateFile(_hidPath, FileAccess.ReadWrite, OverridenFileShare, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, null);
+                    _fileHandle = CreateFile(_hidPath, FileAccess.ReadWrite, OverridenFileShare, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, IntPtr.Zero);
                 }
                 else
                 {
                     // Open the file handle with the specified sharing mode and an overlapped file attribute flag for asynchronous operation
-                    _fileHandle = CreateFile(_hidPath, FileAccess.ReadWrite, SharingMode, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, null);
+                    _fileHandle = CreateFile(_hidPath, FileAccess.ReadWrite, SharingMode, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, IntPtr.Zero);
                 }
                 _fileStream = new FileStream(_fileHandle, FileAccess.ReadWrite, 22, true);
             }
@@ -266,7 +266,7 @@ namespace Shared.Windows
                 if (SetupDiGetDeviceInterfaceDetail(hDevInfo, ref diData, ref diDetail, size, out size, ref deviceInfoData))
                 {
                     // Open read/write handle
-                    handle = CreateFile(diDetail.devicePath, FileAccess.ReadWrite, FileShare.ReadWrite, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, null);
+                    handle = CreateFile(diDetail.devicePath, FileAccess.ReadWrite, FileShare.ReadWrite, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, IntPtr.Zero);
 
                     // Create Attributes Structure
                     HIDD_ATTRIBUTES attrib = new HIDD_ATTRIBUTES();

@@ -62,7 +62,7 @@ namespace Shared.Windows
             IntPtr securityAttributes,
             [MarshalAs(UnmanagedType.U4)] FileMode creationDisposition,
             [MarshalAs(UnmanagedType.U4)] EFileAttributes flags,
-            SafeFileHandle template);
+            IntPtr template);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
