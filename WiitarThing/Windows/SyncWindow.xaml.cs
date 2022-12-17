@@ -108,6 +108,9 @@ namespace WiitarThing.Windows
                 more = NativeImports.BluetoothFindNextRadio(foundResult, out foundRadio);
             } while (more);
 
+            if (foundResult != IntPtr.Zero)
+                NativeImports.BluetoothFindRadioClose(foundResult);
+
             if (btRadios.Count > 0)
             {
                 foreach (var radio in btRadios)
@@ -171,8 +174,18 @@ namespace WiitarThing.Windows
                                 }
 
                             } while (NativeImports.BluetoothFindNextDevice(found, ref deviceInfo));
+
+                            NativeImports.BluetoothFindDeviceClose(found);
                         }
                     }
+                }
+
+                // Close each Radio
+                foreach (var openRadio in btRadios)
+                {
+                    WiitarDebug.Log("BEF - CloseHandle");
+                    NativeImports.CloseHandle(openRadio);
+                    WiitarDebug.Log("AFT - CloseHandle");
                 }
             }
 
@@ -208,6 +221,9 @@ namespace WiitarThing.Windows
                 more = NativeImports.BluetoothFindNextRadio(foundResult, out foundRadio);
                 WiitarDebug.Log("AFT - BluetoothFindNextRadio");
             } while (more);
+
+            if (foundResult != IntPtr.Zero)
+                NativeImports.BluetoothFindRadioClose(foundResult);
 
             if (btRadios.Count > 0)
             {
@@ -447,6 +463,8 @@ namespace WiitarThing.Windows
 
                                     WiitarDebug.Log("About to try BluetoothFindNextDevice...");
                                 } while (NativeImports.BluetoothFindNextDevice(found, ref deviceInfo));
+
+                                NativeImports.BluetoothFindDeviceClose(found);
                             }
                         }
                         else

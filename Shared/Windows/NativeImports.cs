@@ -222,6 +222,9 @@ namespace Shared.Windows
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothRemoveDevice(in ulong pAddress);
 
+        [DllImport("bthprops.cpl", SetLastError = true)]
+        public static extern bool BluetoothFindDeviceClose(IntPtr hFind);
+
         [DllImport("bthprops.cpl", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern uint BluetoothAuthenticateDevice(
             IntPtr hwndParent, 
