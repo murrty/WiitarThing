@@ -253,7 +253,7 @@ namespace Shared.Windows
             IntPtr hRadio, 
             in BLUETOOTH_DEVICE_INFO pbtdi, 
             in Guid pGuidService, 
-            int dwServiceFlags);
+            [MarshalAs(UnmanagedType.U4)] BluetoothServiceFlag dwServiceFlags);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -517,6 +517,13 @@ namespace Shared.Windows
             OpenReparsePoint  = 0x00200000,
             OpenNoRecall      = 0x00100000,
             FirstPipeInstance = 0x00080000
+        }
+
+        [Flags]
+        public enum BluetoothServiceFlag : uint
+        {
+            Disable = 0x00,
+            Enable = 0x01
         }
 
         #endregion
