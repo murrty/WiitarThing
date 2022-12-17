@@ -172,7 +172,7 @@ namespace WiitarThing.Windows
                 // Search until cancelled or at least one device is paired
                 while (!Cancelled && Count == 0)
                 {
-                    foreach (var radio in btRadios) using (radio)
+                    foreach (var radio in btRadios)
                     {
                         // Get radio info
                         if (!radio.TryGetInfo(out var radioInfo))
@@ -309,6 +309,11 @@ namespace WiitarThing.Windows
                             }
                         }
                     }
+                }
+
+                foreach (var radio in btRadios)
+                {
+                    radio.Dispose();
                 }
             }
             else
