@@ -380,6 +380,7 @@ namespace Shared.Windows
             public string devicePath;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
         public struct DEVPROPKEY
         {
             public Guid fmtid;
