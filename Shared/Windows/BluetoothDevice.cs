@@ -33,21 +33,33 @@ namespace Shared.Windows
             LastUsed = new DateTime(info.stLastUsed.Year, info.stLastUsed.Month, info.stLastUsed.Day, info.stLastUsed.Hour, info.stLastUsed.Minute, info.stLastUsed.Second, info.stLastUsed.Milliseconds);
         }
 
+        /// <summary>
+        /// Authenticates this device with the given password.
+        /// </summary>
         public uint Authenticate(string password)
         {
             return radio.AuthenticateDevice(in info, password);
         }
 
+        /// <summary>
+        /// Removes this device from the system.
+        /// </summary>
         public uint Remove()
         {
             return NativeImports.BluetoothRemoveDevice(in info.Address);
         }
 
+        /// <summary>
+        /// Gets an array of all enabled services on this device.
+        /// </summary>
         public uint EnumerateInstalledServices(out Guid[] serviceGuids)
         {
             return radio.EnumerateInstalledServices(in info, out serviceGuids);
         }
 
+        /// <summary>
+        /// Sets the state of a service on this device.
+        /// </summary>
         public uint SetServiceState(Guid serviceGuid, bool enable)
         {
             return radio.SetServiceState(in info, serviceGuid, enable);

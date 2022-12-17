@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -104,6 +104,7 @@ namespace WiitarThing.Windows
             var radioParams = NativeImports.BLUETOOTH_FIND_RADIO_PARAMS.Create();
             Guid HidServiceClass = NativeImports.HidServiceClassGuid;
 
+            // Get Bluetooth radios
             var btRadios = BluetoothRadio.FindAllRadios();
             if (btRadios.Count > 0)
             {
@@ -116,6 +117,7 @@ namespace WiitarThing.Windows
                         continue;
                     }
                     
+                    // Remove all wiimotes that are connected or paired
                     foreach (var device in devices)
                     {
                         if (device.Name.StartsWith("Nintendo RVL-CNT-01"))
@@ -150,6 +152,7 @@ namespace WiitarThing.Windows
         {
             WiitarDebug.Log("FUNC BEGIN - Sync");
 
+            // Retrieve all radios on the system
             var btRadios = BluetoothRadio.FindAllRadios();
             if (btRadios.Count < 1)
             {
@@ -183,6 +186,7 @@ namespace WiitarThing.Windows
                     
                     foreach (var device in devices)
                     {
+                        // Check device name
                         // Note: Switch Pro Controller is simply called "Pro Controller"
                         string deviceName = device.Name;
                         if (!deviceName.StartsWith("Nintendo RVL-CNT-01"))
@@ -213,6 +217,7 @@ namespace WiitarThing.Windows
                             Prompt("Found Unknown Wii Device Type (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
                         }
 
+                        // Skip already-paired devices
                         if (remembered)
                         {
                             continue;
@@ -233,7 +238,7 @@ namespace WiitarThing.Windows
                             success = errAuth == 0;
                         }
 
-                        //If it fails using SYNC method, try 1+2 method.
+                        // If the sync method didn't work, try the 1+2 method
                         if (!success)
                         {
 #if DEBUG
@@ -318,6 +323,7 @@ namespace WiitarThing.Windows
                 }
             }
 
+            // Clean up radio handles
             foreach (var radio in btRadios)
             {
                 radio.Dispose();
