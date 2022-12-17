@@ -20,11 +20,11 @@ namespace Shared.Windows
         [DllImport("kernel32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public extern static bool WriteFile(
-            IntPtr hFile,                    // HANDLE
+            SafeFileHandle hFile,            // HANDLE
             byte[] lpBuffer,                 // LPCVOID
             uint nNumberOfBytesToWrite,      // DWORD
             out uint lpNumberOfBytesWritten, // LPDWORD
-            [In] ref NativeOverlapped lpOverlapped);
+            ref NativeOverlapped lpOverlapped);
 
 
         /// <summary>
@@ -33,24 +33,25 @@ namespace Shared.Windows
         public delegate void WriteFileCompletionDelegate(
             uint dwErrorCode, 
             uint dwNumberOfBytesTransfered, 
-            NativeOverlapped lpOverlapped);
+            ref NativeOverlapped lpOverlapped);
 
         /// <summary>
         /// Like WriteFile but provides an asynchronous callback
         /// </summary>
         [DllImport("kernel32.dll", SetLastError = true)]
         public extern static bool WriteFileEx(
-            IntPtr hFile, 
+            SafeFileHandle hFile, 
             byte[] lpBuffer,
             uint nNumberOfBytesToWrite, 
-            [In] ref NativeOverlapped lpOverlapped,
+            ref NativeOverlapped lpOverlapped,
             WriteFileCompletionDelegate lpCompletionRoutine);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public extern static bool ReadFile(
-            IntPtr hFile,
+            SafeFileHandle hFile,
             byte[] lpBuffer,
             uint nNumberofBytesToRead,
+            out uint lpNumberOfBytesRead,
             ref NativeOverlapped lpOverlapped);
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace Shared.Windows
             IntPtr securityAttributes,
             [MarshalAs(UnmanagedType.U4)] FileMode creationDisposition,
             [MarshalAs(UnmanagedType.U4)] EFileAttributes flags,
-            IntPtr template);
+            SafeFileHandle template);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]

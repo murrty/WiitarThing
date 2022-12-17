@@ -1,4 +1,4 @@
-﻿/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
  * === Notes ===
  * 
  * - When using the Toshiba Stack,
@@ -134,12 +134,12 @@ namespace Shared.Windows
             {
                 if (OverrideSharingMode)
                 {
-                    _fileHandle = CreateFile(_hidPath, FileAccess.ReadWrite, OverridenFileShare, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, IntPtr.Zero);
+                    _fileHandle = CreateFile(_hidPath, FileAccess.ReadWrite, OverridenFileShare, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, null);
                 }
                 else
                 {
                     // Open the file handle with the specified sharing mode and an overlapped file attribute flag for asynchronous operation
-                    _fileHandle = CreateFile(_hidPath, FileAccess.ReadWrite, SharingMode, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, IntPtr.Zero);
+                    _fileHandle = CreateFile(_hidPath, FileAccess.ReadWrite, SharingMode, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, null);
                 }
                 _fileStream = new FileStream(_fileHandle, FileAccess.ReadWrite, 22, true);
             }
@@ -266,7 +266,7 @@ namespace Shared.Windows
                 if (SetupDiGetDeviceInterfaceDetail(hDevInfo, ref diData, ref diDetail, size, out size, ref deviceInfoData))
                 {
                     // Open read/write handle
-                    handle = CreateFile(diDetail.devicePath, FileAccess.ReadWrite, FileShare.ReadWrite, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, IntPtr.Zero);
+                    handle = CreateFile(diDetail.devicePath, FileAccess.ReadWrite, FileShare.ReadWrite, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, null);
 
                     // Create Attributes Structure
                     HIDD_ATTRIBUTES attrib = new HIDD_ATTRIBUTES();
@@ -379,11 +379,10 @@ namespace Shared.Windows
                     nativeOverlap.EventHandle = resetEvent.SafeWaitHandle.DangerousGetHandle();
 
                     // success is most likely to be false which can mean it is being completed asynchronously, in this case we need to wait
-                    var dh = _fileHandle.DangerousGetHandle();
                     bool success = false;
                     try
                     {
-                        success = WriteFile(dh, buffer, (uint)buffer.Length, out written, ref nativeOverlap);
+                        success = WriteFile(_fileHandle, buffer, (uint)buffer.Length, out written, ref nativeOverlap);
                     }
                     catch
                     {
