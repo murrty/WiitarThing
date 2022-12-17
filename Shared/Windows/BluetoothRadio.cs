@@ -56,7 +56,7 @@ namespace Shared.Windows
             return result == 0;
         }
 
-        public List<BLUETOOTH_DEVICE_INFO> FindAllDevices(
+        public List<BluetoothDevice> FindAllDevices(
             bool includeUnknown = true, bool includeConnected = true, bool includeRemembered = true,
             bool includeAuthenticated = true, bool issueInquiry = true, byte timeoutMultiplier = 2)
         {
@@ -74,14 +74,14 @@ namespace Shared.Windows
             searchParams.cTimeoutMultiplier = timeoutMultiplier;
 
             // Search for devices
-            var devices = new List<BLUETOOTH_DEVICE_INFO>();
+            var devices = new List<BluetoothDevice>();
             var deviceInfo = BLUETOOTH_DEVICE_INFO.Create();
             IntPtr searchHandle = NativeImports.BluetoothFindFirstDevice(in searchParams, ref deviceInfo);
 
             bool more = searchHandle != IntPtr.Zero;
             while (more)
             {
-                devices.Add(deviceInfo);
+                devices.Add(new BluetoothDevice(this, deviceInfo));
                 more = NativeImports.BluetoothFindNextDevice(searchHandle, ref deviceInfo);
             }
 

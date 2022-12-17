@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -105,8 +105,7 @@ namespace WiitarThing.Windows
                     
                     foreach (var device in devices)
                     {
-                        var deviceInfo = device;
-                        if (deviceInfo.szName.StartsWith("Nintendo RVL-CNT-01"))
+                        if (device.Name.StartsWith("Nintendo RVL-CNT-01"))
                         {
                             //NativeImports.BluetoothRemoveDevice(ref deviceInfo.Address);
 
@@ -116,10 +115,10 @@ namespace WiitarThing.Windows
                             bool success = true;
                             uint errForget = 0;
 
-                            if (/*!ConnectedDeviceAddresses.Contains(deviceInfo.Address) && */(deviceInfo.fRemembered || deviceInfo.fConnected))
+                            if (/*!ConnectedDeviceAddresses.Contains(deviceInfo.Address) && */(device.Remembered || device.Connected))
                             {
                                 WiitarDebug.Log("BEF - BluetoothRemoveDevice");
-                                errForget = NativeImports.BluetoothRemoveDevice(in deviceInfo.Address);
+                                errForget = device.Remove();
                                 WiitarDebug.Log("AFT - BluetoothRemoveDevice");
                                 success = errForget == 0;
                             }
@@ -173,46 +172,47 @@ namespace WiitarThing.Windows
                         
                         foreach (var device in devices)
                         {
-                            var deviceInfo = device;
                             // Note: Switch Pro Controller is simply called "Pro Controller"
-                            if (!deviceInfo.szName.StartsWith("Nintendo RVL-CNT-01"))
+                            string deviceName = device.Name;
+                            if (!deviceName.StartsWith("Nintendo RVL-CNT-01"))
                             {
 #if DEBUG
-                                Prompt("(Found \"" + deviceInfo.szName + "\", but it is not a Wiimote)", isBold: false, isItalic: false, isSmall: true, isDebug: true);
+                                Prompt("(Found \"" + deviceName + "\", but it is not a Wiimote)", isBold: false, isItalic: false, isSmall: true, isDebug: true);
 #endif
                                 continue;
                             }
 
+                            bool remembered = device.Remembered;
 //#if DEBUG
-//                          var str_fRemembered = deviceInfo.fRemembered ? ", but it is already synced!" : "";
+//                          var str_fRemembered = remembered ? ", but it is already synced!" : "";
 //#else
-//                          if (deviceInfo.fRemembered)
+//                          if (remembered)
 //                          {
 //                              continue;
 //                          }
 //                          var str_fRemembered = "";
 //#endif
 
-                            var str_fRemembered = deviceInfo.fRemembered ? ", but it is already synced!" : ". Attempting to pair now...";
+                            var str_fRemembered = remembered ? ", but it is already synced!" : ". Attempting to pair now...";
 
-                            if (deviceInfo.szName.Equals("Nintendo RVL-CNT-01"))
+                            if (deviceName.Equals("Nintendo RVL-CNT-01"))
                             {
-                                Prompt("Found Wiimote (\"" + deviceInfo.szName + "\")" + str_fRemembered, isBold: !deviceInfo.fRemembered, isItalic: deviceInfo.fRemembered, isSmall: deviceInfo.fRemembered);
+                                Prompt("Found Wiimote (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
                             }
-                            else if (deviceInfo.szName.Equals("Nintendo RVL-CNT-01-TR"))
+                            else if (deviceName.Equals("Nintendo RVL-CNT-01-TR"))
                             {
-                                Prompt("Found 2nd-Gen Wiimote+ (\"" + deviceInfo.szName + "\")" + str_fRemembered, isBold: !deviceInfo.fRemembered, isItalic: deviceInfo.fRemembered, isSmall: deviceInfo.fRemembered);
+                                Prompt("Found 2nd-Gen Wiimote+ (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
                             }
-                            else if (deviceInfo.szName.Equals("Nintendo RVL-CNT-01-UC"))
+                            else if (deviceName.Equals("Nintendo RVL-CNT-01-UC"))
                             {
-                                Prompt("Found Wii U Pro Controller (\"" + deviceInfo.szName + "\")" + str_fRemembered, isBold: !deviceInfo.fRemembered, isItalic: deviceInfo.fRemembered, isSmall: deviceInfo.fRemembered);
+                                Prompt("Found Wii U Pro Controller (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
                             }
                             else
                             {
-                                Prompt("Found Unknown Wii Device Type (\"" + deviceInfo.szName + "\")" + str_fRemembered, isBold: !deviceInfo.fRemembered, isItalic: deviceInfo.fRemembered, isSmall: deviceInfo.fRemembered);
+                                Prompt("Found Unknown Wii Device Type (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
                             }
 
-                            if (deviceInfo.fRemembered)
+                            if (remembered)
                             {
                                 continue;
                             }
@@ -267,7 +267,7 @@ namespace WiitarThing.Windows
                             // Authenticate
                             if (success)
                             {
-                                radio.AuthenticateDevice(in deviceInfo, password.ToString());
+                                errAuth = device.Authenticate(password.ToString());
                                 //errAuth = NativeImports.BluetoothAuthenticateDeviceEx(IntPtr.Zero, radio, in deviceInfo, null, NativeImports.AUTHENTICATION_REQUIREMENTS.MITMProtectionNotRequired);
                                 success = errAuth == 0;
                             }
@@ -279,7 +279,7 @@ namespace WiitarThing.Windows
                                 Prompt("SYNC method didn't work. Trying 1+2 method...");
 #endif
 
-                                var wiimoteBytes = BitConverter.GetBytes(deviceInfo.Address);
+                                var wiimoteBytes = BitConverter.GetBytes(device.Address);
 
                                 password.Clear();
 
@@ -289,7 +289,7 @@ namespace WiitarThing.Windows
                                         password.Append((char)wiimoteBytes[i]);
                                 }
 
-                                errAuth = radio.AuthenticateDevice(in deviceInfo, password.ToString());
+                                errAuth = device.Authenticate(password.ToString());
                                 //errAuth = NativeImports.BluetoothAuthenticateDeviceEx(IntPtr.Zero, radio, in deviceInfo, null, NativeImports.AUTHENTICATION_REQUIREMENTS.MITMProtectionNotRequired);
                                 success = errAuth == 0;
                             }
@@ -298,7 +298,7 @@ namespace WiitarThing.Windows
                             if (success)
                             {
                                 WiitarDebug.Log("BEF - BluetoothEnumerateInstalledServices");
-                                errService = radio.EnumerateInstalledServices(in deviceInfo, out var guids);
+                                errService = device.EnumerateInstalledServices(out var guids);
                                 WiitarDebug.Log("AFT - BluetoothEnumerateInstalledServices");
                                 success = errService == 0;
                             }
@@ -307,7 +307,7 @@ namespace WiitarThing.Windows
                             if (success)
                             {
                                 WiitarDebug.Log("BEF - BluetoothSetServiceState");
-                                errActivate = radio.SetServiceState(in deviceInfo, NativeImports.HidServiceClassGuid, true);
+                                errActivate = device.SetServiceState(NativeImports.HidServiceClassGuid, true);
                                 WiitarDebug.Log("AFT - BluetoothSetServiceState");
                                 success = errActivate == 0;
                             }
@@ -324,7 +324,7 @@ namespace WiitarThing.Windows
 
 #if DEBUG
                                 sb.AppendLine("radio mac address: " + GetMacAddressStr(radioInfo.address));
-                                sb.AppendLine("wiimote mac address: " + GetMacAddressStr(deviceInfo.Address));
+                                sb.AppendLine("wiimote mac address: " + GetMacAddressStr(device.Address));
                                 sb.AppendLine("wiimote password: \"" + password.ToString() + "\"");
 #endif
 
