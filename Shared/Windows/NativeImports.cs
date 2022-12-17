@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -193,30 +193,30 @@ namespace Shared.Windows
         #region bthprops.cpl
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothGetRadioInfo(
-            IntPtr hRadio, 
+            SafeObjectHandle hRadio, 
             ref BLUETOOTH_RADIO_INFO pRadioInfo);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
-        public static extern IntPtr BluetoothFindFirstRadio(
+        public static extern SafeBluetoothRadioHandle BluetoothFindFirstRadio(
             in BLUETOOTH_FIND_RADIO_PARAMS pbtfrp, 
-            out IntPtr phRadio);
+            out SafeObjectHandle phRadio);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern bool BluetoothFindNextRadio(
-            IntPtr hFind, 
-            out IntPtr phRadio);
+            SafeBluetoothRadioHandle hFind, 
+            out SafeObjectHandle phRadio);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern bool BluetoothFindRadioClose(IntPtr hFind);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
-        public static extern IntPtr BluetoothFindFirstDevice(
+        public static extern SafeBluetoothDeviceHandle BluetoothFindFirstDevice(
             in BLUETOOTH_DEVICE_SEARCH_PARAMS searchParams, 
             ref BLUETOOTH_DEVICE_INFO deviceInfo);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern bool BluetoothFindNextDevice(
-            IntPtr hFind, 
+            SafeBluetoothDeviceHandle hFind, 
             ref BLUETOOTH_DEVICE_INFO pbtdi);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
@@ -228,7 +228,7 @@ namespace Shared.Windows
         [DllImport("bthprops.cpl", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern uint BluetoothAuthenticateDevice(
             IntPtr hwndParent, 
-            IntPtr hRadio, 
+            SafeObjectHandle hRadio, 
             in BLUETOOTH_DEVICE_INFO pbtdi, 
             [MarshalAs(UnmanagedType.LPWStr)] string pszPasskey, 
             uint ulPasskeyLength);
@@ -236,21 +236,21 @@ namespace Shared.Windows
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothAuthenticateDeviceEx(
             IntPtr hwndParentIn, 
-            IntPtr hRadioIn, 
+            SafeObjectHandle hRadioIn, 
             ref BLUETOOTH_DEVICE_INFO pbtdiInout, 
             in BLUETOOTH_OOB_DATA_INFO pbtOobData,
             AUTHENTICATION_REQUIREMENTS authenticationRequirement);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothEnumerateInstalledServices(
-            IntPtr hRadio, 
+            SafeObjectHandle hRadio, 
             in BLUETOOTH_DEVICE_INFO pbtdi, 
             ref uint pcServiceInout, 
             Guid[] pGuidServices);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothSetServiceState(
-            IntPtr hRadio, 
+            SafeObjectHandle hRadio, 
             in BLUETOOTH_DEVICE_INFO pbtdi, 
             in Guid pGuidService, 
             [MarshalAs(UnmanagedType.U4)] BluetoothServiceFlag dwServiceFlags);
@@ -258,7 +258,7 @@ namespace Shared.Windows
         [DllImport("bthprops.cpl", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool BluetoothEnableDiscovery(
-            IntPtr hRadio,
+            SafeObjectHandle hRadio,
             [MarshalAs(UnmanagedType.Bool)] bool fEnabled);
 
         public enum AUTHENTICATION_REQUIREMENTS : uint
@@ -525,6 +525,70 @@ namespace Shared.Windows
         {
             Disable = 0x00,
             Enable = 0x01
+        }
+
+        #endregion
+
+        #region Safe Handles
+
+        /// <summary>
+        /// A generic safe handle for any handle that is closed via CloseHandle.
+        /// </summary>
+        public class SafeObjectHandle : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            public SafeObjectHandle() : base(true)
+            {
+            }
+
+            public SafeObjectHandle(IntPtr existingHandle, bool ownsHandle) : base(ownsHandle)
+            {
+                SetHandle(existingHandle);
+            }
+
+            protected override bool ReleaseHandle()
+            {
+                return CloseHandle(handle);
+            }
+        }
+
+        /// <summary>
+        /// A safe handle for Bluetooth radio searches (handles returned by BluetoothFindFirstRadio).
+        /// </summary>
+        public class SafeBluetoothRadioHandle : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            public SafeBluetoothRadioHandle() : base(true)
+            {
+            }
+
+            public SafeBluetoothRadioHandle(IntPtr existingHandle, bool ownsHandle) : base(ownsHandle)
+            {
+                SetHandle(existingHandle);
+            }
+
+            protected override bool ReleaseHandle()
+            {
+                return BluetoothFindRadioClose(handle);
+            }
+        }
+
+        /// <summary>
+        /// A safe handle for Bluetooth device searches (handles returned by BluetoothFindFirstDevice).
+        /// </summary>
+        public class SafeBluetoothDeviceHandle : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            public SafeBluetoothDeviceHandle() : base(true)
+            {
+            }
+
+            public SafeBluetoothDeviceHandle(IntPtr existingHandle, bool ownsHandle) : base(ownsHandle)
+            {
+                SetHandle(existingHandle);
+            }
+
+            protected override bool ReleaseHandle()
+            {
+                return BluetoothFindDeviceClose(handle);
+            }
         }
 
         #endregion

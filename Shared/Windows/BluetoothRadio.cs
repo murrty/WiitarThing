@@ -12,19 +12,19 @@ namespace Shared.Windows
 
     public class BluetoothRadio : IDisposable
     {
-        private IntPtr handle;
+        private SafeObjectHandle handle;
 
         public static List<BluetoothRadio> FindAllRadios()
         {
             var btRadios = new List<BluetoothRadio>();
 
             var radioParams = BLUETOOTH_FIND_RADIO_PARAMS.Create();
-            var searchHandle = NativeImports.BluetoothFindFirstRadio(in radioParams, out IntPtr radioHandle);
+            var searchHandle = NativeImports.BluetoothFindFirstRadio(in radioParams, out var radioHandle);
 
-            bool moreDevices = searchHandle != IntPtr.Zero && radioHandle != IntPtr.Zero;
+            bool moreDevices = searchHandle != null && !searchHandle.IsInvalid && radioHandle != null && !radioHandle.IsInvalid;
             while (moreDevices)
             {
-                if (radioHandle != IntPtr.Zero)
+                if (radioHandle != null && !radioHandle.IsInvalid)
                 {
                     btRadios.Add(new BluetoothRadio(radioHandle));
                 }
@@ -32,13 +32,13 @@ namespace Shared.Windows
                 moreDevices = NativeImports.BluetoothFindNextRadio(searchHandle, out radioHandle);
             }
 
-            if (searchHandle != IntPtr.Zero)
-                NativeImports.BluetoothFindRadioClose(searchHandle);
+            if (searchHandle != null && !searchHandle.IsInvalid)
+                searchHandle.Dispose();
 
             return btRadios;
         }
 
-        private BluetoothRadio(IntPtr radioHandle)
+        private BluetoothRadio(SafeObjectHandle radioHandle)
         {
             handle = radioHandle;
         }
@@ -65,7 +65,7 @@ namespace Shared.Windows
 
             // Set search parameters
             var searchParams = BLUETOOTH_DEVICE_SEARCH_PARAMS.Create();
-            searchParams.hRadio = handle;
+            searchParams.hRadio = handle.DangerousGetHandle();
             searchParams.fIssueInquiry = issueInquiry;
             searchParams.fReturnUnknown = includeUnknown;
             searchParams.fReturnConnected = includeConnected;
@@ -76,17 +76,17 @@ namespace Shared.Windows
             // Search for devices
             var devices = new List<BluetoothDevice>();
             var deviceInfo = BLUETOOTH_DEVICE_INFO.Create();
-            IntPtr searchHandle = NativeImports.BluetoothFindFirstDevice(in searchParams, ref deviceInfo);
+            var searchHandle = NativeImports.BluetoothFindFirstDevice(in searchParams, ref deviceInfo);
 
-            bool more = searchHandle != IntPtr.Zero;
+            bool more = searchHandle != null && !searchHandle.IsInvalid;
             while (more)
             {
                 devices.Add(new BluetoothDevice(this, deviceInfo));
                 more = NativeImports.BluetoothFindNextDevice(searchHandle, ref deviceInfo);
             }
 
-            if (searchHandle != IntPtr.Zero)
-                NativeImports.BluetoothFindDeviceClose(searchHandle);
+            if (searchHandle != null && !searchHandle.IsInvalid)
+                searchHandle.Dispose();
 
             return devices;
         }
@@ -123,10 +123,13 @@ namespace Shared.Windows
 
         protected void Dispose(bool disposing)
         {
-            if (handle != IntPtr.Zero)
+            if (disposing)
             {
-                NativeImports.CloseHandle(handle);
-                handle = IntPtr.Zero;
+                if (handle != null && !handle.IsInvalid)
+                {
+                    handle.Dispose();
+                    handle = null;
+                }
             }
         }
     }
