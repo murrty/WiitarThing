@@ -121,13 +121,12 @@ namespace WiitarThing.Windows
             var btRadios = BluetoothRadio.FindAllRadios();
             if (btRadios.Count > 0)
             {
-                foreach (var radio in btRadios)
+                foreach (var radio in btRadios) using (radio)
                 {
                     // Get devices on this radio
                     var devices = radio.FindAllDevices();
                     if (devices == null || devices.Count < 1)
                     {
-                        radio.Dispose();
                         continue;
                     }
                     
@@ -155,8 +154,6 @@ namespace WiitarThing.Windows
                         }
 
                     }
-
-                    radio.Dispose();
                 }
             }
 
@@ -175,13 +172,12 @@ namespace WiitarThing.Windows
                 // Search until cancelled or at least one device is paired
                 while (!Cancelled && Count == 0)
                 {
-                    foreach (var radio in btRadios)
+                    foreach (var radio in btRadios) using (radio)
                     {
                         // Get radio info
                         if (!radio.TryGetInfo(out var radioInfo))
                         {
                             Prompt("Found Bluetooth adapter but was unable to interact with it.");
-                            radio.Dispose();
                             continue;
                         }
 
@@ -189,7 +185,6 @@ namespace WiitarThing.Windows
                         var devices = radio.FindAllDevices();
                         if (devices == null || devices.Count < 1)
                         {
-                            radio.Dispose();
                             continue;
                         }
                         
@@ -313,8 +308,6 @@ namespace WiitarThing.Windows
                                 Prompt(sb.ToString(), isBold: true, isItalic: true);
                             }
                         }
-
-                        radio.Dispose();
                     }
                 }
             }
