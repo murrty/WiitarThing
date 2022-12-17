@@ -231,7 +231,7 @@ namespace Shared.Windows
             IntPtr hRadio, 
             in BLUETOOTH_DEVICE_INFO pbtdi, 
             [MarshalAs(UnmanagedType.LPWStr)] string pszPasskey, 
-            ulong ulPasskeyLength);
+            uint ulPasskeyLength);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothAuthenticateDeviceEx(
