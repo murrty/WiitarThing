@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -154,7 +154,7 @@ namespace WiitarThing.Windows
             if (btRadios.Count < 1)
             {
                 // No compatible Bluetooth
-                Prompt("No compatible Bluetooth Radios found! (IF YOU SEE THIS MESSAGE, MENTION IT WHEN ASKING FOR HELP!)",
+                Prompt("No compatible Bluetooth Radios found, or Bluetooth is disabled! (IF YOU SEE THIS MESSAGE, MENTION IT WHEN ASKING FOR HELP!)",
                 isBold: true, isItalic: true);
                 _notCompatable = true;
                 return;
