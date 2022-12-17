@@ -32,8 +32,6 @@ namespace Shared
             {
                 return identifier == InstanceGUID.ToString();
             }
-
-            return false;
         }
 
         public bool SameDevice(Guid guid)

@@ -8,6 +8,56 @@ namespace NintrollerLib
 {
     public struct Wiimote : INintrollerState
     {
+        public static class InputNames
+        {
+            public const string A           = "wA";
+            public const string B           = "wB";
+            public const string ONE         = "wONE";
+            public const string TWO         = "wTWO";
+
+            // dpad when wiimote is vertical
+            public const string UP          = "wUP";
+            public const string DOWN        = "wDOWN";
+            public const string LEFT        = "wLEFT";
+            public const string RIGHT       = "wRIGHT";
+
+            public const string MINUS       = "wMINUS";
+            public const string PLUS        = "wPLUS";
+            public const string HOME        = "wHOME";
+
+            // Accelerometer
+            public const string ACC_X       = "wAccX";
+            public const string ACC_Y       = "wAccY";
+            public const string ACC_Z       = "wAccZ";
+
+            // for quick movement
+            public const string ACC_UP       = "wACCUP";
+            public const string ACC_DOWN     = "wACCDOWN";
+            public const string ACC_LEFT     = "wACCLEFT";
+            public const string ACC_RIGHT    = "wACCRIGHT";
+            public const string ACC_FORWARD  = "wACCFORWARD";
+            public const string ACC_BACKWARD = "wACCBACKWARD";
+            public const string ACC_SHAKE_X  = "wACCSHAKEX";
+            public const string ACC_SHAKE_Y  = "wACCSHAKEY";
+            public const string ACC_SHAKE_Z  = "wACCSHAKEZ";
+
+            // tilting the controler with the wrist
+            public const string TILT_RIGHT  = "wTILTRIGHT";
+            public const string TILT_LEFT   = "wTILTLEFT";
+            public const string TILT_UP     = "wTILTUP";
+            public const string TILT_DOWN   = "wTILTDOWN";
+            public const string FACE_UP     = "wTILTFACEUP";
+            public const string FACE_DOWN   = "wTILTFACEDOWN";
+
+            // Pointer from IR camera
+            public const string IR_X        = "wIRX";
+            public const string IR_Y        = "wIRY";
+            public const string IR_UP       = "wIRUP";
+            public const string IR_DOWN     = "wIRDOWN";
+            public const string IR_LEFT     = "wIRLEFT";
+            public const string IR_RIGHT    = "wIRRIGHT";
+        }
+
 #if DEBUG
         private bool _debugViewActive;
         public bool DebugViewActive
@@ -266,41 +316,41 @@ namespace NintrollerLib
         public IEnumerator<KeyValuePair<string, float>> GetEnumerator()
         {
             // Buttons
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.PLUS, buttons.Plus ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.MINUS, buttons.Minus ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.HOME, buttons.Home ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.PLUS, buttons.Plus ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.MINUS, buttons.Minus ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.HOME, buttons.Home ? 1.0f : 0.0f);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.A, buttons.A ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.B, buttons.B ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.ONE, buttons.One ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.TWO, buttons.Two ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.A, buttons.A ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.B, buttons.B ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.ONE, buttons.One ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.TWO, buttons.Two ? 1.0f : 0.0f);
 
             // D-Pad
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.UP, buttons.Up ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.DOWN, buttons.Down ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.LEFT, buttons.Left ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.RIGHT, buttons.Right ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.UP, buttons.Up ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.DOWN, buttons.Down ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.LEFT, buttons.Left ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.RIGHT, buttons.Right ? 1.0f : 0.0f);
 
             // IR Sensor
             irSensor.Normalize();
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.IR_X, irSensor.X);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.IR_Y, irSensor.Y);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.IR_UP, irSensor.Y > 0 ? irSensor.Y : 0);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.IR_DOWN, irSensor.Y > 0 ? -irSensor.Y : 0);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.IR_LEFT, irSensor.X < 0 ? -irSensor.X : 0);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.IR_RIGHT, irSensor.X > 0 ? irSensor.X : 0);
+            yield return new KeyValuePair<string, float>(InputNames.IR_X, irSensor.X);
+            yield return new KeyValuePair<string, float>(InputNames.IR_Y, irSensor.Y);
+            yield return new KeyValuePair<string, float>(InputNames.IR_UP, irSensor.Y > 0 ? irSensor.Y : 0);
+            yield return new KeyValuePair<string, float>(InputNames.IR_DOWN, irSensor.Y > 0 ? -irSensor.Y : 0);
+            yield return new KeyValuePair<string, float>(InputNames.IR_LEFT, irSensor.X < 0 ? -irSensor.X : 0);
+            yield return new KeyValuePair<string, float>(InputNames.IR_RIGHT, irSensor.X > 0 ? irSensor.X : 0);
 
             // Accelerometer
             accelerometer.Normalize();
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.ACC_X, accelerometer.X);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.ACC_Y, accelerometer.Y);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.ACC_Z, accelerometer.Z);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.TILT_LEFT, accelerometer.X < 0 ? -accelerometer.X : 0);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.TILT_RIGHT, accelerometer.X > 0 ? accelerometer.X : 0);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.TILT_UP, accelerometer.Y > 0 ? accelerometer.Y : 0);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.TILT_DOWN, accelerometer.Y < 0 ? -accelerometer.Y : 0);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.FACE_UP, accelerometer.Z > 0 ? accelerometer.Z : 0);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.WIIMOTE.FACE_DOWN, accelerometer.Z < 0 ? -accelerometer.Z : 0);
+            yield return new KeyValuePair<string, float>(InputNames.ACC_X, accelerometer.X);
+            yield return new KeyValuePair<string, float>(InputNames.ACC_Y, accelerometer.Y);
+            yield return new KeyValuePair<string, float>(InputNames.ACC_Z, accelerometer.Z);
+            yield return new KeyValuePair<string, float>(InputNames.TILT_LEFT, accelerometer.X < 0 ? -accelerometer.X : 0);
+            yield return new KeyValuePair<string, float>(InputNames.TILT_RIGHT, accelerometer.X > 0 ? accelerometer.X : 0);
+            yield return new KeyValuePair<string, float>(InputNames.TILT_UP, accelerometer.Y > 0 ? accelerometer.Y : 0);
+            yield return new KeyValuePair<string, float>(InputNames.TILT_DOWN, accelerometer.Y < 0 ? -accelerometer.Y : 0);
+            yield return new KeyValuePair<string, float>(InputNames.FACE_UP, accelerometer.Z > 0 ? accelerometer.Z : 0);
+            yield return new KeyValuePair<string, float>(InputNames.FACE_DOWN, accelerometer.Z < 0 ? -accelerometer.Z : 0);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

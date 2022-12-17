@@ -10,6 +10,30 @@ namespace NintrollerLib
 {
     public struct Guitar : INintrollerState
     {
+        public static class InputNames
+        {
+            public const string G = "gtrG";
+            public const string R = "gtrR";
+            public const string Y = "gtrY";
+            public const string B = "gtrB";
+            public const string O = "gtrO";
+
+            public const string UP = "gtrUP";
+            public const string DOWN = "gtrDOWN";
+            public const string LEFT = "gtrLEFT";
+            public const string RIGHT = "gtrRIGHT";
+
+            public const string WHAMMYLOW = "gtrWHAMMYLOW";
+            public const string WHAMMYHIGH = "gtrWHAMMYHIGH";
+
+            public const string TILTLOW = "gtrTILTLOW";
+            public const string TILTHIGH = "gtrTILTHIGH";
+
+            public const string SELECT = "gtrSELECT";
+            public const string START = "gtrSTART";
+            public const string HOME = "gtrHOME";
+        }
+
         private bool SpecialButtonSelect => wiimote.buttons.A;
         private bool SpecialButtonTiltCalibMin => wiimote.buttons.One;
         private bool SpecialButtonTiltCalibMax => wiimote.buttons.Two;
@@ -680,25 +704,25 @@ namespace NintrollerLib
                 yield return input;
             }
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.G, G ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.R, R ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.Y, Y ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.B, B ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.O, O ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.G, G ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.R, R ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.Y, Y ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.B, B ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.O, O ? 1.0f : 0.0f);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.UP, (Up ? 1.0f : 0.0f));
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.DOWN, (Down ? 1.0f : 0.0f));
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.LEFT, (Left ? 1.0f : 0.0f));
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.RIGHT, (Right ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(InputNames.UP, (Up ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(InputNames.DOWN, (Down ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(InputNames.LEFT, (Left ? 1.0f : 0.0f));
+            yield return new KeyValuePair<string, float>(InputNames.RIGHT, (Right ? 1.0f : 0.0f));
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.START, Start ? 1.0f : 0.0f);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.SELECT, Select ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.START, Start ? 1.0f : 0.0f);
+            yield return new KeyValuePair<string, float>(InputNames.SELECT, Select ? 1.0f : 0.0f);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.WHAMMYHIGH, WhammyHigh);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.WHAMMYLOW, WhammyLow);
+            yield return new KeyValuePair<string, float>(InputNames.WHAMMYHIGH, WhammyHigh);
+            yield return new KeyValuePair<string, float>(InputNames.WHAMMYLOW, WhammyLow);
 
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.TILTHIGH, TiltHigh);
-            yield return new KeyValuePair<string, float>(INPUT_NAMES.GUITAR.TILTLOW, TiltLow);
+            yield return new KeyValuePair<string, float>(InputNames.TILTHIGH, TiltHigh);
+            yield return new KeyValuePair<string, float>(InputNames.TILTLOW, TiltLow);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

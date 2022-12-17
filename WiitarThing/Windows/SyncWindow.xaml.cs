@@ -88,7 +88,7 @@ namespace WiitarThing.Windows
             WiitarDebug.Log("FUNC BEGIN - RemoveAllWiimotes");
 
             var radioParams = new NativeImports.BLUETOOTH_FIND_RADIO_PARAMS();
-            Guid HidServiceClass = Guid.Parse(NativeImports.HID_GUID);
+            Guid HidServiceClass = NativeImports.HidServiceClassGuid;
             List<IntPtr> btRadios = new List<IntPtr>();
             IntPtr foundRadio;
             IntPtr foundResult;
@@ -192,7 +192,7 @@ namespace WiitarThing.Windows
             WiitarDebug.Log("BEF - BLUETOOTH_FIND_RADIO_PARAMS");
             var radioParams = new NativeImports.BLUETOOTH_FIND_RADIO_PARAMS();
             WiitarDebug.Log("AFT - BLUETOOTH_FIND_RADIO_PARAMS");
-            Guid HidServiceClass = Guid.Parse(NativeImports.HID_GUID);
+            Guid HidServiceClass = NativeImports.HidServiceClassGuid;
             List<IntPtr> btRadios = new List<IntPtr>();
             IntPtr foundRadio;
             IntPtr foundResult;
