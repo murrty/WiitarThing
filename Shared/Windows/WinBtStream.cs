@@ -1,4 +1,4 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+﻿/* * * * * * * * * * * * * * * * * * * * * * * * * * *
  * === Notes ===
  * 
  * - When using the Toshiba Stack,
@@ -224,7 +224,7 @@ namespace Shared.Windows
             }
             else
             {
-                var error = GetLastError();
+                var error = Marshal.GetLastWin32Error();
                 SetupDiDestroyDeviceInfoList(parentDeviceInfo);
             }
 
@@ -388,7 +388,7 @@ namespace Shared.Windows
                     {
                         System.Diagnostics.Debug.WriteLine("caught!");
                     }
-                    uint error = GetLastError();
+                    int error = Marshal.GetLastWin32Error();
 
                     // Wait for the async operation to complete
                     if (!success && error == 997)

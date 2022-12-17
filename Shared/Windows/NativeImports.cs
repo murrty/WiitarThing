@@ -54,12 +54,6 @@ namespace Shared.Windows
             out uint lpNumberOfBytesRead,
             ref NativeOverlapped lpOverlapped);
 
-        /// <summary>
-        /// Used to Get the error code after WriteFile
-        /// </summary>
-        [DllImport("kernel32.dll")]
-        public extern static uint GetLastError();
-
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern SafeFileHandle CreateFile(
             string fileName,
