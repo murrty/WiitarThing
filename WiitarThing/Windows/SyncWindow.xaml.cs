@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -64,15 +64,6 @@ namespace WiitarThing.Windows
             }
 
             return msg;
-        }
-
-        static string GetMacAddressStr(ulong address)
-        {
-            var bytes = BitConverter.GetBytes(address);
-            StringBuilder str = new StringBuilder();
-            for (int i = 0; i < 6; i++)
-                str.Append(bytes[i].ToString("X2") + " ");
-            return str.ToString();
         }
 
         static string GetPasswordFromMacAddress(ulong address)
@@ -279,9 +270,23 @@ namespace WiitarThing.Windows
                                 var sb = new StringBuilder();
 
 #if DEBUG
-                                sb.AppendLine("radio mac address: " + GetMacAddressStr(radioInfo.address));
-                                sb.AppendLine("wiimote mac address: " + GetMacAddressStr(device.Address));
-                                sb.AppendLine("wiimote password: \"" + password + "\"");
+                                sb.AppendLine($"radio mac address: {radioInfo.address:X12}");
+                                sb.AppendLine($"wiimote mac address: {device.Address:X12}");
+                                sb.Append($"wiimote password: \"{password}\" (");
+                                foreach (char ch in password)
+                                {
+                                    if (ch > byte.MaxValue)
+                                    {
+                                        sb.Append($"{ch & 0xFF:X2}-{(ch & 0xFF00) >> 8:X2}-");
+                                    }
+                                    else
+                                    {
+                                        sb.Append($"{ch:X2}-");
+                                    }
+                                }
+                                // Remove trailing dash
+                                sb.Remove(sb.Length - 1, 1);
+                                sb.AppendLine(")");
 #endif
 
 
