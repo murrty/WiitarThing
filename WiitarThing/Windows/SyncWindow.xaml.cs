@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -107,15 +107,10 @@ namespace WiitarThing.Windows
                     {
                         if (device.Name.StartsWith("Nintendo RVL-CNT-01"))
                         {
-                            //NativeImports.BluetoothRemoveDevice(ref deviceInfo.Address);
-
-                            //StringBuilder password = new StringBuilder();
-                            ////uint pcService = 16;
-                            ////Guid[] guids = new Guid[16];
                             bool success = true;
                             uint errForget = 0;
 
-                            if (/*!ConnectedDeviceAddresses.Contains(deviceInfo.Address) && */(device.Remembered || device.Connected))
+                            if (device.Remembered || device.Connected)
                             {
                                 WiitarDebug.Log("BEF - BluetoothRemoveDevice");
                                 errForget = device.Remove();
@@ -183,16 +178,6 @@ namespace WiitarThing.Windows
                             }
 
                             bool remembered = device.Remembered;
-//#if DEBUG
-//                          var str_fRemembered = remembered ? ", but it is already synced!" : "";
-//#else
-//                          if (remembered)
-//                          {
-//                              continue;
-//                          }
-//                          var str_fRemembered = "";
-//#endif
-
                             var str_fRemembered = remembered ? ", but it is already synced!" : ". Attempting to pair now...";
 
                             if (deviceName.Equals("Nintendo RVL-CNT-01"))
@@ -245,30 +230,14 @@ namespace WiitarThing.Windows
                                     password.Append((char)bytes[i]);
                             }
 
-                            uint errForget = 0;
                             uint errAuth = 0;
                             uint errService = 0;
                             uint errActivate = 0;
-
-
-                            //if (/*!ConnectedDeviceAddresses.Contains(deviceInfo.Address) && */(deviceInfo.fRemembered || deviceInfo.fConnected))
-                            //{
-                            //    // Remove current pairing
-                            //    Prompt("Device already in Bluetooth devices list. Removing from list before trying to sync...");
-                            //    errForget = NativeImports.BluetoothRemoveDevice(ref deviceInfo.Address);
-                            //    success = errForget == 0;
-
-                            //    if (success)
-                            //    {
-                            //        OnNewDeviceFound();
-                            //    }
-                            //}
 
                             // Authenticate
                             if (success)
                             {
                                 errAuth = device.Authenticate(password.ToString());
-                                //errAuth = NativeImports.BluetoothAuthenticateDeviceEx(IntPtr.Zero, radio, in deviceInfo, null, NativeImports.AUTHENTICATION_REQUIREMENTS.MITMProtectionNotRequired);
                                 success = errAuth == 0;
                             }
 
@@ -290,7 +259,6 @@ namespace WiitarThing.Windows
                                 }
 
                                 errAuth = device.Authenticate(password.ToString());
-                                //errAuth = NativeImports.BluetoothAuthenticateDeviceEx(IntPtr.Zero, radio, in deviceInfo, null, NativeImports.AUTHENTICATION_REQUIREMENTS.MITMProtectionNotRequired);
                                 success = errAuth == 0;
                             }
 
@@ -320,7 +288,6 @@ namespace WiitarThing.Windows
                             else
                             {
                                 var sb = new StringBuilder();
-                                //sb.AppendLine("Failed to pair.");
 
 #if DEBUG
                                 sb.AppendLine("radio mac address: " + GetMacAddressStr(radioInfo.address));
@@ -328,11 +295,6 @@ namespace WiitarThing.Windows
                                 sb.AppendLine("wiimote password: \"" + password.ToString() + "\"");
 #endif
 
-                                
-                                if (errForget != 0)
-                                {
-                                    sb.AppendLine(" >>> FAILED TO REMOVE DEVICE FROM BLUETOOTH DEVICES LIST. ERROR CODE 0x" + errForget.ToString("X"));
-                                }
 
                                 if (errAuth != 0)
                                 {
@@ -402,23 +364,8 @@ namespace WiitarThing.Windows
                 prompt.Blocks.Add(newParagraph);
 
                 promptBoxContainer.ScrollToEnd();
-
-                //if (prompt.LineCount > 0)
-                //    prompt.ScrollToLine(prompt.LineCount - 1);
-                //prompt.ScrollToEnd();
             }));
         }
-
-        //private void SetPrompt(string text)
-        //{
-        //    Dispatcher.BeginInvoke(new Action(() =>
-        //    {
-        //        prompt.Text = text;
-        //        if (prompt.LineCount > 0)
-        //            prompt.ScrollToLine(prompt.LineCount - 1);
-        //        //prompt.ScrollToEnd();
-        //    }));
-        //}
 
         private void cancelBtn_Click(object sender, RoutedEventArgs e)
         {
