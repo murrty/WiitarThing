@@ -79,23 +79,18 @@ namespace WiitarThing.Windows
         {
             var password = new StringBuilder();
             byte[] bytes = BitConverter.GetBytes(address);
-            // TODO: Does endianness matter?
             if (BitConverter.IsLittleEndian)
             {
                 for (int i = 0; i < 6; i++)
                 {
-                    // TODO: Is this check necessary?
-                    if (bytes[i] > 0)
-                        password.Append((char)bytes[i]);
+                    password.Append((char)bytes[i]);
                 }
             }
             else
             {
                 for (int i = 7; i >= 2; i--)
                 {
-                    // TODO: Is this check necessary?
-                    if (bytes[i] > 0)
-                        password.Append((char)bytes[i]);
+                    password.Append((char)bytes[i]);
                 }
             }
 
