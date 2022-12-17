@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -73,6 +73,33 @@ namespace WiitarThing.Windows
             for (int i = 0; i < 6; i++)
                 str.Append(bytes[i].ToString("X2") + " ");
             return str.ToString();
+        }
+
+        static string GetPasswordFromMacAddress(ulong address)
+        {
+            var password = new StringBuilder();
+            byte[] bytes = BitConverter.GetBytes(address);
+            // TODO: Does endianness matter?
+            if (BitConverter.IsLittleEndian)
+            {
+                for (int i = 0; i < 6; i++)
+                {
+                    // TODO: Is this check necessary?
+                    if (bytes[i] > 0)
+                        password.Append((char)bytes[i]);
+                }
+            }
+            else
+            {
+                for (int i = 7; i >= 2; i--)
+                {
+                    // TODO: Is this check necessary?
+                    if (bytes[i] > 0)
+                        password.Append((char)bytes[i]);
+                }
+            }
+
+            return password.ToString();
         }
 
         protected void OnNewDeviceFound()
@@ -203,42 +230,18 @@ namespace WiitarThing.Windows
                                 continue;
                             }
                             
-
-                            StringBuilder password = new StringBuilder();
                             bool success = true;
-
-                            var bytes = BitConverter.GetBytes(radioInfo.address);
-
-                            //// Create Password out of BT radio MAC address
-                            //if (BitConverter.IsLittleEndian)
-                            //{
-                            //    for (int i = 0; i < 6; i++)
-                            //    {
-                            //        password.Append((char)bytes[i]);
-                            //    }
-                            //}
-                            //else
-                            //{
-                            //    for (int i = 7; i >= 2; i--)
-                            //    {
-                            //        password.Append((char)bytes[i]);
-                            //    }
-                            //}
-
-                            for (int i = 0; i < 6; i++)
-                            {
-                                if (bytes[i] > 0)
-                                    password.Append((char)bytes[i]);
-                            }
 
                             uint errAuth = 0;
                             uint errService = 0;
                             uint errActivate = 0;
 
+                            string password = GetPasswordFromMacAddress(radioInfo.address);
+
                             // Authenticate
                             if (success)
                             {
-                                errAuth = device.Authenticate(password.ToString());
+                                errAuth = device.Authenticate(password);
                                 success = errAuth == 0;
                             }
 
@@ -249,17 +252,8 @@ namespace WiitarThing.Windows
                                 Prompt("SYNC method didn't work. Trying 1+2 method...");
 #endif
 
-                                var wiimoteBytes = BitConverter.GetBytes(device.Address);
-
-                                password.Clear();
-
-                                for (int i = 0; i < 6; i++)
-                                {
-                                    if (wiimoteBytes[i] > 0)
-                                        password.Append((char)wiimoteBytes[i]);
-                                }
-
-                                errAuth = device.Authenticate(password.ToString());
+                                password = GetPasswordFromMacAddress(device.Address);
+                                errAuth = device.Authenticate(password);
                                 success = errAuth == 0;
                             }
 
@@ -297,7 +291,7 @@ namespace WiitarThing.Windows
 #if DEBUG
                                 sb.AppendLine("radio mac address: " + GetMacAddressStr(radioInfo.address));
                                 sb.AppendLine("wiimote mac address: " + GetMacAddressStr(device.Address));
-                                sb.AppendLine("wiimote password: \"" + password.ToString() + "\"");
+                                sb.AppendLine("wiimote password: \"" + password + "\"");
 #endif
 
 
