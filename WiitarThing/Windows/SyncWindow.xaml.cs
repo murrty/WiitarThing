@@ -151,178 +151,176 @@ namespace WiitarThing.Windows
             WiitarDebug.Log("FUNC BEGIN - Sync");
 
             var btRadios = BluetoothRadio.FindAllRadios();
-            if (btRadios.Count > 0)
+            if (btRadios.Count < 1)
             {
-                Prompt("Searching for controllers...", isBold: true);
+                // No compatible Bluetooth
+                Prompt("No compatible Bluetooth Radios found! (IF YOU SEE THIS MESSAGE, MENTION IT WHEN ASKING FOR HELP!)",
+                isBold: true, isItalic: true);
+                _notCompatable = true;
+                return;
+            }
 
-                // Search until cancelled or at least one device is paired
-                while (!Cancelled && Count == 0)
+            Prompt("Searching for controllers...", isBold: true);
+
+            // Search until cancelled or at least one device is paired
+            while (!Cancelled && Count == 0)
+            {
+                foreach (var radio in btRadios)
                 {
-                    foreach (var radio in btRadios)
+                    // Get radio info
+                    if (!radio.TryGetInfo(out var radioInfo))
                     {
-                        // Get radio info
-                        if (!radio.TryGetInfo(out var radioInfo))
+                        Prompt("Found Bluetooth adapter but was unable to interact with it.");
+                        continue;
+                    }
+
+                    // Get devices on this radio
+                    var devices = radio.FindAllDevices();
+                    if (devices == null || devices.Count < 1)
+                    {
+                        continue;
+                    }
+                    
+                    foreach (var device in devices)
+                    {
+                        // Note: Switch Pro Controller is simply called "Pro Controller"
+                        string deviceName = device.Name;
+                        if (!deviceName.StartsWith("Nintendo RVL-CNT-01"))
                         {
-                            Prompt("Found Bluetooth adapter but was unable to interact with it.");
+#if DEBUG
+                            Prompt("(Found \"" + deviceName + "\", but it is not a Wiimote)", isBold: false, isItalic: false, isSmall: true, isDebug: true);
+#endif
                             continue;
                         }
 
-                        // Get devices on this radio
-                        var devices = radio.FindAllDevices();
-                        if (devices == null || devices.Count < 1)
+                        bool remembered = device.Remembered;
+                        var str_fRemembered = remembered ? ", but it is already synced!" : ". Attempting to pair now...";
+
+                        if (deviceName.Equals("Nintendo RVL-CNT-01"))
+                        {
+                            Prompt("Found Wiimote (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
+                        }
+                        else if (deviceName.Equals("Nintendo RVL-CNT-01-TR"))
+                        {
+                            Prompt("Found 2nd-Gen Wiimote+ (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
+                        }
+                        else if (deviceName.Equals("Nintendo RVL-CNT-01-UC"))
+                        {
+                            Prompt("Found Wii U Pro Controller (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
+                        }
+                        else
+                        {
+                            Prompt("Found Unknown Wii Device Type (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
+                        }
+
+                        if (remembered)
                         {
                             continue;
                         }
                         
-                        foreach (var device in devices)
+                        bool success = true;
+
+                        uint errAuth = 0;
+                        uint errService = 0;
+                        uint errActivate = 0;
+
+                        string password = GetPasswordFromMacAddress(radioInfo.address);
+
+                        // Authenticate
+                        if (success)
                         {
-                            // Note: Switch Pro Controller is simply called "Pro Controller"
-                            string deviceName = device.Name;
-                            if (!deviceName.StartsWith("Nintendo RVL-CNT-01"))
-                            {
+                            errAuth = device.Authenticate(password);
+                            success = errAuth == 0;
+                        }
+
+                        //If it fails using SYNC method, try 1+2 method.
+                        if (!success)
+                        {
 #if DEBUG
-                                Prompt("(Found \"" + deviceName + "\", but it is not a Wiimote)", isBold: false, isItalic: false, isSmall: true, isDebug: true);
-#endif
-                                continue;
-                            }
-
-                            bool remembered = device.Remembered;
-                            var str_fRemembered = remembered ? ", but it is already synced!" : ". Attempting to pair now...";
-
-                            if (deviceName.Equals("Nintendo RVL-CNT-01"))
-                            {
-                                Prompt("Found Wiimote (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
-                            }
-                            else if (deviceName.Equals("Nintendo RVL-CNT-01-TR"))
-                            {
-                                Prompt("Found 2nd-Gen Wiimote+ (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
-                            }
-                            else if (deviceName.Equals("Nintendo RVL-CNT-01-UC"))
-                            {
-                                Prompt("Found Wii U Pro Controller (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
-                            }
-                            else
-                            {
-                                Prompt("Found Unknown Wii Device Type (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
-                            }
-
-                            if (remembered)
-                            {
-                                continue;
-                            }
-                            
-                            bool success = true;
-
-                            uint errAuth = 0;
-                            uint errService = 0;
-                            uint errActivate = 0;
-
-                            string password = GetPasswordFromMacAddress(radioInfo.address);
-
-                            // Authenticate
-                            if (success)
-                            {
-                                errAuth = device.Authenticate(password);
-                                success = errAuth == 0;
-                            }
-
-                            //If it fails using SYNC method, try 1+2 method.
-                            if (!success)
-                            {
-#if DEBUG
-                                Prompt("SYNC method didn't work. Trying 1+2 method...");
+                            Prompt("SYNC method didn't work. Trying 1+2 method...");
 #endif
 
-                                password = GetPasswordFromMacAddress(device.Address);
-                                errAuth = device.Authenticate(password);
-                                success = errAuth == 0;
-                            }
+                            password = GetPasswordFromMacAddress(device.Address);
+                            errAuth = device.Authenticate(password);
+                            success = errAuth == 0;
+                        }
 
-                            // Get activated services
-                            Guid[] guids = null;
-                            if (success)
-                            {
-                                WiitarDebug.Log("BEF - BluetoothEnumerateInstalledServices");
-                                errService = device.EnumerateInstalledServices(out guids);
-                                WiitarDebug.Log("AFT - BluetoothEnumerateInstalledServices");
-                                success = errService == 0;
-                            }
+                        // Get activated services
+                        Guid[] guids = null;
+                        if (success)
+                        {
+                            WiitarDebug.Log("BEF - BluetoothEnumerateInstalledServices");
+                            errService = device.EnumerateInstalledServices(out guids);
+                            WiitarDebug.Log("AFT - BluetoothEnumerateInstalledServices");
+                            success = errService == 0;
+                        }
 
-                            // Activate HID service
-                            if (success)
+                        // Activate HID service
+                        if (success)
+                        {
+                            if (guids == null || !guids.Contains(NativeImports.HidServiceClassGuid))
                             {
-                                if (guids == null || !guids.Contains(NativeImports.HidServiceClassGuid))
-                                {
-                                    WiitarDebug.Log("BEF - BluetoothSetServiceState");
-                                    errActivate = device.SetServiceState(NativeImports.HidServiceClassGuid, true);
-                                    WiitarDebug.Log("AFT - BluetoothSetServiceState");
-                                    success = errActivate == 0;
-                                }
+                                WiitarDebug.Log("BEF - BluetoothSetServiceState");
+                                errActivate = device.SetServiceState(NativeImports.HidServiceClassGuid, true);
+                                WiitarDebug.Log("AFT - BluetoothSetServiceState");
+                                success = errActivate == 0;
                             }
+                        }
 
-                            if (success)
-                            {
-                                Prompt("Successfully Paired!", isBold: true);
-                                Count += 1;
-                            }
-                            else
-                            {
-                                var sb = new StringBuilder();
+                        if (success)
+                        {
+                            Prompt("Successfully Paired!", isBold: true);
+                            Count += 1;
+                        }
+                        else
+                        {
+                            var sb = new StringBuilder();
 
 #if DEBUG
-                                sb.AppendLine($"radio mac address: {radioInfo.address:X12}");
-                                sb.AppendLine($"wiimote mac address: {device.Address:X12}");
-                                sb.Append($"wiimote password: \"{password}\" (");
-                                foreach (char ch in password)
+                            sb.AppendLine($"radio mac address: {radioInfo.address:X12}");
+                            sb.AppendLine($"wiimote mac address: {device.Address:X12}");
+                            sb.Append($"wiimote password: \"{password}\" (");
+                            foreach (char ch in password)
+                            {
+                                if (ch > byte.MaxValue)
                                 {
-                                    if (ch > byte.MaxValue)
-                                    {
-                                        sb.Append($"{ch & 0xFF:X2}-{(ch & 0xFF00) >> 8:X2}-");
-                                    }
-                                    else
-                                    {
-                                        sb.Append($"{ch:X2}-");
-                                    }
+                                    sb.Append($"{ch & 0xFF:X2}-{(ch & 0xFF00) >> 8:X2}-");
                                 }
-                                // Remove trailing dash
-                                sb.Remove(sb.Length - 1, 1);
-                                sb.AppendLine(")");
+                                else
+                                {
+                                    sb.Append($"{ch:X2}-");
+                                }
+                            }
+                            // Remove trailing dash
+                            sb.Remove(sb.Length - 1, 1);
+                            sb.AppendLine(")");
 #endif
 
 
-                                if (errAuth != 0)
-                                {
-                                    sb.AppendLine(GetBluetoothAuthenticationError(errAuth));
-                                }
-
-                                if (errService != 0)
-                                {
-                                    sb.AppendLine(" >>> SERVICE ERROR: " + new Win32Exception((int)errService).Message);
-                                }
-
-                                if (errActivate != 0)
-                                {
-                                    sb.AppendLine(" >>> ACTIVATION ERROR: " + new Win32Exception((int)errActivate).Message);
-                                }
-
-                                Prompt(sb.ToString(), isBold: true, isItalic: true);
+                            if (errAuth != 0)
+                            {
+                                sb.AppendLine(GetBluetoothAuthenticationError(errAuth));
                             }
+
+                            if (errService != 0)
+                            {
+                                sb.AppendLine(" >>> SERVICE ERROR: " + new Win32Exception((int)errService).Message);
+                            }
+
+                            if (errActivate != 0)
+                            {
+                                sb.AppendLine(" >>> ACTIVATION ERROR: " + new Win32Exception((int)errActivate).Message);
+                            }
+
+                            Prompt(sb.ToString(), isBold: true, isItalic: true);
                         }
                     }
                 }
-
-                foreach (var radio in btRadios)
-                {
-                    radio.Dispose();
-                }
             }
-            else
+
+            foreach (var radio in btRadios)
             {
-                // No (compatable) Bluetooth
-                Prompt(
-                    "No compatble Bluetooth Radios found (IF YOU SEE THIS MESSAGE, MENTION IT WHEN ASKING FOR HELP!).", isBold: true, isItalic: true);
-                _notCompatable = true;
-                return;
+                radio.Dispose();
             }
 
             // Close this window
