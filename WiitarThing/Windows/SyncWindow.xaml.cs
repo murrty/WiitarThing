@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -6,6 +6,7 @@ using System.Windows;
 using Shared.Windows;
 using System.ComponentModel;
 using System.Windows.Interop;
+using System.Linq;
 
 namespace WiitarThing.Windows
 {
@@ -262,22 +263,26 @@ namespace WiitarThing.Windows
                                 success = errAuth == 0;
                             }
 
-                            // Install PC Service
+                            // Get activated services
+                            Guid[] guids = null;
                             if (success)
                             {
                                 WiitarDebug.Log("BEF - BluetoothEnumerateInstalledServices");
-                                errService = device.EnumerateInstalledServices(out var guids);
+                                errService = device.EnumerateInstalledServices(out guids);
                                 WiitarDebug.Log("AFT - BluetoothEnumerateInstalledServices");
                                 success = errService == 0;
                             }
 
-                            // Set to HID service
+                            // Activate HID service
                             if (success)
                             {
-                                WiitarDebug.Log("BEF - BluetoothSetServiceState");
-                                errActivate = device.SetServiceState(NativeImports.HidServiceClassGuid, true);
-                                WiitarDebug.Log("AFT - BluetoothSetServiceState");
-                                success = errActivate == 0;
+                                if (guids == null || !guids.Contains(NativeImports.HidServiceClassGuid))
+                                {
+                                    WiitarDebug.Log("BEF - BluetoothSetServiceState");
+                                    errActivate = device.SetServiceState(NativeImports.HidServiceClassGuid, true);
+                                    WiitarDebug.Log("AFT - BluetoothSetServiceState");
+                                    success = errActivate == 0;
+                                }
                             }
 
                             if (success)
