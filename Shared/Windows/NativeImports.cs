@@ -20,11 +20,11 @@ namespace Shared.Windows
         [DllImport("kernel32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public extern static bool WriteFile(
-            IntPtr hFile,                    // HANDLE
+            SafeFileHandle hFile,            // HANDLE
             byte[] lpBuffer,                 // LPCVOID
             uint nNumberOfBytesToWrite,      // DWORD
             out uint lpNumberOfBytesWritten, // LPDWORD
-            [In] ref NativeOverlapped lpOverlapped);
+            ref NativeOverlapped lpOverlapped);
 
 
         /// <summary>
@@ -33,31 +33,26 @@ namespace Shared.Windows
         public delegate void WriteFileCompletionDelegate(
             uint dwErrorCode, 
             uint dwNumberOfBytesTransfered, 
-            NativeOverlapped lpOverlapped);
+            ref NativeOverlapped lpOverlapped);
 
         /// <summary>
         /// Like WriteFile but provides an asynchronous callback
         /// </summary>
         [DllImport("kernel32.dll", SetLastError = true)]
         public extern static bool WriteFileEx(
-            IntPtr hFile, 
+            SafeFileHandle hFile, 
             byte[] lpBuffer,
             uint nNumberOfBytesToWrite, 
-            [In] ref NativeOverlapped lpOverlapped,
+            ref NativeOverlapped lpOverlapped,
             WriteFileCompletionDelegate lpCompletionRoutine);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public extern static bool ReadFile(
-            IntPtr hFile,
+            SafeFileHandle hFile,
             byte[] lpBuffer,
             uint nNumberofBytesToRead,
+            out uint lpNumberOfBytesRead,
             ref NativeOverlapped lpOverlapped);
-
-        /// <summary>
-        /// Used to Get the error code after WriteFile
-        /// </summary>
-        [DllImport("kernel32.dll")]
-        public extern static uint GetLastError();
 
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern SafeFileHandle CreateFile(
@@ -198,69 +193,72 @@ namespace Shared.Windows
         #region bthprops.cpl
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothGetRadioInfo(
-            IntPtr hRadio, 
+            SafeObjectHandle hRadio, 
             ref BLUETOOTH_RADIO_INFO pRadioInfo);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
-        public static extern IntPtr BluetoothFindFirstRadio(
-            ref BLUETOOTH_FIND_RADIO_PARAMS pbtfrp, 
-            out IntPtr phRadio);
+        public static extern SafeBluetoothRadioHandle BluetoothFindFirstRadio(
+            in BLUETOOTH_FIND_RADIO_PARAMS pbtfrp, 
+            out SafeObjectHandle phRadio);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern bool BluetoothFindNextRadio(
-            ref BLUETOOTH_FIND_RADIO_PARAMS hFind, 
-            out IntPtr phRadio);
+            SafeBluetoothRadioHandle hFind, 
+            out SafeObjectHandle phRadio);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
-        public static extern bool BluetoothFindRadioClose(ref IntPtr hFind);
+        public static extern bool BluetoothFindRadioClose(IntPtr hFind);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
-        public static extern IntPtr BluetoothFindFirstDevice(
-            ref BLUETOOTH_DEVICE_SEARCH_PARAMS searchParams, 
+        public static extern SafeBluetoothDeviceHandle BluetoothFindFirstDevice(
+            in BLUETOOTH_DEVICE_SEARCH_PARAMS searchParams, 
             ref BLUETOOTH_DEVICE_INFO deviceInfo);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern bool BluetoothFindNextDevice(
-            IntPtr hFind, 
+            SafeBluetoothDeviceHandle hFind, 
             ref BLUETOOTH_DEVICE_INFO pbtdi);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
-        public static extern uint BluetoothRemoveDevice(ref ulong pAddress);
+        public static extern uint BluetoothRemoveDevice(in ulong pAddress);
+
+        [DllImport("bthprops.cpl", SetLastError = true)]
+        public static extern bool BluetoothFindDeviceClose(IntPtr hFind);
 
         [DllImport("bthprops.cpl", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern uint BluetoothAuthenticateDevice(
             IntPtr hwndParent, 
-            IntPtr hRadio, 
-            ref BLUETOOTH_DEVICE_INFO pbtdi, 
-            [MarshalAs(UnmanagedType.LPWStr)]string pszPasskey, 
-            ulong ulPasskeyLength);
+            SafeObjectHandle hRadio, 
+            in BLUETOOTH_DEVICE_INFO pbtdi, 
+            [MarshalAs(UnmanagedType.LPWStr)] string pszPasskey, 
+            uint ulPasskeyLength);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothAuthenticateDeviceEx(
             IntPtr hwndParentIn, 
-            IntPtr hRadioIn, 
+            SafeObjectHandle hRadioIn, 
             ref BLUETOOTH_DEVICE_INFO pbtdiInout, 
-            /*BLUETOOTH_OOB_DATA*/ object pbtOobData,
+            in BLUETOOTH_OOB_DATA_INFO pbtOobData,
             AUTHENTICATION_REQUIREMENTS authenticationRequirement);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothEnumerateInstalledServices(
-            IntPtr hRadio, 
-            ref BLUETOOTH_DEVICE_INFO pbtdi, 
-            ref uint pcServices, 
+            SafeObjectHandle hRadio, 
+            in BLUETOOTH_DEVICE_INFO pbtdi, 
+            ref uint pcServiceInout, 
             Guid[] pGuidServices);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothSetServiceState(
-            IntPtr hRadio, 
-            ref BLUETOOTH_DEVICE_INFO pbtdi, 
-            ref Guid pGuidService, 
-            byte dwServiceFlags);
+            SafeObjectHandle hRadio, 
+            in BLUETOOTH_DEVICE_INFO pbtdi, 
+            in Guid pGuidService, 
+            [MarshalAs(UnmanagedType.U4)] BluetoothServiceFlag dwServiceFlags);
 
-        [DllImport("bthprops.cpl", EntryPoint = "BluetoothEnableDiscovery", SetLastError = true)]
+        [DllImport("bthprops.cpl", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool BluetoothEnableDiscovery(
-            IntPtr hRadio,
+            SafeObjectHandle hRadio,
             [MarshalAs(UnmanagedType.Bool)] bool fEnabled);
 
         public enum AUTHENTICATION_REQUIREMENTS : uint
@@ -288,9 +286,12 @@ namespace Shared.Windows
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 248)]
             public string szName;
 
-            public void Initialize()
+            public static BLUETOOTH_DEVICE_INFO Create()
             {
-                this.dwSize = (uint)Marshal.SizeOf(typeof(BLUETOOTH_DEVICE_INFO));
+                return new BLUETOOTH_DEVICE_INFO()
+                {
+                    dwSize = (uint)Marshal.SizeOf(typeof(BLUETOOTH_DEVICE_INFO))
+                };
             }
         }
 
@@ -340,9 +341,12 @@ namespace Shared.Windows
             internal byte cTimeoutMultiplier;
             internal IntPtr hRadio;
 
-            internal void Initialize()
+            internal static BLUETOOTH_DEVICE_SEARCH_PARAMS Create()
             {
-                this.dwSize = (uint)Marshal.SizeOf(typeof(BLUETOOTH_DEVICE_SEARCH_PARAMS));
+                return new BLUETOOTH_DEVICE_SEARCH_PARAMS()
+                {
+                    dwSize = (uint)Marshal.SizeOf(typeof(BLUETOOTH_DEVICE_SEARCH_PARAMS))
+                };
             }
         }
         #endregion
@@ -376,6 +380,7 @@ namespace Shared.Windows
             public string devicePath;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
         public struct DEVPROPKEY
         {
             public Guid fmtid;
@@ -395,9 +400,13 @@ namespace Shared.Windows
         public struct BLUETOOTH_FIND_RADIO_PARAMS
         {
             internal uint dwSize;
-            internal void Initialize()
+
+            internal static BLUETOOTH_FIND_RADIO_PARAMS Create()
             {
-                this.dwSize = (uint)Marshal.SizeOf(typeof(BLUETOOTH_FIND_RADIO_PARAMS));
+                return new BLUETOOTH_FIND_RADIO_PARAMS()
+                {
+                    dwSize = (uint)Marshal.SizeOf(typeof(BLUETOOTH_FIND_RADIO_PARAMS))
+                };
             }
         }
 
@@ -425,10 +434,23 @@ namespace Shared.Windows
                 }
             }
 
-            internal void Initialize()
+            internal static BLUETOOTH_RADIO_INFO Create()
             {
-                this.dwSize = (uint)Marshal.SizeOf(typeof(BLUETOOTH_RADIO_INFO));
+                return new BLUETOOTH_RADIO_INFO()
+                {
+                    dwSize = (uint)Marshal.SizeOf(typeof(BLUETOOTH_RADIO_INFO))
+                };
             }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct BLUETOOTH_OOB_DATA_INFO
+        {
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            public byte[] C;
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            public byte[] R;
         }
         #endregion
 
@@ -496,6 +518,77 @@ namespace Shared.Windows
             OpenReparsePoint  = 0x00200000,
             OpenNoRecall      = 0x00100000,
             FirstPipeInstance = 0x00080000
+        }
+
+        [Flags]
+        public enum BluetoothServiceFlag : uint
+        {
+            Disable = 0x00,
+            Enable = 0x01
+        }
+
+        #endregion
+
+        #region Safe Handles
+
+        /// <summary>
+        /// A generic safe handle for any handle that is closed via CloseHandle.
+        /// </summary>
+        public class SafeObjectHandle : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            public SafeObjectHandle() : base(true)
+            {
+            }
+
+            public SafeObjectHandle(IntPtr existingHandle, bool ownsHandle) : base(ownsHandle)
+            {
+                SetHandle(existingHandle);
+            }
+
+            protected override bool ReleaseHandle()
+            {
+                return CloseHandle(handle);
+            }
+        }
+
+        /// <summary>
+        /// A safe handle for Bluetooth radio searches (handles returned by BluetoothFindFirstRadio).
+        /// </summary>
+        public class SafeBluetoothRadioHandle : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            public SafeBluetoothRadioHandle() : base(true)
+            {
+            }
+
+            public SafeBluetoothRadioHandle(IntPtr existingHandle, bool ownsHandle) : base(ownsHandle)
+            {
+                SetHandle(existingHandle);
+            }
+
+            protected override bool ReleaseHandle()
+            {
+                return BluetoothFindRadioClose(handle);
+            }
+        }
+
+        /// <summary>
+        /// A safe handle for Bluetooth device searches (handles returned by BluetoothFindFirstDevice).
+        /// </summary>
+        public class SafeBluetoothDeviceHandle : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            public SafeBluetoothDeviceHandle() : base(true)
+            {
+            }
+
+            public SafeBluetoothDeviceHandle(IntPtr existingHandle, bool ownsHandle) : base(ownsHandle)
+            {
+                SetHandle(existingHandle);
+            }
+
+            protected override bool ReleaseHandle()
+            {
+                return BluetoothFindDeviceClose(handle);
+            }
         }
 
         #endregion

@@ -224,7 +224,7 @@ namespace Shared.Windows
             }
             else
             {
-                var error = GetLastError();
+                var error = Marshal.GetLastWin32Error();
                 SetupDiDestroyDeviceInfoList(parentDeviceInfo);
             }
 
@@ -379,17 +379,16 @@ namespace Shared.Windows
                     nativeOverlap.EventHandle = resetEvent.SafeWaitHandle.DangerousGetHandle();
 
                     // success is most likely to be false which can mean it is being completed asynchronously, in this case we need to wait
-                    var dh = _fileHandle.DangerousGetHandle();
                     bool success = false;
                     try
                     {
-                        success = WriteFile(dh, buffer, (uint)buffer.Length, out written, ref nativeOverlap);
+                        success = WriteFile(_fileHandle, buffer, (uint)buffer.Length, out written, ref nativeOverlap);
                     }
                     catch
                     {
                         System.Diagnostics.Debug.WriteLine("caught!");
                     }
-                    uint error = GetLastError();
+                    int error = Marshal.GetLastWin32Error();
 
                     // Wait for the async operation to complete
                     if (!success && error == 997)

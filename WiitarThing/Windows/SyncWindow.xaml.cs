@@ -6,6 +6,7 @@ using System.Windows;
 using Shared.Windows;
 using System.ComponentModel;
 using System.Windows.Interop;
+using System.Linq;
 
 namespace WiitarThing.Windows
 {
@@ -65,13 +66,26 @@ namespace WiitarThing.Windows
             return msg;
         }
 
-        static string GetMacAddressStr(ulong address)
+        static string GetPasswordFromMacAddress(ulong address)
         {
-            var bytes = BitConverter.GetBytes(address);
-            StringBuilder str = new StringBuilder();
-            for (int i = 0; i < 6; i++)
-                str.Append(bytes[i].ToString("X2") + " ");
-            return str.ToString();
+            var password = new StringBuilder();
+            byte[] bytes = BitConverter.GetBytes(address);
+            if (BitConverter.IsLittleEndian)
+            {
+                for (int i = 0; i < 6; i++)
+                {
+                    password.Append((char)bytes[i]);
+                }
+            }
+            else
+            {
+                for (int i = 7; i >= 2; i--)
+                {
+                    password.Append((char)bytes[i]);
+                }
+            }
+
+            return password.ToString();
         }
 
         protected void OnNewDeviceFound()
@@ -87,97 +101,46 @@ namespace WiitarThing.Windows
         {
             WiitarDebug.Log("FUNC BEGIN - RemoveAllWiimotes");
 
-            var radioParams = new NativeImports.BLUETOOTH_FIND_RADIO_PARAMS();
+            var radioParams = NativeImports.BLUETOOTH_FIND_RADIO_PARAMS.Create();
             Guid HidServiceClass = NativeImports.HidServiceClassGuid;
-            List<IntPtr> btRadios = new List<IntPtr>();
-            IntPtr foundRadio;
-            IntPtr foundResult;
 
-            radioParams.Initialize();
-
-            // Get first BT Radio
-            foundResult = NativeImports.BluetoothFindFirstRadio(ref radioParams, out foundRadio);
-            bool more = foundResult != IntPtr.Zero;
-
-            do
-            {
-                if (foundRadio != IntPtr.Zero)
-                {
-                    btRadios.Add(foundRadio);
-                }
-
-                // Find more
-                more = NativeImports.BluetoothFindNextRadio(ref radioParams, out foundRadio);
-            } while (more);
-
+            // Get Bluetooth radios
+            var btRadios = BluetoothRadio.FindAllRadios();
             if (btRadios.Count > 0)
             {
-                foreach (var radio in btRadios)
+                foreach (var radio in btRadios) using (radio)
                 {
-                    IntPtr found;
-                    var radioInfo = new NativeImports.BLUETOOTH_RADIO_INFO();
-                    var deviceInfo = new NativeImports.BLUETOOTH_DEVICE_INFO();
-                    var searchParams = new NativeImports.BLUETOOTH_DEVICE_SEARCH_PARAMS();
-
-                    radioInfo.Initialize();
-                    deviceInfo.Initialize();
-                    searchParams.Initialize();
-
-                    // Access radio information
-                    WiitarDebug.Log("BEF - BluetoothGetRadioInfo");
-                    uint getInfoError = NativeImports.BluetoothGetRadioInfo(radio, ref radioInfo);
-                    WiitarDebug.Log("AFT - BluetoothGetRadioInfo");
-
-                    if (getInfoError == 0)
+                    // Get devices on this radio
+                    var devices = radio.FindAllDevices();
+                    if (devices == null || devices.Count < 1)
                     {
-                        // Set search parameters
-                        searchParams.hRadio = radio;
-                        searchParams.fIssueInquiry = true;
-                        searchParams.fReturnUnknown = true;
-                        searchParams.fReturnConnected = true;
-                        searchParams.fReturnRemembered = true;
-                        searchParams.fReturnAuthenticated = true;
-                        searchParams.cTimeoutMultiplier = 2;
-
-                        // Search for a device
-                        WiitarDebug.Log("BEF - BluetoothFindFirstDevice");
-                        found = NativeImports.BluetoothFindFirstDevice(ref searchParams, ref deviceInfo);
-                        WiitarDebug.Log("AFT - BluetoothFindFirstDevice");
-
-                        // Success
-                        if (found != IntPtr.Zero)
+                        continue;
+                    }
+                    
+                    // Remove all wiimotes that are connected or paired
+                    foreach (var device in devices)
+                    {
+                        if (device.Name.StartsWith("Nintendo RVL-CNT-01"))
                         {
-                            do
+                            bool success = true;
+                            uint errForget = 0;
+
+                            if (device.Remembered || device.Connected)
                             {
-
-                                if (deviceInfo.szName.StartsWith("Nintendo RVL-CNT-01"))
-                                {
-                                    //NativeImports.BluetoothRemoveDevice(ref deviceInfo.Address);
-
-                                    //StringBuilder password = new StringBuilder();
-                                    ////uint pcService = 16;
-                                    ////Guid[] guids = new Guid[16];
-                                    bool success = true;
-                                    uint errForget = 0;
-
-                                    if (/*!ConnectedDeviceAddresses.Contains(deviceInfo.Address) && */(deviceInfo.fRemembered || deviceInfo.fConnected))
-                                    {
-                                        WiitarDebug.Log("BEF - BluetoothRemoveDevice");
-                                        errForget = NativeImports.BluetoothRemoveDevice(ref deviceInfo.Address);
-                                        WiitarDebug.Log("AFT - BluetoothRemoveDevice");
-                                        success = errForget == 0;
-                                    }
+                                WiitarDebug.Log("BEF - BluetoothRemoveDevice");
+                                errForget = device.Remove();
+                                WiitarDebug.Log("AFT - BluetoothRemoveDevice");
+                                success = errForget == 0;
+                            }
 
 #if DEBUG
-                                    if (!success)
-                                    {
-                                        MessageBox.Show("DEBUG - Failed to remove bluetooth device.");
-                                    }
+                            if (!success)
+                            {
+                                MessageBox.Show("DEBUG - Failed to remove bluetooth device.");
+                            }
 #endif
-                                }
-
-                            } while (NativeImports.BluetoothFindNextDevice(found, ref deviceInfo));
                         }
+
                     }
                 }
             }
@@ -189,302 +152,181 @@ namespace WiitarThing.Windows
         {
             WiitarDebug.Log("FUNC BEGIN - Sync");
 
-            WiitarDebug.Log("BEF - BLUETOOTH_FIND_RADIO_PARAMS");
-            var radioParams = new NativeImports.BLUETOOTH_FIND_RADIO_PARAMS();
-            WiitarDebug.Log("AFT - BLUETOOTH_FIND_RADIO_PARAMS");
-            Guid HidServiceClass = NativeImports.HidServiceClassGuid;
-            List<IntPtr> btRadios = new List<IntPtr>();
-            IntPtr foundRadio;
-            IntPtr foundResult;
-
-            radioParams.Initialize();
-
-            // Get first BT Radio
-            WiitarDebug.Log("BEF - BluetoothGetRadioInfo");
-            foundResult = NativeImports.BluetoothFindFirstRadio(ref radioParams, out foundRadio);
-            WiitarDebug.Log("AFT - BluetoothGetRadioInfo");
-            bool more = foundResult != IntPtr.Zero;
-
-            do
+            // Retrieve all radios on the system
+            var btRadios = BluetoothRadio.FindAllRadios();
+            if (btRadios.Count < 1)
             {
-                if (foundRadio != IntPtr.Zero)
-                {
-                    btRadios.Add(foundRadio);
-                }
+                // No compatible Bluetooth
+                Prompt("No compatible Bluetooth Radios found, or Bluetooth is disabled! (IF YOU SEE THIS MESSAGE, MENTION IT WHEN ASKING FOR HELP!)",
+                isBold: true, isItalic: true);
+                _notCompatable = true;
+                return;
+            }
 
-                // Find more
-                WiitarDebug.Log("BEF - BluetoothFindNextRadio");
-                more = NativeImports.BluetoothFindNextRadio(ref radioParams, out foundRadio);
-                WiitarDebug.Log("AFT - BluetoothFindNextRadio");
-            } while (more);
+            Prompt("Searching for controllers...", isBold: true);
 
-            if (btRadios.Count > 0)
+            // Search until cancelled or at least one device is paired
+            while (!Cancelled && Count == 0)
             {
-                Prompt("Searching for controllers...", isBold: true);
-
-                // Search until cancelled or at least one device is paired
-                while (!Cancelled && Count == 0)
+                foreach (var radio in btRadios)
                 {
-                    foreach (var radio in btRadios)
+                    // Get radio info
+                    if (!radio.TryGetInfo(out var radioInfo))
                     {
-                        IntPtr found;
+                        Prompt("Found Bluetooth adapter but was unable to interact with it.");
+                        continue;
+                    }
 
-                        WiitarDebug.Log("BEF - BLUETOOTH_RADIO_INFO");
-                        var radioInfo = new NativeImports.BLUETOOTH_RADIO_INFO();
-                        WiitarDebug.Log("AFT - BLUETOOTH_RADIO_INFO");
-
-                        WiitarDebug.Log("BEF - BLUETOOTH_DEVICE_INFO");
-                        var deviceInfo = new NativeImports.BLUETOOTH_DEVICE_INFO();
-                        WiitarDebug.Log("AFT - BLUETOOTH_DEVICE_INFO");
-
-                        WiitarDebug.Log("BEF - BLUETOOTH_DEVICE_SEARCH_PARAMS");
-                        var searchParams = new NativeImports.BLUETOOTH_DEVICE_SEARCH_PARAMS();
-                        WiitarDebug.Log("AFT - BLUETOOTH_DEVICE_SEARCH_PARAMS");
-
-                        radioInfo.Initialize();
-                        deviceInfo.Initialize();
-                        searchParams.Initialize();
-
-                        // Access radio information
-                        WiitarDebug.Log("BEF - BluetoothGetRadioInfo");
-                        uint getInfoError = NativeImports.BluetoothGetRadioInfo(radio, ref radioInfo);
-                        WiitarDebug.Log("AFT - BluetoothGetRadioInfo");
-
-                        // Success
-                        if (getInfoError == 0)
+                    // Get devices on this radio
+                    var devices = radio.FindAllDevices();
+                    if (devices == null || devices.Count < 1)
+                    {
+                        continue;
+                    }
+                    
+                    foreach (var device in devices)
+                    {
+                        // Check device name
+                        // Note: Switch Pro Controller is simply called "Pro Controller"
+                        string deviceName = device.Name;
+                        if (!deviceName.StartsWith("Nintendo RVL-CNT-01"))
                         {
-                            // Set search parameters
-                            searchParams.hRadio = radio;
-                            searchParams.fIssueInquiry = true;
-                            searchParams.fReturnUnknown = true;
-                            searchParams.fReturnConnected = false;
-                            searchParams.fReturnRemembered = true;
-                            searchParams.fReturnAuthenticated = false;
-                            searchParams.cTimeoutMultiplier = 2;
-
-                            // Search for a device
-                            WiitarDebug.Log("BEF - BluetoothFindFirstDevice");
-                            found = NativeImports.BluetoothFindFirstDevice(ref searchParams, ref deviceInfo);
-                            WiitarDebug.Log("AFT - BluetoothFindFirstDevice");
-
-                            // Success
-                            if (found != IntPtr.Zero)
-                            {
-                                do
-                                {
-                                    // Note: Switch Pro Controller is simply called "Pro Controller"
-                                    if (deviceInfo.szName.StartsWith("Nintendo RVL-CNT-01"))
-                                    {
-//#if DEBUG
-//                                        var str_fRemembered = deviceInfo.fRemembered ? ", but it is already synced!" : "";
-//#else
-//                                        if (deviceInfo.fRemembered)
-//                                        {
-//                                            continue;
-//                                        }
-//                                        var str_fRemembered = "";
-//#endif
-
-                                        var str_fRemembered = deviceInfo.fRemembered ? ", but it is already synced!" : ". Attempting to pair now...";
-
-                                        if (deviceInfo.szName.Equals("Nintendo RVL-CNT-01"))
-                                        {
-                                            Prompt("Found Wiimote (\"" + deviceInfo.szName + "\")" + str_fRemembered, isBold: !deviceInfo.fRemembered, isItalic: deviceInfo.fRemembered, isSmall: deviceInfo.fRemembered);
-                                        }
-                                        else if (deviceInfo.szName.Equals("Nintendo RVL-CNT-01-TR"))
-                                        {
-                                            Prompt("Found 2nd-Gen Wiimote+ (\"" + deviceInfo.szName + "\")" + str_fRemembered, isBold: !deviceInfo.fRemembered, isItalic: deviceInfo.fRemembered, isSmall: deviceInfo.fRemembered);
-                                        }
-                                        else if (deviceInfo.szName.Equals("Nintendo RVL-CNT-01-UC"))
-                                        {
-                                            Prompt("Found Wii U Pro Controller (\"" + deviceInfo.szName + "\")" + str_fRemembered, isBold: !deviceInfo.fRemembered, isItalic: deviceInfo.fRemembered, isSmall: deviceInfo.fRemembered);
-                                        }
-                                        else
-                                        {
-                                            Prompt("Found Unknown Wii Device Type (\"" + deviceInfo.szName + "\")" + str_fRemembered, isBold: !deviceInfo.fRemembered, isItalic: deviceInfo.fRemembered, isSmall: deviceInfo.fRemembered);
-                                        }
-
-                                        if (deviceInfo.fRemembered)
-                                        {
-                                            continue;
-                                        }
-                                        
-
-                                        StringBuilder password = new StringBuilder();
-                                        uint pcService = 16;
-                                        Guid[] guids = new Guid[16];
-                                        bool success = true;
-
-                                        var bytes = BitConverter.GetBytes(radioInfo.address);
-
-                                        //// Create Password out of BT radio MAC address
-                                        //if (BitConverter.IsLittleEndian)
-                                        //{
-                                        //    for (int i = 0; i < 6; i++)
-                                        //    {
-                                        //        password.Append((char)bytes[i]);
-                                        //    }
-                                        //}
-                                        //else
-                                        //{
-                                        //    for (int i = 7; i >= 2; i--)
-                                        //    {
-                                        //        password.Append((char)bytes[i]);
-                                        //    }
-                                        //}
-
-                                        for (int i = 0; i < 6; i++)
-                                        {
-                                            if (bytes[i] > 0)
-                                                password.Append((char)bytes[i]);
-                                        }
-
-                                        uint errForget = 0;
-                                        uint errAuth = 0;
-                                        uint errService = 0;
-                                        uint errActivate = 0;
-
-
-                                        //if (/*!ConnectedDeviceAddresses.Contains(deviceInfo.Address) && */(deviceInfo.fRemembered || deviceInfo.fConnected))
-                                        //{
-                                        //    // Remove current pairing
-                                        //    Prompt("Device already in Bluetooth devices list. Removing from list before trying to sync...");
-                                        //    errForget = NativeImports.BluetoothRemoveDevice(ref deviceInfo.Address);
-                                        //    success = errForget == 0;
-
-                                        //    if (success)
-                                        //    {
-                                        //        OnNewDeviceFound();
-                                        //    }
-                                        //}
-
-                                        // Authenticate
-                                        if (success)
-                                        {
-                                            WiitarDebug.Log("BEF - BluetoothAuthenticateDevice [SYNC]");
-                                            errAuth = NativeImports.BluetoothAuthenticateDevice(IntPtr.Zero, radio, ref deviceInfo, password.ToString(), 6);
-                                            WiitarDebug.Log("AFT - BluetoothAuthenticateDevice [SYNC]");
-                                            //errAuth = NativeImports.BluetoothAuthenticateDeviceEx(IntPtr.Zero, radio, ref deviceInfo, null, NativeImports.AUTHENTICATION_REQUIREMENTS.MITMProtectionNotRequired);
-                                            success = errAuth == 0;
-                                        }
-
-                                        //If it fails using SYNC method, try 1+2 method.
-                                        if (!success)
-                                        {
 #if DEBUG
-                                            Prompt("SYNC method didn't work. Trying 1+2 method...");
+                            Prompt("(Found \"" + deviceName + "\", but it is not a Wiimote)", isBold: false, isItalic: false, isSmall: true, isDebug: true);
 #endif
+                            continue;
+                        }
 
-                                            var wiimoteBytes = BitConverter.GetBytes(deviceInfo.Address);
+                        bool remembered = device.Remembered;
+                        var str_fRemembered = remembered ? ", but it is already synced!" : ". Attempting to pair now...";
 
-                                            password.Clear();
-
-                                            for (int i = 0; i < 6; i++)
-                                            {
-                                                if (wiimoteBytes[i] > 0)
-                                                    password.Append((char)wiimoteBytes[i]);
-                                            }
-
-                                            WiitarDebug.Log("BEF - BluetoothAuthenticateDevice [1+2]");
-                                            errAuth = NativeImports.BluetoothAuthenticateDevice(IntPtr.Zero, radio, ref deviceInfo, password.ToString(), 6);
-                                            WiitarDebug.Log("AFT - BluetoothAuthenticateDevice [1+2]");
-
-                                            //errAuth = NativeImports.BluetoothAuthenticateDeviceEx(IntPtr.Zero, radio, ref deviceInfo, null, NativeImports.AUTHENTICATION_REQUIREMENTS.MITMProtectionNotRequired);
-                                            success = errAuth == 0;
-                                        }
-
-                                        // Install PC Service
-                                        if (success)
-                                        {
-                                            WiitarDebug.Log("BEF - BluetoothEnumerateInstalledServices");
-                                            errService = NativeImports.BluetoothEnumerateInstalledServices(radio, ref deviceInfo, ref pcService, guids);
-                                            WiitarDebug.Log("AFT - BluetoothEnumerateInstalledServices");
-                                            success = errService == 0;
-                                        }
-
-                                        // Set to HID service
-                                        if (success)
-                                        {
-                                            WiitarDebug.Log("BEF - BluetoothSetServiceState");
-                                            errActivate = NativeImports.BluetoothSetServiceState(radio, ref deviceInfo, ref HidServiceClass, 0x01);
-                                            WiitarDebug.Log("AFT - BluetoothSetServiceState");
-                                            success = errActivate == 0;
-                                        }
-
-                                        if (success)
-                                        {
-                                            Prompt("Successfully Paired!", isBold: true);
-                                            Count += 1;
-                                        }
-                                        else
-                                        {
-                                            var sb = new StringBuilder();
-                                            //sb.AppendLine("Failed to pair.");
-
-#if DEBUG
-                                            sb.AppendLine("radio mac address: " + GetMacAddressStr(radioInfo.address));
-                                            sb.AppendLine("wiimote mac address: " + GetMacAddressStr(deviceInfo.Address));
-                                            sb.AppendLine("wiimote password: \"" + password.ToString() + "\"");
-#endif
-
-                                            
-                                            if (errForget != 0)
-                                            {
-                                                sb.AppendLine(" >>> FAILED TO REMOVE DEVICE FROM BLUETOOTH DEVICES LIST. ERROR CODE 0x" + errForget.ToString("X"));
-                                            }
-
-                                            if (errAuth != 0)
-                                            {
-                                                sb.AppendLine(GetBluetoothAuthenticationError(errAuth));
-                                            }
-
-                                            if (errService != 0)
-                                            {
-                                                sb.AppendLine(" >>> SERVICE ERROR: " + new Win32Exception((int)errService).Message);
-                                            }
-
-                                            if (errActivate != 0)
-                                            {
-                                                sb.AppendLine(" >>> ACTIVATION ERROR: " + new Win32Exception((int)errActivate).Message);
-                                            }
-
-                                            Prompt(sb.ToString(), isBold: true, isItalic: true);
-                                        }
-                                    }
-#if DEBUG
-                                    else
-                                    {
-                                        Prompt("(Found \"" + deviceInfo.szName + "\", but it is not a Wiimote)", isBold: false, isItalic: false, isSmall: true, isDebug: true);
-                                    }
-#endif
-
-                                    WiitarDebug.Log("About to try BluetoothFindNextDevice...");
-                                } while (NativeImports.BluetoothFindNextDevice(found, ref deviceInfo));
-                            }
+                        if (deviceName.Equals("Nintendo RVL-CNT-01"))
+                        {
+                            Prompt("Found Wiimote (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
+                        }
+                        else if (deviceName.Equals("Nintendo RVL-CNT-01-TR"))
+                        {
+                            Prompt("Found 2nd-Gen Wiimote+ (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
+                        }
+                        else if (deviceName.Equals("Nintendo RVL-CNT-01-UC"))
+                        {
+                            Prompt("Found Wii U Pro Controller (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
                         }
                         else
                         {
-                            // Failed to get BT Radio info
-                            Prompt("Found Bluetooth adapter but was unable to interact with it.");
+                            Prompt("Found Unknown Wii Device Type (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
+                        }
+
+                        // Skip already-paired devices
+                        if (remembered)
+                        {
+                            continue;
+                        }
+                        
+                        bool success = true;
+
+                        uint errAuth = 0;
+                        uint errService = 0;
+                        uint errActivate = 0;
+
+                        string password = GetPasswordFromMacAddress(radioInfo.address);
+
+                        // Authenticate
+                        if (success)
+                        {
+                            errAuth = device.Authenticate(password);
+                            success = errAuth == 0;
+                        }
+
+                        // If the sync method didn't work, try the 1+2 method
+                        if (!success)
+                        {
+#if DEBUG
+                            Prompt("SYNC method didn't work. Trying 1+2 method...");
+#endif
+
+                            password = GetPasswordFromMacAddress(device.Address);
+                            errAuth = device.Authenticate(password);
+                            success = errAuth == 0;
+                        }
+
+                        // Get activated services
+                        Guid[] guids = null;
+                        if (success)
+                        {
+                            WiitarDebug.Log("BEF - BluetoothEnumerateInstalledServices");
+                            errService = device.EnumerateInstalledServices(out guids);
+                            WiitarDebug.Log("AFT - BluetoothEnumerateInstalledServices");
+                            success = errService == 0;
+                        }
+
+                        // Activate HID service
+                        if (success)
+                        {
+                            if (guids == null || !guids.Contains(NativeImports.HidServiceClassGuid))
+                            {
+                                WiitarDebug.Log("BEF - BluetoothSetServiceState");
+                                errActivate = device.SetServiceState(NativeImports.HidServiceClassGuid, true);
+                                WiitarDebug.Log("AFT - BluetoothSetServiceState");
+                                success = errActivate == 0;
+                            }
+                        }
+
+                        if (success)
+                        {
+                            Prompt("Successfully Paired!", isBold: true);
+                            Count += 1;
+                        }
+                        else
+                        {
+                            var sb = new StringBuilder();
+
+#if DEBUG
+                            sb.AppendLine($"radio mac address: {radioInfo.address:X12}");
+                            sb.AppendLine($"wiimote mac address: {device.Address:X12}");
+                            sb.Append($"wiimote password: \"{password}\" (");
+                            foreach (char ch in password)
+                            {
+                                if (ch > byte.MaxValue)
+                                {
+                                    sb.Append($"{ch & 0xFF:X2}-{(ch & 0xFF00) >> 8:X2}-");
+                                }
+                                else
+                                {
+                                    sb.Append($"{ch:X2}-");
+                                }
+                            }
+                            // Remove trailing dash
+                            sb.Remove(sb.Length - 1, 1);
+                            sb.AppendLine(")");
+#endif
+
+
+                            if (errAuth != 0)
+                            {
+                                sb.AppendLine(GetBluetoothAuthenticationError(errAuth));
+                            }
+
+                            if (errService != 0)
+                            {
+                                sb.AppendLine(" >>> SERVICE ERROR: " + new Win32Exception((int)errService).Message);
+                            }
+
+                            if (errActivate != 0)
+                            {
+                                sb.AppendLine(" >>> ACTIVATION ERROR: " + new Win32Exception((int)errActivate).Message);
+                            }
+
+                            Prompt(sb.ToString(), isBold: true, isItalic: true);
                         }
                     }
                 }
-
-                // Close each Radio
-                foreach (var openRadio in btRadios)
-                {
-                    WiitarDebug.Log("BEF - CloseHandle");
-                    NativeImports.CloseHandle(openRadio);
-                    WiitarDebug.Log("AFT - CloseHandle");
-                }
             }
-            else
+
+            // Clean up radio handles
+            foreach (var radio in btRadios)
             {
-                // No (compatable) Bluetooth
-                Prompt(
-                    "No compatble Bluetooth Radios found (IF YOU SEE THIS MESSAGE, MENTION IT WHEN ASKING FOR HELP!).", isBold: true, isItalic: true);
-                _notCompatable = true;
-                return;
+                radio.Dispose();
             }
 
             // Close this window
@@ -523,23 +365,8 @@ namespace WiitarThing.Windows
                 prompt.Blocks.Add(newParagraph);
 
                 promptBoxContainer.ScrollToEnd();
-
-                //if (prompt.LineCount > 0)
-                //    prompt.ScrollToLine(prompt.LineCount - 1);
-                //prompt.ScrollToEnd();
             }));
         }
-
-        //private void SetPrompt(string text)
-        //{
-        //    Dispatcher.BeginInvoke(new Action(() =>
-        //    {
-        //        prompt.Text = text;
-        //        if (prompt.LineCount > 0)
-        //            prompt.ScrollToLine(prompt.LineCount - 1);
-        //        //prompt.ScrollToEnd();
-        //    }));
-        //}
 
         private void cancelBtn_Click(object sender, RoutedEventArgs e)
         {
