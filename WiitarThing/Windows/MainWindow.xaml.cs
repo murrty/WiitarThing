@@ -344,11 +344,13 @@ namespace WiitarThing
             switch (oldState)
             {
                 case DeviceState.Discovered:
-                    groupAvailable.Children.Remove(sender);
+                    if (groupAvailable.Children.Contains(sender))
+                        groupAvailable.Children.Remove(sender);
                     break;
 
                 case DeviceState.Connected_XInput:
-                    groupXinput.Children.Remove(sender);
+                    if (groupXinput.Children.Contains(sender))
+                        groupXinput.Children.Remove(sender);
                     break;
 
                 //case DeviceState.Connected_VJoy:
@@ -359,11 +361,13 @@ namespace WiitarThing
             switch (newState)
             {
                 case DeviceState.Discovered:
-                    groupAvailable.Children.Add(sender);
+                    if (!groupAvailable.Children.Contains(sender))
+                        groupAvailable.Children.Add(sender);
                     break;
 
                 case DeviceState.Connected_XInput:
-                    groupXinput.Children.Add(sender);
+                    if (!groupXinput.Children.Contains(sender))
+                        groupXinput.Children.Add(sender);
                     break;
 
                 //case DeviceState.Connected_VJoy:
