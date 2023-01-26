@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nefarius.ViGEm.Client;
@@ -467,16 +467,7 @@ namespace WiitarThing.Holders
 
         public override void Close()
         {
-            Flags[Inputs.Flags.RUMBLE] = false;
-            bus.Unplug(ID);
-
-            if (ID > -1 && ID < 4)
-            {
-                availabe[ID] = true;
-            }
-
-            ID = -1;
-            connected = false;
+            RemoveXInput(ID);
         }
 
         public override void AddMapping(ControllerType controller)
@@ -494,15 +485,13 @@ namespace WiitarThing.Holders
 
         public bool ConnectXInput(int id)
         {
-            if (id > -1 && id < 4)
+            if (id < 0 || id > 3)
             {
-                availabe[id] = false;
-            }
-            else
-            {
+                WiitarDebug.Log($"Attempted to connect invalid user index {id}!");
                 return false;
             }
 
+            availabe[id] = false;
             bus = XBus.Default;
             bus.Unplug(id);
             bus.Plugin(id);
@@ -513,12 +502,13 @@ namespace WiitarThing.Holders
 
         public bool RemoveXInput(int id)
         {
-            if (id > -1 && id < 4)
+            if (id < 0 || id > 3)
             {
-                availabe[id] = true;
+                WiitarDebug.Log($"Attempted to remove invalid user index {id}!");
+                return false;
             }
 
-
+            availabe[id] = true;
             Flags[Inputs.Flags.RUMBLE] = false;
             if (bus.Unplug(id))
             {
