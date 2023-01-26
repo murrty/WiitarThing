@@ -624,17 +624,20 @@ namespace WiitarThing.Holders
                 return;
             }
 
+            IXbox360Controller controller;
             if (vid != 0 && pid != 0)
             {
-                targets.Add(id, Client.CreateXbox360Controller(vid, pid));
+                controller = Client.CreateXbox360Controller(vid, pid);
             }
             else
             {
-                targets.Add(id, Client.CreateXbox360Controller());
+                controller = Client.CreateXbox360Controller();
             }
-            targets[id].AutoSubmitReport = false;
-            targets[id].Connect();
-            connected.Add(targets[id]);
+
+            controller.AutoSubmitReport = false;
+            controller.Connect();
+            targets.Add(id, controller);
+            connected.Add(controller);
         }
 
         public bool Unplug(int id)
