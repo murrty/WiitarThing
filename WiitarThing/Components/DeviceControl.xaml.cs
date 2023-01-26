@@ -39,7 +39,7 @@ namespace WiitarThing
         // internally public members
         internal Holders.Holder holder;
         internal Property       properties;
-        internal int            targetXDevice = 0;
+        internal int            targetXDevice = -1;
         internal bool           lowBatteryFired = false;
         internal bool           identifying = false;
         internal string         dName = "";
@@ -273,7 +273,7 @@ namespace WiitarThing
                     LoadProfile(properties.profile, xHolder);
                     xHolder.ConnectXInput(targetXDevice);
                     holder = xHolder;
-                    device.SetPlayerLED(targetXDevice);
+                    device.SetPlayerLED(targetXDevice + 1);
                     updateTimer = new System.Threading.Timer(HolderUpdate, device, 1000, UPDATE_SPEED);
                     break;
 
@@ -867,7 +867,7 @@ namespace WiitarThing
                 int tmp = 0;
                 if (int.TryParse(((MenuItem)sender).Name.Replace("XOption", ""), out tmp))
                 {
-                    AssignToXinputPlayer(tmp);
+                    AssignToXinputPlayer(tmp - 1);
                 }
             }
 
@@ -920,8 +920,8 @@ namespace WiitarThing
                 Delay((LIGHTSHOW_LENGTH / 7) * 4).ContinueWith(o => device.SetPlayerLED(3));
                 Delay((LIGHTSHOW_LENGTH / 7) * 5).ContinueWith(o => device.SetPlayerLED(2));
                 Delay((LIGHTSHOW_LENGTH / 7) * 6).ContinueWith(o => device.SetPlayerLED(1));
-                if (targetXDevice != 0)
-                    Delay(LIGHTSHOW_LENGTH).ContinueWith(o => device.SetPlayerLED(targetXDevice));
+                if (targetXDevice > -1)
+                    Delay(LIGHTSHOW_LENGTH).ContinueWith(o => device.SetPlayerLED(targetXDevice + 1));
             }
         }
 
