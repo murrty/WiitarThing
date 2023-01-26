@@ -903,25 +903,29 @@ namespace WiitarThing
                     device.BeginReading();
 
                 identifying = true;
+                device.SetPlayerLED(15);
                 device.RumbleEnabled = true;
                 Delay(500).ContinueWith(o =>
                 {
                     identifying = false;
                     device.RumbleEnabled = false;
+                    if (targetXDevice > -1)
+                        device.SetPlayerLED(targetXDevice + 1);
                     if (!wasConnected) device.StopReading();
                 });
 
                 // light show
-                device.SetPlayerLED(1);
-                const int LIGHTSHOW_LENGTH = 400;
-                Delay((LIGHTSHOW_LENGTH / 7) * 1).ContinueWith(o => device.SetPlayerLED(2));
-                Delay((LIGHTSHOW_LENGTH / 7) * 2).ContinueWith(o => device.SetPlayerLED(3));
-                Delay((LIGHTSHOW_LENGTH / 7) * 3).ContinueWith(o => device.SetPlayerLED(4));
-                Delay((LIGHTSHOW_LENGTH / 7) * 4).ContinueWith(o => device.SetPlayerLED(3));
-                Delay((LIGHTSHOW_LENGTH / 7) * 5).ContinueWith(o => device.SetPlayerLED(2));
-                Delay((LIGHTSHOW_LENGTH / 7) * 6).ContinueWith(o => device.SetPlayerLED(1));
-                if (targetXDevice > -1)
-                    Delay(LIGHTSHOW_LENGTH).ContinueWith(o => device.SetPlayerLED(targetXDevice + 1));
+                // disabled because of race conditions
+                // device.SetPlayerLED(1);
+                // const int LIGHTSHOW_LENGTH = 400;
+                // Delay((LIGHTSHOW_LENGTH / 7) * 1).ContinueWith(o => device.SetPlayerLED(2));
+                // Delay((LIGHTSHOW_LENGTH / 7) * 2).ContinueWith(o => device.SetPlayerLED(3));
+                // Delay((LIGHTSHOW_LENGTH / 7) * 3).ContinueWith(o => device.SetPlayerLED(4));
+                // Delay((LIGHTSHOW_LENGTH / 7) * 4).ContinueWith(o => device.SetPlayerLED(3));
+                // Delay((LIGHTSHOW_LENGTH / 7) * 5).ContinueWith(o => device.SetPlayerLED(2));
+                // Delay((LIGHTSHOW_LENGTH / 7) * 6).ContinueWith(o => device.SetPlayerLED(1));
+                // if (targetXDevice > -1)
+                //     Delay(LIGHTSHOW_LENGTH).ContinueWith(o => device.SetPlayerLED(targetXDevice + 1));
             }
         }
 
