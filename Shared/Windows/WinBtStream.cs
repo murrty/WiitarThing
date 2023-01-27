@@ -163,8 +163,7 @@ namespace Shared.Windows
         {
             // Assume it is the Microsoft Stack
             BtStack resultStack = BtStack.Microsoft;
-            SP_DEVINFO_DATA parentData = new SP_DEVINFO_DATA();
-            parentData.cbSize = (uint)Marshal.SizeOf(typeof(SP_DEVINFO_DATA));
+            SP_DEVINFO_DATA parentData = SP_DEVINFO_DATA.Create();
 
             int status = 0;
             int problemNum = 0;
@@ -242,8 +241,7 @@ namespace Shared.Windows
             // handle for HID devices
             var hDevInfo = SetupDiGetClassDevs(ref guid, null, IntPtr.Zero, (uint)(DIGCF.DeviceInterface | DIGCF.Present));
 
-            SP_DEVICE_INTERFACE_DATA diData = new SP_DEVICE_INTERFACE_DATA();
-            diData.cbSize = Marshal.SizeOf(diData);
+            SP_DEVICE_INTERFACE_DATA diData = SP_DEVICE_INTERFACE_DATA.Create();
 
             // Step through all devices
             while (SetupDiEnumDeviceInterfaces(hDevInfo, IntPtr.Zero, ref guid, index, ref diData))
@@ -254,11 +252,9 @@ namespace Shared.Windows
                 SetupDiGetDeviceInterfaceDetail(hDevInfo, ref diData, IntPtr.Zero, 0, out size, IntPtr.Zero);
 
                 // Create Detail Struct
-                SP_DEVICE_INTERFACE_DETAIL_DATA diDetail = new SP_DEVICE_INTERFACE_DETAIL_DATA();
-                diDetail.size = (uint)(IntPtr.Size == 8 ? 8 : 5);// 4 + Marshal.SystemDefaultCharSize);
+                SP_DEVICE_INTERFACE_DETAIL_DATA diDetail = SP_DEVICE_INTERFACE_DETAIL_DATA.Create();
 
-                SP_DEVINFO_DATA deviceInfoData = new SP_DEVINFO_DATA();
-                deviceInfoData.cbSize = (uint)Marshal.SizeOf(typeof(SP_DEVINFO_DATA));
+                SP_DEVINFO_DATA deviceInfoData = SP_DEVINFO_DATA.Create();
 
                 // Populate Detail Struct
                 if (SetupDiGetDeviceInterfaceDetail(hDevInfo, ref diData, ref diDetail, size, out size, ref deviceInfoData))

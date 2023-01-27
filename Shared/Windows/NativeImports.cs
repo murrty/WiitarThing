@@ -163,6 +163,14 @@ namespace Shared.Windows
             public Guid ClassGuid;
             public uint DevInst;
             public IntPtr Reserved;
+
+            public static SP_DEVINFO_DATA Create()
+            {
+                return new SP_DEVINFO_DATA()
+                {
+                    cbSize = (uint)Marshal.SizeOf<SP_DEVINFO_DATA>()
+                };
+            }
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -172,6 +180,14 @@ namespace Shared.Windows
             public Guid interfaceClassGuid;
             public int flags;
             public IntPtr reserved;
+
+            public static SP_DEVICE_INTERFACE_DATA Create()
+            {
+                return new SP_DEVICE_INTERFACE_DATA()
+                {
+                    cbSize = Marshal.SizeOf<SP_DEVICE_INTERFACE_DATA>()
+                };
+            }
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -180,6 +196,18 @@ namespace Shared.Windows
             public uint size;           // DWORD
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
             public string devicePath;
+
+            public static SP_DEVICE_INTERFACE_DETAIL_DATA Create()
+            {
+                return new SP_DEVICE_INTERFACE_DETAIL_DATA()
+                {
+                    // TODO: This is what I get if I do sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_A)
+                    // or sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_A) in C/C++
+                    // size = 8
+                    // Determine which of these is correct
+                    size = (uint)(IntPtr.Size == 8 ? 8 : 5) // 4 + Marshal.SystemDefaultCharSize)
+                };
+            }
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -308,6 +336,14 @@ namespace Shared.Windows
             public short VendorID;
             public short ProductID;
             public short VersionNumber;
+
+            public static HIDD_ATTRIBUTES Create()
+            {
+                return new HIDD_ATTRIBUTES()
+                {
+                    Size = Marshal.SizeOf<HIDD_ATTRIBUTES>()
+                };
+            }
         }
 
         [DllImport(@"hid.dll", CharSet = CharSet.Auto, SetLastError = true)]
