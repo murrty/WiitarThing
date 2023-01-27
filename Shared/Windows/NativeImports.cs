@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -316,12 +316,12 @@ namespace Shared.Windows
 
         [DllImport("hid.dll")]
         public static extern bool HidD_GetAttributes(
-            IntPtr HidDeviceObject, 
+            SafeFileHandle HidDeviceObject, 
             ref HIDD_ATTRIBUTES Attributes);
 
         [DllImport("hid.dll")]
         public extern static bool HidD_SetOutputReport(
-            IntPtr HidDeviceObject,
+            SafeFileHandle HidDeviceObject,
             byte[] lpReportBuffer,
             uint ReportBufferLength);
 

@@ -1,4 +1,4 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+﻿/* * * * * * * * * * * * * * * * * * * * * * * * * * *
  * === Notes ===
  * 
  * - When using the Toshiba Stack,
@@ -271,7 +271,7 @@ namespace Shared.Windows
                     attrib.Size = Marshal.SizeOf(attrib);
 
                     // Populate Attributes
-                    if (HidD_GetAttributes(handle.DangerousGetHandle(), ref attrib))
+                    if (HidD_GetAttributes(handle, ref attrib))
                     {
                         // Check if this is a compatable device
                         if (attrib.VendorID == 0x057e && (attrib.ProductID == 0x0306 || attrib.ProductID == 0x0330))
