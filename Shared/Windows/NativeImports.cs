@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -123,6 +123,17 @@ namespace Shared.Windows
             uint nNumberOfBytesToWrite,
             ref NativeOverlapped lpOverlapped,
             WriteFileCompletionDelegate lpCompletionRoutine);
+
+        /// <summary>
+        /// Gets the results of an overlapped operation
+        /// </summary>
+        [DllImport("kernel32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public extern static bool GetOverlappedResult(
+            SafeFileHandle hFile,                // HANDLE
+            in NativeOverlapped lpOverlapped,    // LPOVERLAPPED
+            out uint lpNumberOfBytesTransferred, // LPDWORD
+            bool bWait);                         // BOOL
 
         #endregion
 
