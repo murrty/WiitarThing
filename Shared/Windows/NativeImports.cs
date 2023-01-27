@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -231,7 +231,6 @@ namespace Shared.Windows
             out uint requiredSize,
             IntPtr deviceInfoData);
 
-        // TODO: Check Parameters of SetupDiGetDeviceInterfaceDetail
         [DllImport(@"setupapi.dll", SetLastError = true)]
         public static extern bool SetupDiGetDeviceInterfaceDetail(
             IntPtr hDevInfo,
