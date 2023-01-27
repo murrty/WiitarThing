@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Windows.Media.Effects;
 using Microsoft.Win32.SafeHandles;
 
 namespace Shared.Windows
@@ -239,12 +240,12 @@ namespace Shared.Windows
 
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern SafeDeviceInfoListHandle SetupDiCreateDeviceInfoList(
-            ref Guid classId,
+            in Guid ClassGuid,
             IntPtr hwndParent);
 
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern SafeDeviceInfoListHandle SetupDiGetClassDevs(
-            ref Guid ClassGuid,
+            in Guid ClassGuid,
             [MarshalAs(UnmanagedType.LPTStr)] string Enumerator,
             IntPtr hwndParent,
             uint Flags);
@@ -252,45 +253,44 @@ namespace Shared.Windows
         [DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiOpenDeviceInfo(
             SafeDeviceInfoListHandle DevInfoSet,
-            string Enumerator,
+            string DeviceInstanceId,
             IntPtr hWndParent,
-            uint Flags,
-            ref SP_DEVINFO_DATA DeviceInfoData);
+            uint OpenFlags,
+            out SP_DEVINFO_DATA DeviceInfoData);
 
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiEnumDeviceInterfaces(
-            SafeDeviceInfoListHandle hDevInfo,
-            //ref SP_DEVINFO_DATA devInfo,
-            IntPtr devInvo,
-            ref Guid interfaceClassGuid,
-            int memberIndex,
-            ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData);
+            SafeDeviceInfoListHandle DeviceInfoSet,
+            IntPtr DeviceInfoData, //ref SP_DEVINFO_DATA devInfo,
+            in Guid InterfaceClassGuid,
+            int MemberIndex,
+            out SP_DEVICE_INTERFACE_DATA DeviceInterfaceData);
 
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiGetDeviceInterfaceDetail(
-            SafeDeviceInfoListHandle hDevInfo,
-            ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData,
-            IntPtr deviceInterfaceDetailData,
-            uint deviceInterfaceDetailDataSize,
-            out uint requiredSize,
-            IntPtr deviceInfoData);
+            SafeDeviceInfoListHandle DeviceInfoSet,
+            in SP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+            IntPtr DeviceInterfaceDetailData,
+            uint DeviceInterfaceDetailDataSize,
+            out uint RequiredSize,
+            IntPtr DeviceInfoData);
 
         [DllImport(@"setupapi.dll", SetLastError = true)]
         public static extern bool SetupDiGetDeviceInterfaceDetail(
-            SafeDeviceInfoListHandle hDevInfo,
-            ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData,
-            ref SP_DEVICE_INTERFACE_DETAIL_DATA deviceInterfaceDetailData,
-            uint deviceInterfaceDetailDataSize,
-            out uint requiredSize,
-            ref SP_DEVINFO_DATA deviceInfoData);
+            SafeDeviceInfoListHandle DeviceInfoSet,
+            in SP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
+            ref SP_DEVICE_INTERFACE_DETAIL_DATA DeviceInterfaceDetailData,
+            uint DeviceInterfaceDetailDataSize,
+            out uint RequiredSize,
+            out SP_DEVINFO_DATA DeviceInfoData);
 
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiGetDeviceProperty(
             SafeDeviceInfoListHandle DeviceInfoSet,
-            SP_DEVINFO_DATA DeviceInfoData,
-            DEVPROPKEY PropertyKey,
+            in SP_DEVINFO_DATA DeviceInfoData,
+            in DEVPROPKEY PropertyKey,
             out ulong PropertyType,
-            char[] PropertyBuffer,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder PropertyBuffer,
             int PropertyBufferSize,
             out int RequiredSize,
             uint Flags);
@@ -302,8 +302,7 @@ namespace Shared.Windows
         [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
         public static extern int CM_Get_Device_ID(
             uint dnDevInst,
-            //string buffer,
-            char[] buffer,
+            StringBuilder buffer,
             int bufferLen,
             int flags);
 
@@ -315,8 +314,8 @@ namespace Shared.Windows
 
         [DllImport("setupapi.dll", SetLastError = true)]
         public static extern int CM_Get_DevNode_Status(
-            ref int pulStatus,
-            ref int pulProblemNumber,
+            out int pulStatus,
+            out int pulProblemNumber,
             int dnDevInst,
             int ulFlags);
 
@@ -348,7 +347,7 @@ namespace Shared.Windows
         [DllImport("hid.dll")]
         public static extern bool HidD_GetAttributes(
             SafeFileHandle HidDeviceObject,
-            ref HIDD_ATTRIBUTES Attributes);
+            out HIDD_ATTRIBUTES Attributes);
 
         [DllImport("hid.dll")]
         public extern static bool HidD_SetOutputReport(
@@ -555,8 +554,8 @@ namespace Shared.Windows
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern SafeBluetoothDeviceHandle BluetoothFindFirstDevice(
-            in BLUETOOTH_DEVICE_SEARCH_PARAMS searchParams,
-            ref BLUETOOTH_DEVICE_INFO deviceInfo);
+            in BLUETOOTH_DEVICE_SEARCH_PARAMS pbtsp,
+            ref BLUETOOTH_DEVICE_INFO pbtdi);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern bool BluetoothFindNextDevice(
@@ -574,7 +573,7 @@ namespace Shared.Windows
         public static extern uint BluetoothAuthenticateDevice(
             IntPtr hwndParent,
             SafeObjectHandle hRadio,
-            in BLUETOOTH_DEVICE_INFO pbtdi,
+            ref BLUETOOTH_DEVICE_INFO pbtdi,
             [MarshalAs(UnmanagedType.LPWStr)] string pszPasskey,
             uint ulPasskeyLength);
 

@@ -116,9 +116,9 @@ namespace Shared.Windows
         /// <summary>
         /// Authenticates a device on this radio.
         /// </summary>
-        public uint AuthenticateDevice(in BLUETOOTH_DEVICE_INFO deviceInfo, string password)
+        public uint AuthenticateDevice(ref BLUETOOTH_DEVICE_INFO deviceInfo, string password)
         {
-            return NativeImports.BluetoothAuthenticateDevice(IntPtr.Zero, handle, in deviceInfo, password, (uint)password.Length);
+            return NativeImports.BluetoothAuthenticateDevice(IntPtr.Zero, handle, ref deviceInfo, password, (uint)password.Length);
         }
 
         /// <summary>

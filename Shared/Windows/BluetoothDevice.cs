@@ -38,7 +38,7 @@ namespace Shared.Windows
         /// </summary>
         public uint Authenticate(string password)
         {
-            return radio.AuthenticateDevice(in info, password);
+            return radio.AuthenticateDevice(ref info, password);
         }
 
         /// <summary>

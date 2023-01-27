@@ -20,6 +20,7 @@ using Microsoft.Win32.SafeHandles;
 using System.Runtime.InteropServices;
 using static Shared.Windows.NativeImports;
 using NintrollerLib;
+using System.Text;
 
 namespace Shared.Windows
 {
@@ -168,7 +169,7 @@ namespace Shared.Windows
             int status = 0;
             int problemNum = 0;
 
-            var result = CM_Get_DevNode_Status(ref status, ref problemNum, (int)data.DevInst, 0);
+            var result = CM_Get_DevNode_Status(out status, out problemNum, (int)data.DevInst, 0);
 
             if (result != 0) return resultStack; // Failed
 
@@ -178,20 +179,20 @@ namespace Shared.Windows
 
             if (result != 0) return resultStack; // Failed
 
-            char[] parentId = new char[200];
+            StringBuilder parentId = new StringBuilder(200);
 
-            result = CM_Get_Device_ID(parentDevice, parentId, 200, 0);
+            result = CM_Get_Device_ID(parentDevice, parentId, parentId.Capacity, 0);
 
             if (result != 0) return resultStack; // Failed
 
-            string id = new string(parentId).Replace("\0", "");
+            string id = parentId.ToString();
 
             Guid g = Guid.Empty;
             HidD_GetHidGuid(out g);
-            var parentDeviceInfo = SetupDiCreateDeviceInfoList(ref g, IntPtr.Zero);
+            var parentDeviceInfo = SetupDiCreateDeviceInfoList(in g, IntPtr.Zero);
 
             // TODO: This fails, something not right
-            bool success = SetupDiOpenDeviceInfo(parentDeviceInfo, id, IntPtr.Zero, 0, ref parentData);
+            bool success = SetupDiOpenDeviceInfo(parentDeviceInfo, id, IntPtr.Zero, 0, out parentData);
 
             if (success)
             {
@@ -204,13 +205,12 @@ namespace Shared.Windows
 
                 SetupDiGetDeviceProperty(parentDeviceInfo, parentData, requestedKey, out devicePropertyType, null, 0, out requiredSize, 0);
 
-                char[] buffer = new char[requiredSize];
+                StringBuilder buffer = new StringBuilder(requiredSize);
                 success = SetupDiGetDeviceProperty(parentDeviceInfo, parentData, requestedKey, out devicePropertyType, buffer, requiredSize, out requiredSize, 0);
 
                 if (success)
                 {
-                    string classProvider = new string(buffer);
-                    classProvider = classProvider.Replace("\0", "");
+                    string classProvider = buffer.ToString();
                     if (classProvider == "TOSHIBA")
                     {
                         // Toshiba Stack
@@ -239,17 +239,17 @@ namespace Shared.Windows
             HidD_GetHidGuid(out guid);
 
             // handle for HID devices
-            var hDevInfo = SetupDiGetClassDevs(ref guid, null, IntPtr.Zero, (uint)(DIGCF.DeviceInterface | DIGCF.Present));
+            var hDevInfo = SetupDiGetClassDevs(in guid, null, IntPtr.Zero, (uint)(DIGCF.DeviceInterface | DIGCF.Present));
 
             SP_DEVICE_INTERFACE_DATA diData = SP_DEVICE_INTERFACE_DATA.Create();
 
             // Step through all devices
-            while (SetupDiEnumDeviceInterfaces(hDevInfo, IntPtr.Zero, ref guid, index, ref diData))
+            while (SetupDiEnumDeviceInterfaces(hDevInfo, IntPtr.Zero, in guid, index, out diData))
             {
                 uint size;
 
                 // Get Device Buffer Size
-                SetupDiGetDeviceInterfaceDetail(hDevInfo, ref diData, IntPtr.Zero, 0, out size, IntPtr.Zero);
+                SetupDiGetDeviceInterfaceDetail(hDevInfo, in diData, IntPtr.Zero, 0, out size, IntPtr.Zero);
 
                 // Create Detail Struct
                 SP_DEVICE_INTERFACE_DETAIL_DATA diDetail = SP_DEVICE_INTERFACE_DETAIL_DATA.Create();
@@ -257,7 +257,7 @@ namespace Shared.Windows
                 SP_DEVINFO_DATA deviceInfoData = SP_DEVINFO_DATA.Create();
 
                 // Populate Detail Struct
-                if (SetupDiGetDeviceInterfaceDetail(hDevInfo, ref diData, ref diDetail, size, out size, ref deviceInfoData))
+                if (SetupDiGetDeviceInterfaceDetail(hDevInfo, in diData, ref diDetail, size, out size, out deviceInfoData))
                 {
                     // Open read/write handle
                     handle = CreateFile(diDetail.devicePath, FileAccess.ReadWrite, FileShare.ReadWrite, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, IntPtr.Zero);
@@ -267,7 +267,7 @@ namespace Shared.Windows
                     attrib.Size = Marshal.SizeOf(attrib);
 
                     // Populate Attributes
-                    if (HidD_GetAttributes(handle, ref attrib))
+                    if (HidD_GetAttributes(handle, out attrib))
                     {
                         // Check if this is a compatable device
                         if (attrib.VendorID == 0x057e && (attrib.ProductID == 0x0306 || attrib.ProductID == 0x0330))
