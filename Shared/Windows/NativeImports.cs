@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -72,13 +72,6 @@ namespace Shared.Windows
         #endregion
 
         #region setupapi.dll
-
-        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern bool SetupDiSetClassInstallParams(
-            IntPtr DeviceInfoSet, 
-            ref SP_DEVINFO_DATA DeviceInfoData, 
-            IntPtr ClassInstallParams, 
-            int ClassInstallParamsSize);
 
         [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
         public static extern int CM_Get_Device_ID(
@@ -234,14 +227,6 @@ namespace Shared.Windows
             uint ulPasskeyLength);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
-        public static extern uint BluetoothAuthenticateDeviceEx(
-            IntPtr hwndParentIn, 
-            SafeObjectHandle hRadioIn, 
-            ref BLUETOOTH_DEVICE_INFO pbtdiInout, 
-            in BLUETOOTH_OOB_DATA_INFO pbtOobData,
-            AUTHENTICATION_REQUIREMENTS authenticationRequirement);
-
-        [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothEnumerateInstalledServices(
             SafeObjectHandle hRadio, 
             in BLUETOOTH_DEVICE_INFO pbtdi, 
@@ -260,17 +245,6 @@ namespace Shared.Windows
         public static extern bool BluetoothEnableDiscovery(
             SafeObjectHandle hRadio,
             [MarshalAs(UnmanagedType.Bool)] bool fEnabled);
-
-        public enum AUTHENTICATION_REQUIREMENTS : uint
-        {
-            MITMProtectionNotRequired = 0x00,
-            MITMProtectionRequired = 0x01,
-            MITMProtectionNotRequiredBonding = 0x02,
-            MITMProtectionRequiredBonding = 0x03,
-            MITMProtectionNotRequiredGeneralBonding = 0x04,
-            MITMProtectionRequiredGeneralBonding = 0x05,
-            MITMProtectionNotDefined = 0xff
-        };
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BLUETOOTH_DEVICE_INFO
@@ -441,16 +415,6 @@ namespace Shared.Windows
                     dwSize = (uint)Marshal.SizeOf(typeof(BLUETOOTH_RADIO_INFO))
                 };
             }
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct BLUETOOTH_OOB_DATA_INFO
-        {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public byte[] C;
-
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            public byte[] R;
         }
         #endregion
 
