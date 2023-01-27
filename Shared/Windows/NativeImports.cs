@@ -189,14 +189,34 @@ namespace Shared.Windows
             public uint pid;
         };
 
+        /// <summary>
+        /// A safe handle for SetupDi device info lists.
+        /// </summary>
+        public class SafeDeviceInfoListHandle : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            public SafeDeviceInfoListHandle() : base(true)
+            {
+            }
+
+            public SafeDeviceInfoListHandle(IntPtr existingHandle, bool ownsHandle) : base(ownsHandle)
+            {
+                SetHandle(existingHandle);
+            }
+
+            protected override bool ReleaseHandle()
+            {
+                return SetupDiDestroyDeviceInfoList(handle);
+            }
+        }
+
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern IntPtr SetupDiCreateDeviceInfoList(
+        public static extern SafeDeviceInfoListHandle SetupDiCreateDeviceInfoList(
           ref Guid classId,
           IntPtr hwndParent
         );
         
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern IntPtr SetupDiGetClassDevs(
+        public static extern SafeDeviceInfoListHandle SetupDiGetClassDevs(
             ref Guid ClassGuid,
             [MarshalAs(UnmanagedType.LPTStr)] string Enumerator,
             IntPtr hwndParent,
@@ -205,7 +225,7 @@ namespace Shared.Windows
 
         [DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiOpenDeviceInfo(
-            IntPtr DevInfoSet,
+            SafeDeviceInfoListHandle DevInfoSet,
             string Enumerator,
             IntPtr hWndParent,
             uint Flags,
@@ -214,7 +234,7 @@ namespace Shared.Windows
 
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiEnumDeviceInterfaces(
-            IntPtr hDevInfo,
+            SafeDeviceInfoListHandle hDevInfo,
             //ref SP_DEVINFO_DATA devInfo,
             IntPtr devInvo,
             ref Guid interfaceClassGuid,
@@ -224,7 +244,7 @@ namespace Shared.Windows
 
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiGetDeviceInterfaceDetail(
-            IntPtr hDevInfo,
+            SafeDeviceInfoListHandle hDevInfo,
             ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData,
             IntPtr deviceInterfaceDetailData,
             uint deviceInterfaceDetailDataSize,
@@ -233,7 +253,7 @@ namespace Shared.Windows
 
         [DllImport(@"setupapi.dll", SetLastError = true)]
         public static extern bool SetupDiGetDeviceInterfaceDetail(
-            IntPtr hDevInfo,
+            SafeDeviceInfoListHandle hDevInfo,
             ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData,
             ref SP_DEVICE_INTERFACE_DETAIL_DATA deviceInterfaceDetailData,
             uint deviceInterfaceDetailDataSize,
@@ -242,7 +262,7 @@ namespace Shared.Windows
 
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiGetDeviceProperty(
-          IntPtr DeviceInfoSet,
+          SafeDeviceInfoListHandle DeviceInfoSet,
           SP_DEVINFO_DATA DeviceInfoData,
           DEVPROPKEY PropertyKey,
           out ulong PropertyType,

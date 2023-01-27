@@ -1,4 +1,4 @@
-﻿/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
  * === Notes ===
  * 
  * - When using the Toshiba Stack,
@@ -163,7 +163,6 @@ namespace Shared.Windows
         {
             // Assume it is the Microsoft Stack
             BtStack resultStack = BtStack.Microsoft;
-            IntPtr parentDeviceInfo = IntPtr.Zero;
             SP_DEVINFO_DATA parentData = new SP_DEVINFO_DATA();
             parentData.cbSize = (uint)Marshal.SizeOf(typeof(SP_DEVINFO_DATA));
 
@@ -190,7 +189,7 @@ namespace Shared.Windows
 
             Guid g = Guid.Empty;
             HidD_GetHidGuid(out g);
-            parentDeviceInfo = SetupDiCreateDeviceInfoList(ref g, IntPtr.Zero);
+            var parentDeviceInfo = SetupDiCreateDeviceInfoList(ref g, IntPtr.Zero);
 
             // TODO: This fails, something not right
             bool success = SetupDiOpenDeviceInfo(parentDeviceInfo, id, IntPtr.Zero, 0, ref parentData);
@@ -219,14 +218,13 @@ namespace Shared.Windows
                         resultStack = BtStack.Toshiba;
                     }
                 }
-
-                SetupDiDestroyDeviceInfoList(parentDeviceInfo);
             }
             else
             {
                 var error = Marshal.GetLastWin32Error();
-                SetupDiDestroyDeviceInfoList(parentDeviceInfo);
             }
+
+            parentDeviceInfo.Dispose();
 
             return resultStack;
         }
@@ -242,7 +240,7 @@ namespace Shared.Windows
             HidD_GetHidGuid(out guid);
 
             // handle for HID devices
-            IntPtr hDevInfo = SetupDiGetClassDevs(ref guid, null, IntPtr.Zero, (uint)(DIGCF.DeviceInterface | DIGCF.Present));
+            var hDevInfo = SetupDiGetClassDevs(ref guid, null, IntPtr.Zero, (uint)(DIGCF.DeviceInterface | DIGCF.Present));
 
             SP_DEVICE_INTERFACE_DATA diData = new SP_DEVICE_INTERFACE_DATA();
             diData.cbSize = Marshal.SizeOf(diData);
@@ -308,7 +306,7 @@ namespace Shared.Windows
             }
 
             // Clean Up
-            SetupDiDestroyDeviceInfoList(hDevInfo);
+            hDevInfo.Dispose();
 
             return result;
         }
