@@ -1,4 +1,4 @@
-﻿/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
  * === Notes ===
  * 
  * - When using the Toshiba Stack,
@@ -14,6 +14,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
@@ -352,7 +354,7 @@ namespace Shared.Windows
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            System.Diagnostics.Debug.WriteLine("Writing: " + BitConverter.ToString(buffer));
+            Debug.WriteLine("Writing: " + BitConverter.ToString(buffer));
 
             if (UseFullReportSize)
             {
@@ -373,29 +375,23 @@ namespace Shared.Windows
                     nativeOverlap.EventHandle = resetEvent.SafeWaitHandle.DangerousGetHandle();
 
                     // success is most likely to be false which can mean it is being completed asynchronously, in this case we need to wait
-                    bool success = false;
-                    try
-                    {
-                        success = WriteFile(_fileHandle, buffer, (uint)buffer.Length, out written, ref nativeOverlap);
-                    }
-                    catch
-                    {
-                        System.Diagnostics.Debug.WriteLine("caught!");
-                    }
+                    bool success = WriteFile(_fileHandle, buffer, (uint)buffer.Length, out written, ref nativeOverlap);
                     int error = Marshal.GetLastWin32Error();
 
-                    // Wait for the async operation to complete
-                    if (!success && error == 997)
+                    if (!success && error == (int)Win32Error.IoPending)
                     {
-                        resetEvent.WaitOne(8000);
+                        // Wait for the async operation to complete
+                        success = GetOverlappedResult(_fileHandle, in nativeOverlap, out written, true);
+                        error = Marshal.GetLastWin32Error();
                     }
 
-                    // Example for async and callback
-                    //bool success = WriteFileEx(_fileHandle.DangerousGetHandle(), buffer, out written, ref nativeOverlap, 
-                    //    (errorCode, bytesTransfered, nativeOver) =>
-                    //{
-                    //    System.Diagnostics.Debug.Write(errorCode);
-                    //});
+                    if (!success && error != (int)Win32Error.Success)
+                    {
+                        throw new IOException($"{new Win32Exception(error).Message} ({error})");
+                    }
+
+                    // Debug.WriteLineIf(!success, "WriteFile/GetOverlappedResult returned failure but GetLastWin32Error returned success"); // Seems to consistently do this
+                    Debug.WriteLineIf(error != (int)Win32Error.Success, $"WriteFile/GetOverlappedResult returned success but GetLastWin32Error returned \"{new Win32Exception(error).Message}\" ({error})");
                 }
                 else
                 {
@@ -407,31 +403,31 @@ namespace Shared.Windows
 
         public override void WriteByte(byte value)
         {
-            System.Diagnostics.Debug.WriteLine("Writing single byte");
+            Debug.WriteLine("Writing single byte");
             throw new NotSupportedException();
         }
 
         public override void Flush()
         {
-            System.Diagnostics.Debug.WriteLine("Flushing");
+            Debug.WriteLine("Flushing");
             throw new NotImplementedException();
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            System.Diagnostics.Debug.WriteLine("Seeking");
+            Debug.WriteLine("Seeking");
             throw new NotImplementedException();
         }
 
         public override void SetLength(long value)
         {
-            System.Diagnostics.Debug.WriteLine("Setting Length");
+            Debug.WriteLine("Setting Length");
             throw new NotImplementedException();
         }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            System.Diagnostics.Debug.WriteLine("Read");
+            Debug.WriteLine("Read");
             throw new NotImplementedException();
         }
         #endregion
