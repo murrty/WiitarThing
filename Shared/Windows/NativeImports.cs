@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
 namespace Shared.Windows
@@ -102,8 +102,8 @@ namespace Shared.Windows
         /// Async Callback for WriteFileEx
         /// </summary>
         public delegate void WriteFileCompletionDelegate(
-            uint dwErrorCode, 
-            uint dwNumberOfBytesTransfered, 
+            uint dwErrorCode,
+            uint dwNumberOfBytesTransfered,
             ref NativeOverlapped lpOverlapped);
 
         /// <summary>
@@ -111,9 +111,9 @@ namespace Shared.Windows
         /// </summary>
         [DllImport("kernel32.dll", SetLastError = true)]
         public extern static bool WriteFileEx(
-            SafeFileHandle hFile, 
+            SafeFileHandle hFile,
             byte[] lpBuffer,
-            uint nNumberOfBytesToWrite, 
+            uint nNumberOfBytesToWrite,
             ref NativeOverlapped lpOverlapped,
             WriteFileCompletionDelegate lpCompletionRoutine);
 
@@ -239,17 +239,15 @@ namespace Shared.Windows
 
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern SafeDeviceInfoListHandle SetupDiCreateDeviceInfoList(
-          ref Guid classId,
-          IntPtr hwndParent
-        );
-        
+            ref Guid classId,
+            IntPtr hwndParent);
+
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern SafeDeviceInfoListHandle SetupDiGetClassDevs(
             ref Guid ClassGuid,
             [MarshalAs(UnmanagedType.LPTStr)] string Enumerator,
             IntPtr hwndParent,
-            uint Flags
-        );
+            uint Flags);
 
         [DllImport("setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiOpenDeviceInfo(
@@ -257,8 +255,7 @@ namespace Shared.Windows
             string Enumerator,
             IntPtr hWndParent,
             uint Flags,
-            ref SP_DEVINFO_DATA DeviceInfoData
-        );
+            ref SP_DEVINFO_DATA DeviceInfoData);
 
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiEnumDeviceInterfaces(
@@ -267,8 +264,7 @@ namespace Shared.Windows
             IntPtr devInvo,
             ref Guid interfaceClassGuid,
             int memberIndex,
-            ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData
-        );
+            ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData);
 
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiGetDeviceInterfaceDetail(
@@ -290,15 +286,14 @@ namespace Shared.Windows
 
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiGetDeviceProperty(
-          SafeDeviceInfoListHandle DeviceInfoSet,
-          SP_DEVINFO_DATA DeviceInfoData,
-          DEVPROPKEY PropertyKey,
-          out ulong PropertyType,
-          char[] PropertyBuffer,
-          int PropertyBufferSize,
-          out int RequiredSize,
-          uint Flags
-        );
+            SafeDeviceInfoListHandle DeviceInfoSet,
+            SP_DEVINFO_DATA DeviceInfoData,
+            DEVPROPKEY PropertyKey,
+            out ulong PropertyType,
+            char[] PropertyBuffer,
+            int PropertyBufferSize,
+            out int RequiredSize,
+            uint Flags);
 
         [DllImport(@"setupapi.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool SetupDiDestroyDeviceInfoList(
@@ -306,11 +301,11 @@ namespace Shared.Windows
 
         [DllImport("setupapi.dll", CharSet = CharSet.Auto)]
         public static extern int CM_Get_Device_ID(
-           uint dnDevInst,
-           //string buffer,
-           char[] buffer,
-           int bufferLen,
-           int flags);
+            uint dnDevInst,
+            //string buffer,
+            char[] buffer,
+            int bufferLen,
+            int flags);
 
         [DllImport("setupapi.dll")]
         public static extern int CM_Get_Parent(
@@ -320,11 +315,11 @@ namespace Shared.Windows
 
         [DllImport("setupapi.dll", SetLastError = true)]
         public static extern int CM_Get_DevNode_Status(
-            ref int pulStatus, 
-            ref int pulProblemNumber, 
-            int dnDevInst, 
+            ref int pulStatus,
+            ref int pulProblemNumber,
+            int dnDevInst,
             int ulFlags);
-        
+
         #endregion
 
         #region hid.dll
@@ -352,7 +347,7 @@ namespace Shared.Windows
 
         [DllImport("hid.dll")]
         public static extern bool HidD_GetAttributes(
-            SafeFileHandle HidDeviceObject, 
+            SafeFileHandle HidDeviceObject,
             ref HIDD_ATTRIBUTES Attributes);
 
         [DllImport("hid.dll")]
@@ -451,7 +446,7 @@ namespace Shared.Windows
                 };
             }
         }
-        
+
         [StructLayout(LayoutKind.Sequential)]
         public struct BLUETOOTH_FIND_RADIO_PARAMS
         {
@@ -541,58 +536,60 @@ namespace Shared.Windows
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothGetRadioInfo(
-            SafeObjectHandle hRadio, 
+            SafeObjectHandle hRadio,
             ref BLUETOOTH_RADIO_INFO pRadioInfo);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern SafeBluetoothRadioHandle BluetoothFindFirstRadio(
-            in BLUETOOTH_FIND_RADIO_PARAMS pbtfrp, 
+            in BLUETOOTH_FIND_RADIO_PARAMS pbtfrp,
             out SafeObjectHandle phRadio);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern bool BluetoothFindNextRadio(
-            SafeBluetoothRadioHandle hFind, 
+            SafeBluetoothRadioHandle hFind,
             out SafeObjectHandle phRadio);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
-        public static extern bool BluetoothFindRadioClose(IntPtr hFind);
+        public static extern bool BluetoothFindRadioClose(
+            IntPtr hFind);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern SafeBluetoothDeviceHandle BluetoothFindFirstDevice(
-            in BLUETOOTH_DEVICE_SEARCH_PARAMS searchParams, 
+            in BLUETOOTH_DEVICE_SEARCH_PARAMS searchParams,
             ref BLUETOOTH_DEVICE_INFO deviceInfo);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern bool BluetoothFindNextDevice(
-            SafeBluetoothDeviceHandle hFind, 
+            SafeBluetoothDeviceHandle hFind,
             ref BLUETOOTH_DEVICE_INFO pbtdi);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
-        public static extern bool BluetoothFindDeviceClose(IntPtr hFind);
+        public static extern bool BluetoothFindDeviceClose(
+            IntPtr hFind);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothRemoveDevice(in ulong pAddress);
 
         [DllImport("bthprops.cpl", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern uint BluetoothAuthenticateDevice(
-            IntPtr hwndParent, 
-            SafeObjectHandle hRadio, 
-            in BLUETOOTH_DEVICE_INFO pbtdi, 
-            [MarshalAs(UnmanagedType.LPWStr)] string pszPasskey, 
+            IntPtr hwndParent,
+            SafeObjectHandle hRadio,
+            in BLUETOOTH_DEVICE_INFO pbtdi,
+            [MarshalAs(UnmanagedType.LPWStr)] string pszPasskey,
             uint ulPasskeyLength);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothEnumerateInstalledServices(
-            SafeObjectHandle hRadio, 
-            in BLUETOOTH_DEVICE_INFO pbtdi, 
-            ref uint pcServiceInout, 
+            SafeObjectHandle hRadio,
+            in BLUETOOTH_DEVICE_INFO pbtdi,
+            ref uint pcServiceInout,
             Guid[] pGuidServices);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
         public static extern uint BluetoothSetServiceState(
-            SafeObjectHandle hRadio, 
-            in BLUETOOTH_DEVICE_INFO pbtdi, 
-            in Guid pGuidService, 
+            SafeObjectHandle hRadio,
+            in BLUETOOTH_DEVICE_INFO pbtdi,
+            in Guid pGuidService,
             [MarshalAs(UnmanagedType.U4)] BluetoothServiceFlag dwServiceFlags);
 
         [DllImport("bthprops.cpl", SetLastError = true)]
