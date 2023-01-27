@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -10,6 +10,12 @@ namespace Shared.Windows
 {
     public static class NativeImports
     {
+        public enum Win32Error : int
+        {
+            Success = 0,
+            IoPending = 997,
+        }
+
         #region kernel32.dll
 
         [Flags]
