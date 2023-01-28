@@ -293,7 +293,7 @@ namespace WiitarThing
                     {
                         Thread.Sleep(1000);
                         if (_refreshToken.IsCancellationRequested) break;
-                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => Refresh()));
+                        Application.Current?.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => Refresh()));
                     }
 
                     _refreshing = false;
