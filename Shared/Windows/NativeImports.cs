@@ -95,7 +95,7 @@ namespace Shared.Windows
         /// Use to fix sending data to TR controllers
         /// (broken in Windows 7)
         /// </summary>
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public extern static bool WriteFile(
             SafeFileHandle hFile,            // HANDLE
@@ -127,7 +127,7 @@ namespace Shared.Windows
         /// <summary>
         /// Gets the results of an overlapped operation
         /// </summary>
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public extern static bool GetOverlappedResult(
             SafeFileHandle hFile,                // HANDLE
@@ -329,7 +329,7 @@ namespace Shared.Windows
             uint dnDevInst,
             int ulFlags);
 
-        [DllImport("setupapi.dll", SetLastError = true)]
+        [DllImport("setupapi.dll")]
         public static extern int CM_Get_DevNode_Status(
             out int pulStatus,
             out int pulProblemNumber,
@@ -361,12 +361,12 @@ namespace Shared.Windows
         public static extern void HidD_GetHidGuid(
             out Guid gHid);
 
-        [DllImport("hid.dll")]
+        [DllImport("hid.dll", SetLastError = true)]
         public static extern bool HidD_GetAttributes(
             SafeFileHandle HidDeviceObject,
             out HIDD_ATTRIBUTES Attributes);
 
-        [DllImport("hid.dll")]
+        [DllImport("hid.dll", SetLastError = true)]
         public extern static bool HidD_SetOutputReport(
             SafeFileHandle HidDeviceObject,
             byte[] lpReportBuffer,
@@ -550,7 +550,7 @@ namespace Shared.Windows
             }
         }
 
-        [DllImport("bthprops.cpl", SetLastError = true)]
+        [DllImport("bthprops.cpl")]
         public static extern uint BluetoothGetRadioInfo(
             SafeObjectHandle hRadio,
             ref BLUETOOTH_RADIO_INFO pRadioInfo);
@@ -583,10 +583,10 @@ namespace Shared.Windows
         public static extern bool BluetoothFindDeviceClose(
             IntPtr hFind);
 
-        [DllImport("bthprops.cpl", SetLastError = true)]
+        [DllImport("bthprops.cpl")]
         public static extern uint BluetoothRemoveDevice(in ulong pAddress);
 
-        [DllImport("bthprops.cpl", SetLastError = true, CharSet = CharSet.Unicode)]
+        [DllImport("bthprops.cpl", CharSet = CharSet.Unicode)]
         public static extern uint BluetoothAuthenticateDevice(
             IntPtr hwndParent,
             SafeObjectHandle hRadio,
@@ -594,14 +594,14 @@ namespace Shared.Windows
             [MarshalAs(UnmanagedType.LPWStr)] string pszPasskey,
             uint ulPasskeyLength);
 
-        [DllImport("bthprops.cpl", SetLastError = true)]
+        [DllImport("bthprops.cpl")]
         public static extern uint BluetoothEnumerateInstalledServices(
             SafeObjectHandle hRadio,
             in BLUETOOTH_DEVICE_INFO pbtdi,
             ref uint pcServiceInout,
             Guid[] pGuidServices);
 
-        [DllImport("bthprops.cpl", SetLastError = true)]
+        [DllImport("bthprops.cpl")]
         public static extern uint BluetoothSetServiceState(
             SafeObjectHandle hRadio,
             in BLUETOOTH_DEVICE_INFO pbtdi,
