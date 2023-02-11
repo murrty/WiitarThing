@@ -895,6 +895,9 @@ namespace WiitarThing
 
         private void btnIdentify_Click(object sender, RoutedEventArgs e)
         {
+            if (identifying)
+                return;
+
             bool wasConnected = Connected;
 
             if (wasConnected || ((device.DataStream as WinBtStream).OpenConnection() && device.DataStream.CanRead))
