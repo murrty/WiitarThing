@@ -357,6 +357,38 @@ namespace Shared.Windows
             }
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct HIDP_CAPS
+        {
+            public ushort Usage;
+            public ushort UsagePage;
+            public ushort InputReportByteLength;
+            public ushort OutputReportByteLength;
+            public ushort FeatureReportByteLength;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 27)]
+            private ushort[] unused; // There's more fields here but we don't use them
+        };
+
+        /// <summary>
+        /// A safe handle for HID preparsed data.
+        /// </summary>
+        public class SafeHidPreparsedDataHandle : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            public SafeHidPreparsedDataHandle() : base(true)
+            {
+            }
+
+            public SafeHidPreparsedDataHandle(IntPtr existingHandle, bool ownsHandle) : base(ownsHandle)
+            {
+                SetHandle(existingHandle);
+            }
+
+            protected override bool ReleaseHandle()
+            {
+                return HidD_FreePreparsedData(handle);
+            }
+        }
+
         [DllImport(@"hid.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern void HidD_GetHidGuid(
             out Guid gHid);
@@ -367,10 +399,34 @@ namespace Shared.Windows
             out HIDD_ATTRIBUTES Attributes);
 
         [DllImport("hid.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        public extern static bool HidD_GetInputReport(
+            SafeFileHandle HidDeviceObject,
+            byte[] ReportBuffer,
+            uint ReportBufferLength);
+
+        [DllImport("hid.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.U1)]
         public extern static bool HidD_SetOutputReport(
             SafeFileHandle HidDeviceObject,
             byte[] lpReportBuffer,
             uint ReportBufferLength);
+
+        [DllImport("hid.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        public extern static bool HidD_GetPreparsedData(
+            SafeFileHandle HidDeviceObject,
+            out SafeHidPreparsedDataHandle PreparsedData);
+
+        [DllImport("hid.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        public extern static bool HidD_FreePreparsedData(
+            IntPtr PreparsedData);
+
+        [DllImport("hid.dll")]
+        public extern static int HidP_GetCaps(
+            SafeHidPreparsedDataHandle PreparsedData,
+            out HIDP_CAPS Capabilities);
 
         #endregion
 
