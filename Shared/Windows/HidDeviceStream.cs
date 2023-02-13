@@ -15,8 +15,6 @@ namespace Shared.Windows
         private string m_path;
         private FileShare m_sharingMode;
         private SafeFileHandle m_handle;
-        private readonly object m_readLock = new object();
-        private readonly object m_writeLock = new object();
 
         private byte[] m_readBuffer;
         private byte[] m_writeBuffer;
@@ -156,24 +154,21 @@ namespace Shared.Windows
             bool success;
             uint bytesRead;
             int result;
-            lock (m_readLock)
+            if (UseHidD)
             {
-                if (UseHidD)
-                {
-                    success = HidD_GetInputReport(m_handle, m_readBuffer, (uint)m_readBuffer.Length);
-                    bytesRead = (uint)InputLength;
-                }
-                else
-                {
-                    success = ReadFile(m_handle, m_readBuffer, (uint)m_readBuffer.Length, out bytesRead, ref overlapped);
-                }
+                success = HidD_GetInputReport(m_handle, m_readBuffer, (uint)m_readBuffer.Length);
+                bytesRead = (uint)InputLength;
+            }
+            else
+            {
+                success = ReadFile(m_handle, m_readBuffer, (uint)m_readBuffer.Length, out bytesRead, ref overlapped);
+            }
 
+            result = Marshal.GetLastWin32Error();
+            if (result == (int)Win32Error.IoPending)
+            {
+                success = GetOverlappedResult(m_handle, in overlapped, out bytesRead, true);
                 result = Marshal.GetLastWin32Error();
-                if (result == (int)Win32Error.IoPending)
-                {
-                    success = GetOverlappedResult(m_handle, in overlapped, out bytesRead, true);
-                    result = Marshal.GetLastWin32Error();
-                }
             }
 
             if (!success && result != (int)Win32Error.Success)
@@ -220,24 +215,21 @@ namespace Shared.Windows
             bool success;
             int result;
             uint bytesWritten;
-            lock (m_writeLock)
+            if (UseHidD)
             {
-                if (UseHidD)
-                {
-                    success = HidD_SetOutputReport(m_handle, m_writeBuffer, (uint)m_writeBuffer.Length);
-                    bytesWritten = (uint)OutputLength;
-                }
-                else
-                {
-                    success = WriteFile(m_handle, m_writeBuffer, (uint)m_writeBuffer.Length, out bytesWritten, ref overlapped);
-                }
+                success = HidD_SetOutputReport(m_handle, m_writeBuffer, (uint)m_writeBuffer.Length);
+                bytesWritten = (uint)OutputLength;
+            }
+            else
+            {
+                success = WriteFile(m_handle, m_writeBuffer, (uint)m_writeBuffer.Length, out bytesWritten, ref overlapped);
+            }
 
+            result = Marshal.GetLastWin32Error();
+            if (result == (int)Win32Error.IoPending)
+            {
+                success = GetOverlappedResult(m_handle, in overlapped, out bytesWritten, true);
                 result = Marshal.GetLastWin32Error();
-                if (result == (int)Win32Error.IoPending)
-                {
-                    success = GetOverlappedResult(m_handle, in overlapped, out bytesWritten, true);
-                    result = Marshal.GetLastWin32Error();
-                }
             }
 
             if (!success && result != (int)Win32Error.Success)
