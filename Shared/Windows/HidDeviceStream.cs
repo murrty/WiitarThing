@@ -15,7 +15,8 @@ namespace Shared.Windows
         private string m_path;
         private FileShare m_sharingMode;
         private SafeFileHandle m_handle;
-        private readonly object m_lock = new object();
+        private readonly object m_readLock = new object();
+        private readonly object m_writeLock = new object();
 
         private byte[] m_readBuffer;
         private byte[] m_writeBuffer;
@@ -54,8 +55,10 @@ namespace Shared.Windows
         public static bool TryCreate(string path, out HidDeviceStream stream, FileShare sharingMode = FileShare.ReadWrite)
         {
             stream = new HidDeviceStream();
-            if (stream.Initialize(path, sharingMode) != (int)Win32Error.Success)
+            int result = stream.Initialize(path, sharingMode);
+            if (result != (int)Win32Error.Success)
             {
+                Debug.WriteLine($"Could not create HID device stream for {path}: {new Win32Exception(result).Message} ({result})");
                 stream = null;
                 return false;
             }
@@ -65,22 +68,31 @@ namespace Shared.Windows
 
         private int Initialize(string path, FileShare sharingMode)
         {
+            int result;
             m_path = path;
             m_sharingMode = sharingMode;
-            if (!OpenDevice(path, out var m_handle, sharingMode) ||
-                !HidD_GetPreparsedData(m_handle, out var hidData))
+            if (!OpenDevice(path, out var m_handle, sharingMode))
             {
                 return Marshal.GetLastWin32Error();
             }
 
+            if (!HidD_GetPreparsedData(m_handle, out var hidData))
+            {
+                result = Marshal.GetLastWin32Error();
+                Debug.WriteLine($"Could not get preparsed data for {path}: {new Win32Exception(result).Message} ({result})");
+                return result;
+            }
+
             if (hidData == null || hidData.IsInvalid)
             {
+                Debug.WriteLine($"Preparsed data handle is invalid for {path}");
                 return (int)Win32Error.InvalidHandle;
             }
 
-            int result = HidP_GetCaps(hidData, out var caps);
-            if (result != (int)Win32Error.Success)
+            result = HidP_GetCaps(hidData, out var caps);
+            if (result < 0) // HRESULT, not Win32 error
             {
+                Debug.WriteLine($"Could not get HID capabilities for {path}: {new Win32Exception(result).Message} ({result})");
                 return result;
             }
 
@@ -96,7 +108,7 @@ namespace Shared.Windows
         private static bool OpenDevice(string path, out SafeFileHandle handle, FileShare sharingMode = FileShare.ReadWrite)
         {
             handle = CreateFile(path, FileAccess.ReadWrite, sharingMode, IntPtr.Zero, FileMode.Open, EFileAttributes.Overlapped, IntPtr.Zero);
-            bool result = handle != null && handle.IsInvalid;
+            bool result = handle != null && !handle.IsInvalid;
             Debug.WriteLineIf(!result, $"Could not create file for path {path}: {new Win32Exception(Marshal.GetLastWin32Error()).Message} ({Marshal.GetLastWin32Error()})");
             return result;
         }
@@ -133,6 +145,8 @@ namespace Shared.Windows
             if (buffer.Length < 1 || count < 1)
                 return 0;
 
+            Debug.WriteLine($"Reading {count} bytes");
+
             var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var overlapped = new NativeOverlapped
             {
@@ -142,7 +156,7 @@ namespace Shared.Windows
             bool success;
             uint bytesRead;
             int result;
-            lock (m_lock)
+            lock (m_readLock)
             {
                 if (UseHidD)
                 {
@@ -170,6 +184,8 @@ namespace Shared.Windows
             Debug.WriteLineIf(!success, "Result was failure but GetLastWin32Error returned success");
             Debug.WriteLineIf(result != (int)Win32Error.Success, $"Result was success but GetLastWin32Error returned {result} (\"{new Win32Exception(result).Message}\")");
 
+            Debug.WriteLine($"Read: {BitConverter.ToString(m_readBuffer)}");
+
             Array.Copy(m_readBuffer, 0, buffer, offset, Math.Min(m_readBuffer.Length, buffer.Length - offset));
             return (int)bytesRead;
         }
@@ -193,6 +209,8 @@ namespace Shared.Windows
             m_writeBuffer.Initialize();
             Array.Copy(buffer, offset, m_writeBuffer, 0, Math.Min(m_writeBuffer.Length, buffer.Length - offset));
 
+            Debug.WriteLine($"Writing: {BitConverter.ToString(m_writeBuffer)}");
+
             var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var overlapped = new NativeOverlapped
             {
@@ -201,21 +219,23 @@ namespace Shared.Windows
 
             bool success;
             int result;
-            lock (m_lock)
+            uint bytesWritten;
+            lock (m_writeLock)
             {
                 if (UseHidD)
                 {
                     success = HidD_SetOutputReport(m_handle, m_writeBuffer, (uint)m_writeBuffer.Length);
+                    bytesWritten = (uint)OutputLength;
                 }
                 else
                 {
-                    success = WriteFile(m_handle, m_writeBuffer, (uint)m_writeBuffer.Length, out _, ref overlapped);
+                    success = WriteFile(m_handle, m_writeBuffer, (uint)m_writeBuffer.Length, out bytesWritten, ref overlapped);
                 }
 
                 result = Marshal.GetLastWin32Error();
                 if (result == (int)Win32Error.IoPending)
                 {
-                    success = GetOverlappedResult(m_handle, in overlapped, out _, true);
+                    success = GetOverlappedResult(m_handle, in overlapped, out bytesWritten, true);
                     result = Marshal.GetLastWin32Error();
                 }
             }
@@ -227,6 +247,8 @@ namespace Shared.Windows
 
             Debug.WriteLineIf(!success, "Result was failure but GetLastWin32Error returned success");
             Debug.WriteLineIf(result != (int)Win32Error.Success, $"Result was success but GetLastWin32Error returned {result} (\"{new Win32Exception(result).Message}\")");
+
+            Debug.WriteLine($"Wrote {bytesWritten} bytes");
         }
 
         // TODO
