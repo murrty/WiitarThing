@@ -71,7 +71,6 @@
     <Compile Include="Calibrations.cs" />
     <Compile Include="ComponentStructs.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="DeviceManagement.cs" />
     <Compile Include="Enumerators.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="Nintroller.cs" />
