@@ -136,6 +136,13 @@ namespace Shared
             return result;
         }
 
+        private static readonly DEVPROPKEY DEVPKEY_Device_DriverProvider = new DEVPROPKEY
+        {
+            // DEVPROP_TYPE_STRING
+            fmtid = new Guid(0xa8b865dd, 0x2e3d, 0x4094, 0xad, 0x97, 0xe5, 0x93, 0xa7, 0xc, 0x75, 0xd6),
+            pid = 9
+        };
+
         public static BtStack CheckBtStack(SP_DEVINFO_DATA data)
         {
             // Assume it is the Microsoft Stack
@@ -175,14 +182,10 @@ namespace Shared
                 int requiredSize = 0;
                 ulong devicePropertyType;
 
-                DEVPROPKEY requestedKey = new DEVPROPKEY();
-                requestedKey.fmtid = new Guid(0xa8b865dd, 0x2e3d, 0x4094, 0xad, 0x97, 0xe5, 0x93, 0xa7, 0xc, 0x75, 0xd6);
-                requestedKey.pid = 9;
-
-                SetupDiGetDeviceProperty(parentDeviceInfo, parentData, requestedKey, out devicePropertyType, null, 0, out requiredSize, 0);
+                SetupDiGetDeviceProperty(parentDeviceInfo, parentData, DEVPKEY_Device_DriverProvider, out devicePropertyType, null, 0, out requiredSize, 0);
 
                 StringBuilder buffer = new StringBuilder(requiredSize);
-                success = SetupDiGetDeviceProperty(parentDeviceInfo, parentData, requestedKey, out devicePropertyType, buffer, requiredSize, out requiredSize, 0);
+                success = SetupDiGetDeviceProperty(parentDeviceInfo, parentData, DEVPKEY_Device_DriverProvider, out devicePropertyType, buffer, requiredSize, out requiredSize, 0);
 
                 if (success)
                 {
