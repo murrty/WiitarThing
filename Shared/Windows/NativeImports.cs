@@ -13,6 +13,7 @@ namespace Shared.Windows
         public enum Win32Error : int
         {
             Success = 0,
+            InvalidHandle = 6,
             IoPending = 997,
         }
 

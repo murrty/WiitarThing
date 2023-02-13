@@ -184,13 +184,17 @@ namespace WiitarThing
                 }
                 else
                 {
-                    var stream = new WinBtStream(
+                    if (!HidDeviceStream.TryCreate(
                         hid.DevicePath, 
-                        UserPrefs.Instance.toshibaMode ? DeviceInfo.BtStack.Toshiba : DeviceInfo.BtStack.Microsoft, 
-                        UserPrefs.Instance.greedyMode ? FileShare.None : FileShare.ReadWrite);
+                        out var stream,
+                        UserPrefs.Instance.greedyMode || UserPrefs.Instance.toshibaMode ? FileShare.None : FileShare.ReadWrite))
+                    {
+                        continue;
+                    }
+
                     Nintroller n = new Nintroller(stream, hid.Type);
 
-                    if (stream.OpenConnection() && stream.CanRead)
+                    if (stream.CanRead)
                     {
                         deviceList.Add(new DeviceControl(n, hid.DevicePath));
                         deviceList[deviceList.Count - 1].OnConnectStateChange += DeviceControl_OnConnectStateChange;
@@ -237,7 +241,7 @@ namespace WiitarThing
                 {
                     if (Holders.XInputHolder.availabe[target] && target < 4)
                     {
-                        if (thingy.Value.Device.Connected || (thingy.Value.Device.DataStream as WinBtStream).OpenConnection())
+                        if (thingy.Value.Device.Connected || (thingy.Value.Device.DataStream as HidDeviceStream).Open())
                         {
                             thingy.Value.targetXDevice = target + 1;
                             thingy.Value.ConnectionState = DeviceState.Connected_XInput;
@@ -268,7 +272,7 @@ namespace WiitarThing
             {
                 if (Holders.XInputHolder.availabe[target] && target < 4)
                 {
-                    if (d.Value.Device.Connected || (d.Value.Device.DataStream as WinBtStream).OpenConnection())
+                    if (d.Value.Device.Connected || (d.Value.Device.DataStream as HidDeviceStream).Open())
                     {
                         d.Value.targetXDevice = target + 1;
                         d.Value.ConnectionState = DeviceState.Connected_XInput;
@@ -325,12 +329,6 @@ namespace WiitarThing
             menu_NoSharing.IsChecked = UserPrefs.Instance.greedyMode;
             menu_AutoRefresh.IsChecked = UserPrefs.Instance.autoRefresh;
             menu_MsBluetooth.IsChecked = !UserPrefs.Instance.toshibaMode;
-
-            if (UserPrefs.Instance.greedyMode)
-            {
-                WinBtStream.OverrideSharingMode = true;
-                WinBtStream.OverridenFileShare = FileShare.None;
-            }
 
             Refresh();
             AutoRefresh(menu_AutoRefresh.IsChecked && ApplicationIsActivated());
@@ -532,11 +530,6 @@ namespace WiitarThing
             menu_NoSharing.IsChecked = !menu_NoSharing.IsChecked;
             UserPrefs.Instance.greedyMode = menu_NoSharing.IsChecked;
             UserPrefs.SavePrefs();
-            WinBtStream.OverrideSharingMode = UserPrefs.Instance.greedyMode;
-            if (UserPrefs.Instance.greedyMode)
-            {
-                WinBtStream.OverridenFileShare = FileShare.None;
-            }
         }
 
         private void menu_AutoRefresh_Click(object sender, RoutedEventArgs e)
@@ -556,7 +549,6 @@ namespace WiitarThing
         private void menu_MsBluetooth_Click(object sender, RoutedEventArgs e)
         {
             menu_MsBluetooth.IsChecked = !menu_MsBluetooth.IsChecked;
-            WinBtStream.ForceToshibaMode = !menu_MsBluetooth.IsChecked;
             UserPrefs.Instance.toshibaMode = !menu_MsBluetooth.IsChecked;
             UserPrefs.SavePrefs();
         }
