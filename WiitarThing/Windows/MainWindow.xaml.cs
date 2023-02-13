@@ -155,7 +155,7 @@ namespace WiitarThing
 
         private void Refresh()
         {
-            hidList = WinBtStream.GetPaths();
+            hidList = DeviceInfo.GetPaths();
             List<KeyValuePair<int, DeviceControl>> connectSeq = new List<KeyValuePair<int, DeviceControl>>();
             
             foreach (var hid in hidList)
@@ -186,7 +186,7 @@ namespace WiitarThing
                 {
                     var stream = new WinBtStream(
                         hid.DevicePath, 
-                        UserPrefs.Instance.toshibaMode ? WinBtStream.BtStack.Toshiba : WinBtStream.BtStack.Microsoft, 
+                        UserPrefs.Instance.toshibaMode ? DeviceInfo.BtStack.Toshiba : DeviceInfo.BtStack.Microsoft, 
                         UserPrefs.Instance.greedyMode ? FileShare.None : FileShare.ReadWrite);
                     Nintroller n = new Nintroller(stream, hid.Type);
 
