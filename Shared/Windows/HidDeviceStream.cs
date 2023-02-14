@@ -57,7 +57,6 @@ namespace Shared.Windows
             int result = stream.Initialize(path, sharingMode);
             if (result != (int)Win32Error.Success)
             {
-                Debug.WriteLine($"Could not create HID device stream for {path}: {new Win32Exception(result).Message} ({result})");
                 stream = null;
                 return false;
             }
@@ -144,8 +143,6 @@ namespace Shared.Windows
             if (buffer.Length < 1 || count < 1)
                 return 0;
 
-            Debug.WriteLine($"Reading {count} bytes");
-
             var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
             var overlapped = new NativeOverlapped
             {
@@ -205,21 +202,19 @@ namespace Shared.Windows
 
             bool success;
             int result;
-            uint bytesWritten;
             if (UseHidD)
             {
                 success = HidD_SetOutputReport(m_handle, m_writeBuffer, (uint)m_writeBuffer.Length);
-                bytesWritten = (uint)OutputLength;
             }
             else
             {
-                success = WriteFile(m_handle, m_writeBuffer, (uint)m_writeBuffer.Length, out bytesWritten, ref overlapped);
+                success = WriteFile(m_handle, m_writeBuffer, (uint)m_writeBuffer.Length, out _, ref overlapped);
             }
 
             result = Marshal.GetLastWin32Error();
             if (result == (int)Win32Error.IoPending)
             {
-                success = GetOverlappedResult(m_handle, in overlapped, out bytesWritten, true);
+                success = GetOverlappedResult(m_handle, in overlapped, out _, true);
                 result = Marshal.GetLastWin32Error();
             }
 
@@ -230,8 +225,6 @@ namespace Shared.Windows
 
             Debug.WriteLineIf(!success, "Result was failure but GetLastWin32Error returned success");
             Debug.WriteLineIf(result != (int)Win32Error.Success, $"Result was success but GetLastWin32Error returned {result} (\"{new Win32Exception(result).Message}\")");
-
-            Debug.WriteLine($"Wrote {bytesWritten} bytes");
         }
 
         public override void Flush() { }

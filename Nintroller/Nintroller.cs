@@ -577,7 +577,6 @@ namespace NintrollerLib
                 case InputReport.Status:
                     #region Parse Status
                     Log("Status Report");
-                    Log(BitConverter.ToString(report));
                     // core buttons can be parsed if desired
 
                     switch (_statusType)
@@ -651,7 +650,6 @@ namespace NintrollerLib
                 case InputReport.ReadMem:
                     #region Parse ReadMem
                     Log("Read Memory Report | " + _readType.ToString());
-                    Log(BitConverter.ToString(report));
 
                     bool noError = (report[3] & 0xF) == 0;
                     if (!noError)
@@ -918,7 +916,6 @@ namespace NintrollerLib
                     if (report[4] == 0x03)
                     {
                         Log("Possible Error with Operation");
-                        Log(BitConverter.ToString(report));
                         return;
                     }
 
@@ -927,7 +924,6 @@ namespace NintrollerLib
                         case AcknowledgementType.NA:
 #region Default Acknowledgement
                             Log("Acknowledgement Report");
-                            Log(BitConverter.ToString(report));
                             // Core buttons can be parsed here
                             // 20 BB BB LF 00 00 VV
                             // 20 = Acknowledgement Report
@@ -1106,7 +1102,6 @@ namespace NintrollerLib
                         default:
                             Log("Unhandled acknowledgement");
                             _ackType = AcknowledgementType.NA;
-                            Log(BitConverter.ToString(report));
                             break;
                     }
 #endregion
