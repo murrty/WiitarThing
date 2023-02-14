@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
+using Shared.Windows;
 
 namespace NintrollerLib
 {
@@ -386,7 +388,8 @@ namespace NintrollerLib
             if (!_reading && _stream != null)
             {
                 _reading = true;
-                ReadAsync();
+                var thread = new Thread(ReadThread);
+                thread.Start();
             }
         }
 
@@ -422,83 +425,34 @@ namespace NintrollerLib
             }
         }
 
-        // Performs an asynchronous read
-        private void ReadAsync()
+        // Performs background reading
+        private async void ReadThread()
         {
-            if (_stream != null && _stream.CanRead)
+            int reportLength = (_stream as HidDeviceStream).InputLength;
+            byte[] readBuffer = new byte[Constants.REPORT_LENGTH];
+            while (_reading)
             {
-                IAsyncResult ar = null;
-                System.Threading.WaitHandle wh = null;
+                if (_stream == null || _stream.CanRead)
+                    return;
 
-                lock (_readingObj)
+                var readTask = _stream.ReadAsync(readBuffer, 0, readBuffer.Length);
+                try
                 {
-                    byte[] readResult = new byte[Constants.REPORT_LENGTH];
-                    
-                    try
+                    if (!readTask.Wait(3000))
                     {
-                        ar = _stream.BeginRead(readResult, 0, readResult.Length, RecieveDataAsync, readResult);
-                        wh = ar.AsyncWaitHandle;
+                        GetStatus();
+                        continue;
                     }
-                    catch (ObjectDisposedException)
-                    {
-                        Log("Can't read, the stream was disposed");
-                    }
-                    catch (IOException e)
-                    {
-                        Log("Error Begining Read, is it not connected?");
-                        StopReading();
-                        Disconnected?.Invoke(this, new DisconnectedEventArgs(e));
-                    }
+                    int bytesRead = await readTask;
+                    ParseReport(readBuffer);
                 }
-
-                // Wait 3 seconds for a response in the background
-                System.Threading.Tasks.Task t = new System.Threading.Tasks.Task(() =>
+                catch (ObjectDisposedException)
                 {
-                    try
-                    {
-                        if (wh != null && !wh.SafeWaitHandle.IsClosed && !wh.WaitOne(3000))
-                        {
-                            // If read is not completed send a status report to check connection status
-                            GetStatus();
-                        }
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        Log("Disposed");
-                    }
-                });
-                t.Start();
-            }
-        }
-
-        // Recieve Data from reading the stream
-        private void RecieveDataAsync (IAsyncResult data)
-        {
-            try
-            {
-                // Convert the result
-                byte[] result = data.AsyncState as byte[];
-
-                // Must be called for each BeginRead()
-                _stream.EndRead(data);
-
-                ParseReport(result);
-
-                // start another read if we are still to be reading
-                if (_reading)
-                {
-                    ReadAsync();
+                    Log("Can't read, the stream was disposed");
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                Log("Async Read Was Cancelled");
-            }
-            catch (IOException e)
-            {
-                Log("IO Error, is the device not connected?");
-                if (_reading || _connected)
+                catch (Exception e)
                 {
+                    Log("Error reading, is it not connected?");
                     StopReading();
                     Disconnected?.Invoke(this, new DisconnectedEventArgs(e));
                 }
