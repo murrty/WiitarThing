@@ -426,10 +426,10 @@ namespace NintrollerLib
         }
 
         // Performs background reading
-        private async void ReadThread()
+        private void ReadThread()
         {
             int reportLength = _stream.InputLength;
-            byte[] readBuffer = new byte[Constants.REPORT_LENGTH];
+            byte[] readBuffer = new byte[reportLength];
             while (_reading)
             {
                 if (_stream == null || !_stream.CanRead)
@@ -437,20 +437,14 @@ namespace NintrollerLib
 
                 try
                 {
-                    var readTask = _stream.ReadAsync(readBuffer, 0, readBuffer.Length);
-                    if (!readTask.Wait(3000))
-                    {
-                        GetStatus();
-                        continue;
-                    }
-                    int bytesRead = await readTask;
+                    _stream.Read(readBuffer, 0, readBuffer.Length);
                     ParseReport(readBuffer);
                 }
                 catch (Exception e)
                 {
                     Log("Error reading: " + e.ToString());
-                    Disconnected?.Invoke(this, new DisconnectedEventArgs(e));
-                    break;
+                    GetStatus();
+                    continue;
                 }
             }
             StopReading();
