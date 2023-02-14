@@ -189,8 +189,11 @@ namespace Shared.Windows
             if (buffer.Length < 1 || count < 1)
                 return;
 
-            m_writeBuffer.Initialize();
             Array.Copy(buffer, offset, m_writeBuffer, 0, Math.Min(m_writeBuffer.Length, buffer.Length - offset));
+            for (int i = buffer.Length - offset; i < m_writeBuffer.Length; i++)
+            {
+                m_writeBuffer[i] = 0;
+            }
 
             Debug.WriteLine($"Writing: {BitConverter.ToString(m_writeBuffer)}");
 
