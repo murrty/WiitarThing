@@ -443,18 +443,26 @@ namespace NintrollerLib
                     if (!readTask.Wait(3000))
                     {
                         // Cancel read and get status to make sure the wiimote is still connected
+                        Log("Read timed out, are we still connected?");
                         cancel.Cancel();
+                        cancel.Dispose();
+                        cancel = new CancellationTokenSource();
                         GetStatus();
                         continue;
                     }
-                    await readTask;
+                    int bytesRead = await readTask;
+                    if (bytesRead < 1)
+                    {
+                        Log("No data read!");
+                        continue;
+                    }
                     ParseReport(readBuffer);
                 }
                 catch (Exception e)
                 {
                     Log("Error reading: " + e.ToString());
-                    Disconnected?.Invoke(this, new DisconnectedEventArgs(e));
-                    break;
+                    GetStatus();
+                    continue;
                 }
             }
             cancel.Dispose();
@@ -1145,6 +1153,12 @@ namespace NintrollerLib
                         {
                             Debug.WriteLine("State Update Exception: " + ex.ToString());
                         }
+                    }
+                    else
+                    {
+                        Log("State is null! Requesting status");
+                        _currentType = ControllerType.Unknown;
+                        GetStatus();
                     }
                     break;
 #endregion
