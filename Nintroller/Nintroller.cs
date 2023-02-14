@@ -47,6 +47,7 @@ namespace NintrollerLib
         private HidDeviceStream  _stream;                    // Read and Write Stream
         private bool             _reading    = false;        // true if actively reading
         private readonly object  _readingObj = new object(); // for locking/blocking
+        private readonly object  _writingObj = new object(); // for locking/blocking
         
         // help with parsing Reports
         private AcknowledgementType _ackType    = AcknowledgementType.NA;
@@ -516,15 +517,18 @@ namespace NintrollerLib
                 return;
             }
             
-            try
+            lock (_writingObj)
             {
-                _stream.Write(report, 0, report.Length);
-            }
-            catch (Exception ex)
-            {
-                Log("Error while writing to the stream: " + ex.ToString());
-                StopReading();
-                Disconnected?.Invoke(this, new DisconnectedEventArgs(ex));
+                try
+                {
+                    _stream.Write(report, 0, report.Length);
+                }
+                catch (Exception ex)
+                {
+                    Log("Error while writing to the stream: " + ex.ToString());
+                    StopReading();
+                    Disconnected?.Invoke(this, new DisconnectedEventArgs(ex));
+                }
             }
         }
 
