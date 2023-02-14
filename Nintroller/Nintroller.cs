@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -1136,11 +1136,7 @@ namespace NintrollerLib
 
                         try
                         {
-                            // got an access violation here once
-                            //StateUpdate(this, arg);
-
-                            // let's try not including the sender
-                            StateUpdate(null, arg);
+                            StateUpdate(this, arg);
                         }
                         catch (Exception ex)
                         {
