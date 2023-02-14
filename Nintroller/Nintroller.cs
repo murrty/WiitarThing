@@ -44,7 +44,7 @@ namespace NintrollerLib
         private bool               _led1, _led2, _led3, _led4;
 
         // Read/Writing Variables
-        private Stream           _stream;                    // Read and Write Stream
+        private HidDeviceStream  _stream;                    // Read and Write Stream
         private bool             _reading    = false;        // true if actively reading
         private readonly object  _readingObj = new object(); // for locking/blocking
         
@@ -63,7 +63,7 @@ namespace NintrollerLib
         /// <summary>
         /// The data stream to the controller.
         /// </summary>
-        public Stream DataStream { get { return _stream; } }
+        public HidDeviceStream DataStream { get { return _stream; } }
         /// <summary>
         /// The type of controller this has been identified as
         /// </summary>
@@ -298,7 +298,7 @@ namespace NintrollerLib
         /// Creates an instance using the provided data stream.
         /// </summary>
         /// <param name="dataStream">Stream to the controller.</param>
-        public Nintroller(Stream dataStream)
+        public Nintroller(HidDeviceStream dataStream)
         {
             _state = null;
             _stream = dataStream;
@@ -309,7 +309,7 @@ namespace NintrollerLib
         /// </summary>
         /// <param name="dataStream">Stream to the controller.</param>
         /// <param name="hintType">Expected type of the controller.</param>
-        public Nintroller(Stream dataStream, ControllerType hintType) : this(dataStream)
+        public Nintroller(HidDeviceStream dataStream, ControllerType hintType) : this(dataStream)
         {
             _currentType = hintType;
         }
@@ -385,7 +385,7 @@ namespace NintrollerLib
             _connected = true;
             
             // kickoff the reading process if it hasn't started already
-            if (!_reading && _stream != null)
+            if (!_reading && _stream != null && _stream.Open())
             {
                 _reading = true;
                 var thread = new Thread(ReadThread);
@@ -428,7 +428,7 @@ namespace NintrollerLib
         // Performs background reading
         private async void ReadThread()
         {
-            int reportLength = (_stream as HidDeviceStream).InputLength;
+            int reportLength = _stream.InputLength;
             byte[] readBuffer = new byte[Constants.REPORT_LENGTH];
             while (_reading)
             {

@@ -241,7 +241,7 @@ namespace WiitarThing
                 {
                     if (Holders.XInputHolder.availabe[target] && target < 4)
                     {
-                        if (thingy.Value.Device.Connected || (thingy.Value.Device.DataStream as HidDeviceStream).Open())
+                        if (thingy.Value.Device.Connected || thingy.Value.Device.DataStream.Open())
                         {
                             thingy.Value.targetXDevice = target + 1;
                             thingy.Value.ConnectionState = DeviceState.Connected_XInput;
@@ -272,7 +272,7 @@ namespace WiitarThing
             {
                 if (Holders.XInputHolder.availabe[target] && target < 4)
                 {
-                    if (d.Value.Device.Connected || (d.Value.Device.DataStream as HidDeviceStream).Open())
+                    if (d.Value.Device.Connected || d.Value.Device.DataStream.Open())
                     {
                         d.Value.targetXDevice = target + 1;
                         d.Value.ConnectionState = DeviceState.Connected_XInput;

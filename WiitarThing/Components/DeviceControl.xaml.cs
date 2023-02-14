@@ -862,7 +862,7 @@ namespace WiitarThing
             if (Device.Type != ControllerType.ProController)
                 MessageBox.Show("Press 1+2 on the Wii remote and press OK to continue.", "Connect Wii Remote", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            if ((device.DataStream as HidDeviceStream).Open() && device.DataStream.CanRead)
+            if (device.DataStream.Open() && device.DataStream.CanRead)
             {
                 int tmp = 0;
                 if (int.TryParse(((MenuItem)sender).Name.Replace("XOption", ""), out tmp))
@@ -900,7 +900,7 @@ namespace WiitarThing
 
             bool wasConnected = Connected;
 
-            if (wasConnected || ((device.DataStream as HidDeviceStream).Open() && device.DataStream.CanRead))
+            if (wasConnected || (device.DataStream.Open() && device.DataStream.CanRead))
             {
                 if (!wasConnected)
                     device.BeginReading();
