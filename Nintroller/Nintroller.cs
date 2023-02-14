@@ -435,9 +435,9 @@ namespace NintrollerLib
                 if (_stream == null || _stream.CanRead)
                     return;
 
-                var readTask = _stream.ReadAsync(readBuffer, 0, readBuffer.Length);
                 try
                 {
+                    var readTask = _stream.ReadAsync(readBuffer, 0, readBuffer.Length);
                     if (!readTask.Wait(3000))
                     {
                         GetStatus();
@@ -446,13 +446,9 @@ namespace NintrollerLib
                     int bytesRead = await readTask;
                     ParseReport(readBuffer);
                 }
-                catch (ObjectDisposedException)
-                {
-                    Log("Can't read, the stream was disposed");
-                }
                 catch (Exception e)
                 {
-                    Log("Error reading, is it not connected?");
+                    Log("Error reading: " + e.Message);
                     StopReading();
                     Disconnected?.Invoke(this, new DisconnectedEventArgs(e));
                 }
@@ -532,6 +528,8 @@ namespace NintrollerLib
             catch (Exception ex)
             {
                 Log("Error while writing to the stream: " + ex.Message);
+                StopReading();
+                Disconnected?.Invoke(this, new DisconnectedEventArgs(ex));
             }
         }
 
