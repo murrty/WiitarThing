@@ -235,11 +235,11 @@
     </Compile>
     <Resource Include="GHWT_Wii_Guitar.ico" />
     <None Include="packages.config" />
+    <Compile Include="DeviceListener.cs" />
     <Compile Include="SingleInstance.cs" />
     <Compile Include="UserPrefs.cs" />
     <Compile Include="WiitarDebug.cs" />
   </ItemGroup>
-  <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

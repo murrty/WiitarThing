@@ -15,7 +15,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows\BluetoothDevice.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows\BluetoothRadio.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Windows\DeviceListener.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows\HidDeviceStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows\NativeImports.cs" />
   </ItemGroup>

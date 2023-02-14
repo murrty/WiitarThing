@@ -3,7 +3,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Windows.Media.Effects;
 using Microsoft.Win32.SafeHandles;
 
 namespace Shared.Windows
@@ -502,16 +501,16 @@ namespace Shared.Windows
         [StructLayout(LayoutKind.Sequential)]
         public struct BLUETOOTH_DEVICE_SEARCH_PARAMS
         {
-            internal uint dwSize;
-            internal bool fReturnAuthenticated;
-            internal bool fReturnRemembered;
-            internal bool fReturnUnknown;
-            internal bool fReturnConnected;
-            internal bool fIssueInquiry;
-            internal byte cTimeoutMultiplier;
-            internal IntPtr hRadio;
+            public uint dwSize;
+            public bool fReturnAuthenticated;
+            public bool fReturnRemembered;
+            public bool fReturnUnknown;
+            public bool fReturnConnected;
+            public bool fIssueInquiry;
+            public byte cTimeoutMultiplier;
+            public IntPtr hRadio;
 
-            internal static BLUETOOTH_DEVICE_SEARCH_PARAMS Create()
+            public static BLUETOOTH_DEVICE_SEARCH_PARAMS Create()
             {
                 return new BLUETOOTH_DEVICE_SEARCH_PARAMS()
                 {
@@ -523,9 +522,9 @@ namespace Shared.Windows
         [StructLayout(LayoutKind.Sequential)]
         public struct BLUETOOTH_FIND_RADIO_PARAMS
         {
-            internal uint dwSize;
+            public uint dwSize;
 
-            internal static BLUETOOTH_FIND_RADIO_PARAMS Create()
+            public static BLUETOOTH_FIND_RADIO_PARAMS Create()
             {
                 return new BLUETOOTH_FIND_RADIO_PARAMS()
                 {
@@ -538,13 +537,13 @@ namespace Shared.Windows
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BLUETOOTH_RADIO_INFO
         {
-            internal uint dwSize;
-            internal ulong address;
+            public uint dwSize;
+            public ulong address;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = BLUETOOTH_MAX_NAME_SIZE)]
-            internal string szName;
-            internal uint ulClassOfDevice;
-            internal ushort lmpSubversion;
-            internal ushort manufacturer;
+            public string szName;
+            public uint ulClassOfDevice;
+            public ushort lmpSubversion;
+            public ushort manufacturer;
 
             public string Address
             {
@@ -558,7 +557,7 @@ namespace Shared.Windows
                 }
             }
 
-            internal static BLUETOOTH_RADIO_INFO Create()
+            public static BLUETOOTH_RADIO_INFO Create()
             {
                 return new BLUETOOTH_RADIO_INFO()
                 {
