@@ -156,6 +156,7 @@ namespace WiitarThing
         private void Refresh()
         {
             hidList = DeviceInfo.GetPaths();
+            var fileShare = UserPrefs.Instance.greedyMode || UserPrefs.Instance.toshibaMode ? FileShare.None : FileShare.ReadWrite;
             List<KeyValuePair<int, DeviceControl>> connectSeq = new List<KeyValuePair<int, DeviceControl>>();
             
             foreach (var hid in hidList)
@@ -184,12 +185,19 @@ namespace WiitarThing
                 }
                 else
                 {
-                    if (!HidDeviceStream.TryCreate(
-                        hid.DevicePath, 
-                        out var stream,
-                        UserPrefs.Instance.greedyMode || UserPrefs.Instance.toshibaMode ? FileShare.None : FileShare.ReadWrite))
+                    if (!HidDeviceStream.TryCreate(hid.DevicePath, out var stream, fileShare))
                     {
-                        continue;
+                        Debug.WriteLine($"Failed to open {hid.DevicePath} in sharing mode {fileShare}");
+                        if (fileShare != FileShare.None)
+                        {
+                            continue;
+                        }
+        
+                        if (!HidDeviceStream.TryCreate(hid.DevicePath, out stream, FileShare.ReadWrite))
+                        {
+                            Debug.WriteLine($"Failed to open {hid.DevicePath} with sharing forced");
+                            continue;
+                        }
                     }
 
                     Nintroller n = new Nintroller(stream, hid.Type);
