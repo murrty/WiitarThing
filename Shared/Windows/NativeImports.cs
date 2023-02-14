@@ -135,6 +135,15 @@ namespace Shared.Windows
             out uint lpNumberOfBytesTransferred, // LPDWORD
             bool bWait);                         // BOOL
 
+        /// <summary>
+        /// Gets the results of an overlapped operation
+        /// </summary>
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public extern static bool CancelIoEx(
+            SafeFileHandle hFile,                // HANDLE
+            in NativeOverlapped lpOverlapped);   // LPOVERLAPPED
+
         #endregion
 
         #region setupapi.dll

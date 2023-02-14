@@ -139,6 +139,18 @@ namespace Shared.Windows
 
         public override int Read(byte[] buffer, int offset, int count)
         {
+            return ReadInternal(buffer, offset, count, CancellationToken.None);
+        }
+
+        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken token)
+        {
+            return Task.Run(() => {
+                return ReadInternal(buffer, offset, count, token);
+            });
+        }
+
+        private int ReadInternal(byte[] buffer, int offset, int count, CancellationToken token)
+        {
             VerifyArguments(buffer, offset, count);
             if (buffer.Length < 1 || count < 1)
                 return 0;
@@ -165,6 +177,16 @@ namespace Shared.Windows
             result = Marshal.GetLastWin32Error();
             if (result == (int)Win32Error.IoPending)
             {
+                if (token.CanBeCanceled)
+                {
+                    WaitHandle.WaitAny(new[] { waitHandle, token.WaitHandle }, Timeout.Infinite, false);
+                    if (token.IsCancellationRequested)
+                    {
+                        CancelIoEx(m_handle, overlapped);
+                        return 0;
+                    }
+                }
+
                 success = GetOverlappedResult(m_handle, in overlapped, out bytesRead, true);
                 result = Marshal.GetLastWin32Error();
             }
@@ -184,6 +206,18 @@ namespace Shared.Windows
         }
 
         public override void Write(byte[] buffer, int offset, int count)
+        {
+            WriteInternal(buffer, offset, count, CancellationToken.None);
+        }
+
+        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken token)
+        {
+            return Task.Run(() => {
+                WriteInternal(buffer, offset, count, token);
+            });
+        }
+
+        private void WriteInternal(byte[] buffer, int offset, int count, CancellationToken token)
         {
             VerifyArguments(buffer, offset, count);
             if (buffer.Length < 1 || count < 1)
@@ -217,6 +251,16 @@ namespace Shared.Windows
             result = Marshal.GetLastWin32Error();
             if (result == (int)Win32Error.IoPending)
             {
+                if (token.CanBeCanceled)
+                {
+                    WaitHandle.WaitAny(new[] { waitHandle, token.WaitHandle }, Timeout.Infinite, false);
+                    if (token.IsCancellationRequested)
+                    {
+                        CancelIoEx(m_handle, overlapped);
+                        return;
+                    }
+                }
+
                 success = GetOverlappedResult(m_handle, in overlapped, out _, true);
                 result = Marshal.GetLastWin32Error();
             }

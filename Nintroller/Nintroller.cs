@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -427,10 +427,11 @@ namespace NintrollerLib
         }
 
         // Performs background reading
-        private void ReadThread()
+        private async void ReadThread()
         {
             int reportLength = _stream.InputLength;
             byte[] readBuffer = new byte[reportLength];
+            var cancel = new CancellationTokenSource();
             while (_reading)
             {
                 if (_stream == null || !_stream.CanRead)
@@ -438,16 +439,25 @@ namespace NintrollerLib
 
                 try
                 {
-                    _stream.Read(readBuffer, 0, readBuffer.Length);
+                    var readTask = _stream.ReadAsync(readBuffer, 0, readBuffer.Length, cancel.Token);
+                    if (!readTask.Wait(3000))
+                    {
+                        // Cancel read and get status to make sure the wiimote is still connected
+                        cancel.Cancel();
+                        GetStatus();
+                        continue;
+                    }
+                    await readTask;
                     ParseReport(readBuffer);
                 }
                 catch (Exception e)
                 {
                     Log("Error reading: " + e.ToString());
-                    GetStatus();
-                    continue;
+                    Disconnected?.Invoke(this, new DisconnectedEventArgs(e));
+                    break;
                 }
             }
+            cancel.Dispose();
             StopReading();
         }
 
