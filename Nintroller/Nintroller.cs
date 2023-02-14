@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -432,8 +432,8 @@ namespace NintrollerLib
             byte[] readBuffer = new byte[Constants.REPORT_LENGTH];
             while (_reading)
             {
-                if (_stream == null || _stream.CanRead)
-                    return;
+                if (_stream == null || !_stream.CanRead)
+                    break;
 
                 try
                 {
@@ -449,10 +449,11 @@ namespace NintrollerLib
                 catch (Exception e)
                 {
                     Log("Error reading: " + e.Message);
-                    StopReading();
                     Disconnected?.Invoke(this, new DisconnectedEventArgs(e));
+                    break;
                 }
             }
+            StopReading();
         }
 
         // Request data from the device's memory
