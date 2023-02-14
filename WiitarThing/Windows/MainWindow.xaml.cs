@@ -667,6 +667,8 @@ namespace WiitarThing
             return true;
         }
 
+#pragma warning disable 0067 // CanExecute will never change, this event is deliberately never used
         public event EventHandler CanExecuteChanged;
+#pragma warning restore 0067
     }
 }

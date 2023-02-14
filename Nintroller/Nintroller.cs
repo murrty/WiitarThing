@@ -1134,9 +1134,7 @@ namespace NintrollerLib
                         }
                         catch (Exception ex)
                         {
-#if DEBUG
                             Debug.WriteLine("State Update Exception: " + ex.ToString());
-#endif
                         }
                     }
                     break;
