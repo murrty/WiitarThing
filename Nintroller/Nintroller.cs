@@ -352,7 +352,7 @@ namespace NintrollerLib
             }
             catch (Exception ex)
             {
-                Log("Error Connecting to device: " + ex.Message);
+                Log("Error Connecting to device: " + ex.ToString());
             }
 
             return _connected;
@@ -448,7 +448,7 @@ namespace NintrollerLib
                 }
                 catch (Exception e)
                 {
-                    Log("Error reading: " + e.Message);
+                    Log("Error reading: " + e.ToString());
                     Disconnected?.Invoke(this, new DisconnectedEventArgs(e));
                     break;
                 }
@@ -528,7 +528,7 @@ namespace NintrollerLib
             }
             catch (Exception ex)
             {
-                Log("Error while writing to the stream: " + ex.Message);
+                Log("Error while writing to the stream: " + ex.ToString());
                 StopReading();
                 Disconnected?.Invoke(this, new DisconnectedEventArgs(ex));
             }
@@ -1141,7 +1141,7 @@ namespace NintrollerLib
                         catch (Exception ex)
                         {
 #if DEBUG
-                            Debug.WriteLine("State Update Exception: " + ex.Message);
+                            Debug.WriteLine("State Update Exception: " + ex.ToString());
 #endif
                         }
                     }
