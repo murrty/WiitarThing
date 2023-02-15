@@ -686,8 +686,8 @@ namespace NintrollerLib
                                 // TODO: Can report[0] ever be equal to 0x04 here? Considering it has to be 0x21 to get here...
                                 if (report[0] != 0x04)
                                 {
-                                    WriteToMemory(Constants.REGISTER_EXTENSION_INIT_1, new byte[] { 0x55 });
-                                    WriteToMemory(Constants.REGISTER_EXTENSION_INIT_2, new byte[] { 0x00 });
+                                    WriteToMemory(Constants.REGISTER_EXTENSION_INIT_1, StaticBuffers.ExtensionInit1);
+                                    WriteToMemory(Constants.REGISTER_EXTENSION_INIT_2, StaticBuffers.ExtensionInit2);
                                 }
                             }
 
@@ -1001,36 +1001,36 @@ namespace NintrollerLib
                             switch (_irSensitivity)
                             {
                                 case IRCamSensitivity.Custom:
-                                    sensitivityBlock1 = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90, 0x00, 0xC0 };
+                                    sensitivityBlock1 = StaticBuffers.SensitivityBlock1_Custom;
                                     break;
 
                                 case IRCamSensitivity.CustomHigh:
-                                    sensitivityBlock1 = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x90, 0x00, 0x41 };
+                                    sensitivityBlock1 = StaticBuffers.SensitivityBlock1_CustomHigh;
                                     break;
 
                                 case IRCamSensitivity.CustomMax:
-                                    sensitivityBlock1 = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x0C };
+                                    sensitivityBlock1 = StaticBuffers.SensitivityBlock1_CustomMax;
                                     break;
 
                                 case IRCamSensitivity.Level1:
-                                    sensitivityBlock1 = new byte[] { 0x02, 0x00, 0x00, 0x71, 0x01, 0x00, 0x64, 0x00, 0xFE };
+                                    sensitivityBlock1 = StaticBuffers.SensitivityBlock1_Level1;
                                     break;
                                     
                                 case IRCamSensitivity.Level2:
-                                    sensitivityBlock1 = new byte[] { 0x02, 0x00, 0x00, 0x71, 0x01, 0x00, 0x96, 0x00, 0xB4 };
+                                    sensitivityBlock1 = StaticBuffers.SensitivityBlock1_Level2;
                                     break;
 
                                 case IRCamSensitivity.Level4:
-                                    sensitivityBlock1 = new byte[] { 0x02, 0x00, 0x00, 0x71, 0x01, 0x00, 0xc8, 0x00, 0x36 };
+                                    sensitivityBlock1 = StaticBuffers.SensitivityBlock1_Level4;
                                     break;
 
                                 case IRCamSensitivity.Level5:
-                                    sensitivityBlock1 = new byte[] { 0x07, 0x00, 0x00, 0x71, 0x01, 0x00, 0x72, 0x00, 0x20 };
+                                    sensitivityBlock1 = StaticBuffers.SensitivityBlock1_Level5;
                                     break;
 
                                 case IRCamSensitivity.Level3:
                                 default:
-                                    sensitivityBlock1 = new byte[] { 0x02, 0x00, 0x00, 0x71, 0x01, 0x00, 0xaa, 0x00, 0x64 };
+                                    sensitivityBlock1 = StaticBuffers.SensitivityBlock1_Level3;
                                     break;
                             }
 
@@ -1046,36 +1046,36 @@ namespace NintrollerLib
                             switch (_irSensitivity)
                             {
                                 case IRCamSensitivity.Custom:
-                                    sensitivityBlock2 = new byte[] { 0x40, 0x00 };
+                                    sensitivityBlock2 = StaticBuffers.SensitivityBlock2_Custom;
                                     break;
 
                                 case IRCamSensitivity.CustomHigh:
-                                    sensitivityBlock2 = new byte[] { 0x40, 0x00 };
+                                    sensitivityBlock2 = StaticBuffers.SensitivityBlock2_CustomHigh;
                                     break;
 
                                 case IRCamSensitivity.CustomMax:
-                                    sensitivityBlock2 = new byte[] { 0x00, 0x00 };
+                                    sensitivityBlock2 = StaticBuffers.SensitivityBlock2_CustomMax;
                                     break;
 
                                 case IRCamSensitivity.Level1:
-                                    sensitivityBlock2 = new byte[] { 0xFD, 0x05 };
+                                    sensitivityBlock2 = StaticBuffers.SensitivityBlock2_Level1;
                                     break;
                                     
                                 case IRCamSensitivity.Level2:
-                                    sensitivityBlock2 = new byte[] { 0xB3, 0x04 };
+                                    sensitivityBlock2 = StaticBuffers.SensitivityBlock2_Level2;
                                     break;
 
                                 case IRCamSensitivity.Level4:
-                                    sensitivityBlock2 = new byte[] { 0x35, 0x03 };
+                                    sensitivityBlock2 = StaticBuffers.SensitivityBlock2_Level4;
                                     break;
 
                                 case IRCamSensitivity.Level5:
-                                    sensitivityBlock2 = new byte[] { 0x1F, 0x03 };
+                                    sensitivityBlock2 = StaticBuffers.SensitivityBlock2_Level5;
                                     break;
 
                                 case IRCamSensitivity.Level3:
                                 default:
-                                    sensitivityBlock2 = new byte[] { 0x63, 0x03 };
+                                    sensitivityBlock2 = StaticBuffers.SensitivityBlock2_Level3;
                                     break;
                             }
 
@@ -1091,7 +1091,7 @@ namespace NintrollerLib
 
                         case AcknowledgementType.IR_Step4:
                             _ackType = AcknowledgementType.IR_Step5;
-                            WriteToMemory(Constants.REGISTER_IR, new byte[] { 0x08 });
+                            WriteToMemory(Constants.REGISTER_IR, StaticBuffers.SensitivityBlock4);
                             break;
 
                         case AcknowledgementType.IR_Step5:
@@ -1290,7 +1290,7 @@ namespace NintrollerLib
             SendData(buffer);
 
             _ackType = AcknowledgementType.IR_Step1;
-            WriteToMemory(Constants.REGISTER_IR, new byte[] { 0x08 });
+            WriteToMemory(Constants.REGISTER_IR, StaticBuffers.SensitivityBlockInit);
             // continue other steps in Acknowledgement Reporting
         }
 
@@ -1314,7 +1314,7 @@ namespace NintrollerLib
             // TODO: New: Motion Plus
             // determine if we need to pass through Nunchuck or Classic Controller
             //WriteByte(Constants.REGISTER_MOTIONPLUS_INIT, 0x04);
-            //WriteToMemory(Constants.REGISTER_MOTIONPLUS_INIT, new byte[] { 0x04 });
+            //WriteToMemory(Constants.REGISTER_MOTIONPLUS_INIT, StaticBuffers.MotionPlusInit);
         }
 
         /// <summary>
