@@ -309,7 +309,7 @@ namespace WiitarThing
             Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, 
                 new Action(() =>
                 {
-                    UpdateIcon(DeviceType);
+                    RefreshState();
                 }
             ));
         }

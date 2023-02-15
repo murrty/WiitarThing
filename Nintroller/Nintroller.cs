@@ -698,9 +698,9 @@ namespace NintrollerLib
                             break;
 
                         case ReadReportType.Extension_B:
+                            _readType = ReadReportType.Unknown;
                             if (report.Length < 6)
                             {
-                                _readType = ReadReportType.Unknown;
                                 Log("Report length not long enough for Extension_B");
                                 return;
                             }
@@ -1142,7 +1142,7 @@ namespace NintrollerLib
                 case InputReport.BtnsIRExt:
                 case InputReport.BtnsAccIRExt:
                 case InputReport.ExtOnly:
-                    if (_state != null)
+                    if (_state != null && _currentType != ControllerType.Unknown)
                     {
                         _state.Update(report);
                         var arg = new NintrollerStateEventArgs(_currentType, _state, BatteryLevel);
@@ -1156,7 +1156,9 @@ namespace NintrollerLib
                             Debug.WriteLine("State Update Exception: " + ex.ToString());
                         }
                     }
-                    else if (_statusType != StatusType.DiscoverExtension)
+                    else if (_statusType != StatusType.DiscoverExtension &&
+                            _readType != ReadReportType.Extension_A &&
+                            _readType != ReadReportType.Extension_B)
                     {
                         Log("State is null! Requesting status");
                         _currentType = ControllerType.Unknown;
@@ -1389,6 +1391,9 @@ namespace NintrollerLib
         {
             _reading = false;
             _connected = false;
+            _ackType = AcknowledgementType.NA;
+            _statusType = StatusType.Unknown;
+            _readType = ReadReportType.Unknown;
         }
 
 #endregion
