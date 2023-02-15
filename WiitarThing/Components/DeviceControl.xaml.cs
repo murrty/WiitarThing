@@ -298,6 +298,8 @@ namespace WiitarThing
 
             if (holder != null)
             {
+                holder.ClearAllValues();
+                holder.ClearAllMappings();
                 holder.AddMapping(DeviceType);
             }
 
@@ -330,8 +332,6 @@ namespace WiitarThing
 //                rumbleAmount = (int)intensity;
                 RumbleStep();
 //            }
-
-            holder.ClearAllValues();
 
             switch (e.controllerType)
             {
