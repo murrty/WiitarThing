@@ -381,39 +381,29 @@ namespace WiitarThing.Holders
 
             ResetReport();
 
-            //foreach (KeyValuePair<string, string> map in Mappings)
-            for (int i = 0; i < Mappings.Count; i++)
+            foreach (KeyValuePair<string, string> map in Mappings)
             {
-                var map = Mappings.ElementAt(i);
-
-                if (!Values.ContainsKey(map.Key))
+                if (!Values.TryGetValue(map.Key, out float value))
                 {
                     continue;
                 }
 
                 if (writeReport.ContainsKey(map.Value))
                 {
-                    try
-                    {
-                        writeReport[map.Value] += Values[map.Key];
-                    }
-                    catch (KeyNotFoundException) { }
+                    writeReport[map.Value] += value;
                 }
-                else if (Values.ContainsKey(map.Key))
+                else switch (map.Value)
                 {
-                    switch (map.Value)
-                    {
-                        case Inputs.Xbox360.LLEFT: try { LX -= Values[map.Key]; } catch { } break;
-                        case Inputs.Xbox360.LRIGHT: try { LX += Values[map.Key]; } catch { } break;
-                        case Inputs.Xbox360.LUP: try { LY += Values[map.Key]; } catch { } break;
-                        case Inputs.Xbox360.LDOWN: try { LY -= Values[map.Key]; } catch { } break;
-                        case Inputs.Xbox360.RLEFT: try { RX -= Values[map.Key]; } catch { } break;
-                        case Inputs.Xbox360.RRIGHT: try { RX += Values[map.Key]; } catch { } break;
-                        case Inputs.Xbox360.RUP: try { RY += Values[map.Key]; } catch { } break;
-                        case Inputs.Xbox360.RDOWN: try { RY -= Values[map.Key]; } catch { } break;
-                        case Inputs.Xbox360.LT: try { LT += Values[map.Key]; } catch { } break;
-                        case Inputs.Xbox360.RT: try { RT += Values[map.Key]; } catch { } break;
-                    }
+                    case Inputs.Xbox360.LLEFT: LX -= value; break;
+                    case Inputs.Xbox360.LRIGHT: LX += value; break;
+                    case Inputs.Xbox360.LUP: LY += value; break;
+                    case Inputs.Xbox360.LDOWN: LY -= value; break;
+                    case Inputs.Xbox360.RLEFT: RX -= value; break;
+                    case Inputs.Xbox360.RRIGHT: RX += value; break;
+                    case Inputs.Xbox360.RUP: RY += value; break;
+                    case Inputs.Xbox360.RDOWN: RY -= value; break;
+                    case Inputs.Xbox360.LT: LT += value; break;
+                    case Inputs.Xbox360.RT: RT += value; break;
                 }
             }
 
