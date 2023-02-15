@@ -305,10 +305,6 @@ namespace WiitarThing
                 new Action(() =>
                 {
                     UpdateIcon(DeviceType);
-                    int playerNum = targetXDevice;
-                    Detatch();
-                    AssignToXinputPlayer(playerNum);
-                    UpdateIcon(DeviceType);
                 }
             ));
         }
