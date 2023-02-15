@@ -358,18 +358,11 @@ namespace WiitarThing.Holders
                 return;
             }
 
-            byte[] rumble = new byte[8];
-            byte[] report = new byte[28];
-            byte[] parsed = new byte[28];
-
-            #region Populate Report Revised
-            report[0] = (byte)ID;
-            report[1] = 0x02;
-
-            report[10] = 0;
-            report[11] = 0;
-            report[12] = 0;
-            report[13] = 0;
+            var controller = bus.GetController(ID);
+            if (controller == null)
+            {
+                return;
+            }
 
             float LX = 0f;
             float LY = 0f;
@@ -407,52 +400,41 @@ namespace WiitarThing.Holders
                 }
             }
 
-            report[10] |= (byte)(writeReport[Inputs.Xbox360.BACK] > 0f ? 1 << 0 : 0);
-            report[10] |= (byte)(writeReport[Inputs.Xbox360.LS] > 0f ? 1 << 1 : 0);
-            report[10] |= (byte)(writeReport[Inputs.Xbox360.RS] > 0f ? 1 << 2 : 0);
-            report[10] |= (byte)(writeReport[Inputs.Xbox360.START] > 0f ? 1 << 3 : 0);
-            report[10] |= (byte)(writeReport[Inputs.Xbox360.UP] > 0f ? 1 << 4 : 0);
-            report[10] |= (byte)(writeReport[Inputs.Xbox360.DOWN] > 0f ? 1 << 5 : 0);
-            report[10] |= (byte)(writeReport[Inputs.Xbox360.RIGHT] > 0f ? 1 << 6 : 0);
-            report[10] |= (byte)(writeReport[Inputs.Xbox360.LEFT] > 0f ? 1 << 7 : 0);
+            controller.SetButtonState(Xbox360Button.A, writeReport[Inputs.Xbox360.A] > 0f);
+            controller.SetButtonState(Xbox360Button.B, writeReport[Inputs.Xbox360.B] > 0f);
+            controller.SetButtonState(Xbox360Button.X, writeReport[Inputs.Xbox360.X] > 0f);
+            controller.SetButtonState(Xbox360Button.Y, writeReport[Inputs.Xbox360.Y] > 0f);
 
-            report[11] |= (byte)(writeReport[Inputs.Xbox360.LB] > 0f ? 1 << 2 : 0);
-            report[11] |= (byte)(writeReport[Inputs.Xbox360.RB] > 0f ? 1 << 3 : 0);
-            report[11] |= (byte)(writeReport[Inputs.Xbox360.Y] > 0f ? 1 << 4 : 0);
-            report[11] |= (byte)(writeReport[Inputs.Xbox360.B] > 0f ? 1 << 5 : 0);
-            report[11] |= (byte)(writeReport[Inputs.Xbox360.A] > 0f ? 1 << 6 : 0);
-            report[11] |= (byte)(writeReport[Inputs.Xbox360.X] > 0f ? 1 << 7 : 0);
+            controller.SetButtonState(Xbox360Button.Up, writeReport[Inputs.Xbox360.UP] > 0f);
+            controller.SetButtonState(Xbox360Button.Down, writeReport[Inputs.Xbox360.DOWN] > 0f);
+            controller.SetButtonState(Xbox360Button.Left, writeReport[Inputs.Xbox360.LEFT] > 0f);
+            controller.SetButtonState(Xbox360Button.Right, writeReport[Inputs.Xbox360.RIGHT] > 0f);
 
-            report[12] |= (byte)(writeReport[Inputs.Xbox360.GUIDE] > 0f ? 1 << 0 : 0);
+            controller.SetButtonState(Xbox360Button.LeftShoulder, writeReport[Inputs.Xbox360.LB] > 0f);
+            controller.SetButtonState(Xbox360Button.RightShoulder, writeReport[Inputs.Xbox360.RB] > 0f);
+            controller.SetButtonState(Xbox360Button.LeftThumb, writeReport[Inputs.Xbox360.LS] > 0f);
+            controller.SetButtonState(Xbox360Button.RightThumb, writeReport[Inputs.Xbox360.RS] > 0f);
 
-            report[14] = (byte)((GetRawAxis(LX) >> 0) & 0xFF);
-            report[15] = (byte)((GetRawAxis(LX) >> 8) & 0xFF);
-            report[16] = (byte)((GetRawAxis(LY) >> 0) & 0xFF);
-            report[17] = (byte)((GetRawAxis(LY) >> 8) & 0xFF);
-            report[18] = (byte)((GetRawAxis(RX) >> 0) & 0xFF);
-            report[19] = (byte)((GetRawAxis(RX) >> 8) & 0xFF);
-            report[20] = (byte)((GetRawAxis(RY) >> 0) & 0xFF);
-            report[21] = (byte)((GetRawAxis(RY) >> 8) & 0xFF);
+            controller.SetButtonState(Xbox360Button.Start, writeReport[Inputs.Xbox360.START] > 0f);
+            controller.SetButtonState(Xbox360Button.Back, writeReport[Inputs.Xbox360.BACK] > 0f);
+            controller.SetButtonState(Xbox360Button.Guide, writeReport[Inputs.Xbox360.GUIDE] > 0f);
+            
+            controller.SetAxisValue(Xbox360Axis.LeftThumbX, GetRawAxis(LX));
+            controller.SetAxisValue(Xbox360Axis.LeftThumbY, GetRawAxis(LY));
+            controller.SetAxisValue(Xbox360Axis.RightThumbX, GetRawAxis(RX));
+            controller.SetAxisValue(Xbox360Axis.RightThumbY, GetRawAxis(RY));
 
-            report[26] = GetRawTrigger(LT);
-            report[27] = GetRawTrigger(RT);
-            #endregion
+            controller.SetSliderValue(Xbox360Slider.LeftTrigger, GetRawTrigger(LT));
+            controller.SetSliderValue(Xbox360Slider.RightTrigger, GetRawTrigger(RT));
 
-            bus.Parse(report, parsed);
+            controller.SubmitReport();
+        }
 
-            if (bus.Report(parsed, rumble))
-            {
-                // This is set on a rumble state change
-                if (rumble[1] == 0x08)
-                {
-                    // Check if it's strong enough to rumble
-                    int strength = BitConverter.ToInt32(new byte[] { rumble[4], rumble[3], 0x00, 0x00 }, 0);
-                    //System.Diagnostics.Debug.WriteLine(strength);
-                    Flags[Inputs.Flags.RUMBLE] = (strength > minRumble);
-                    //Values[Inputs.Flags.RUMBLE] = strength > minRumble ? strength : 0;
-                    RumbleAmount = strength > minRumble ? strength : 0;
-                }
-            }
+        private void OnRumble(object sender, Xbox360FeedbackReceivedEventArgs args)
+        {
+            int strength = (args.LargeMotor << 8) | args.SmallMotor;
+            Flags[Inputs.Flags.RUMBLE] = strength > minRumble;
+            RumbleAmount = strength > minRumble ? strength : 0;
         }
 
         public override void Close()
@@ -485,6 +467,14 @@ namespace WiitarThing.Holders
             bus = XBus.Default;
             bus.Unplug(id);
             bus.Plugin(id);
+            var controller = bus.GetController(id);
+            if (controller == null)
+            {
+                RemoveXInput(id);
+                return false;
+            }
+            controller.FeedbackReceived += OnRumble;
+
             ID = id;
             connected = true;
             return true;
@@ -510,7 +500,7 @@ namespace WiitarThing.Holders
             return false;
         }
 
-        public Int32 GetRawAxis(double axis)
+        public short GetRawAxis(double axis)
         {
             if (axis > 1.0)
             {
@@ -521,7 +511,7 @@ namespace WiitarThing.Holders
                 return -32767;
             }
 
-            return (Int32)(axis * 32767);
+            return (short)(axis * 32767);
         }
 
         public byte GetRawTrigger(double trigger)
@@ -637,111 +627,14 @@ namespace WiitarThing.Holders
             return false;
         }
 
-        public int Parse(byte[] Input, byte[] Output)
+        public IXbox360Controller GetController(int id)
         {
-            for (int index = 0; index < 28; index++)
+            if (!targets.TryGetValue(id, out var controller))
             {
-                Output[index] = 0x00;
+                return null;
             }
 
-            Output[0] = 0x1C;
-            Output[4] = Input[0];
-            Output[9] = 0x14;
-
-            if (Input[1] == 0x02) // Pad is active
-            {
-                UInt32 Buttons = (UInt32)((Input[10] << 0) | (Input[11] << 8) | (Input[12] << 16) | (Input[13] << 24));
-
-                if ((Buttons & (0x1 << 0)) > 0) Output[10] |= (Byte)(1 << 5); // Back
-                if ((Buttons & (0x1 << 1)) > 0) Output[10] |= (Byte)(1 << 6); // Left  Thumb
-                if ((Buttons & (0x1 << 2)) > 0) Output[10] |= (Byte)(1 << 7); // Right Thumb
-                if ((Buttons & (0x1 << 3)) > 0) Output[10] |= (Byte)(1 << 4); // Start
-
-                if ((Buttons & (0x1 << 4)) > 0) Output[10] |= (Byte)(1 << 0); // Up
-                if ((Buttons & (0x1 << 5)) > 0) Output[10] |= (Byte)(1 << 1); // Down
-                if ((Buttons & (0x1 << 6)) > 0) Output[10] |= (Byte)(1 << 3); // Right
-                if ((Buttons & (0x1 << 7)) > 0) Output[10] |= (Byte)(1 << 2); // Left
-
-                if ((Buttons & (0x1 << 10)) > 0) Output[11] |= (Byte)(1 << 0); // Left  Shoulder
-                if ((Buttons & (0x1 << 11)) > 0) Output[11] |= (Byte)(1 << 1); // Right Shoulder
-
-                if ((Buttons & (0x1 << 12)) > 0) Output[11] |= (Byte)(1 << 7); // Y
-                if ((Buttons & (0x1 << 13)) > 0) Output[11] |= (Byte)(1 << 5); // B
-                if ((Buttons & (0x1 << 14)) > 0) Output[11] |= (Byte)(1 << 4); // A
-                if ((Buttons & (0x1 << 15)) > 0) Output[11] |= (Byte)(1 << 6); // X
-
-                if ((Buttons & (0x1 << 16)) > 0) Output[11] |= (Byte)(1 << 2); // Guide
-
-                Output[12] = Input[26]; // Left Trigger
-                Output[13] = Input[27]; // Right Trigger
-
-                Output[14] = Input[14]; // LX
-                Output[15] = Input[15];
-
-                Output[16] = Input[16]; // LY
-                Output[17] = Input[17];
-
-                Output[18] = Input[18]; // RX
-                Output[19] = Input[19];
-
-                Output[20] = Input[20]; // RY
-                Output[21] = Input[21];
-            }
-
-            return Input[0];
-        }
-
-        public virtual bool Report(byte[] input, byte[] output)
-        {
-            byte id = (byte)(input[4]);
-            if (!targets.ContainsKey(id) || targets[id] == null)
-            {
-                return false;
-            }
-            IXbox360Controller controller = targets[id];
-            controller.ResetReport();
-            if ((input[10] & 32) != 0)
-                controller.SetButtonState(Xbox360Button.Back, true);
-            if ((input[10] & 64) != 0)
-                controller.SetButtonState(Xbox360Button.LeftThumb, true);
-            if ((input[10] & 128) != 0)
-                controller.SetButtonState(Xbox360Button.RightThumb, true);
-            if ((input[10] & 16) != 0)
-                controller.SetButtonState(Xbox360Button.Start, true);
-            if ((input[10] & 1) != 0)
-                controller.SetButtonState(Xbox360Button.Up, true);
-            if ((input[10] & 2) != 0)
-                controller.SetButtonState(Xbox360Button.Down, true);
-            if ((input[10] & 4) != 0)
-                controller.SetButtonState(Xbox360Button.Left, true);
-            if ((input[10] & 8) != 0)
-                controller.SetButtonState(Xbox360Button.Right, true);
-
-            if ((input[11] & 1) != 0)
-                controller.SetButtonState(Xbox360Button.LeftShoulder, true);
-            if ((input[11] & 2) != 0)
-                controller.SetButtonState(Xbox360Button.RightShoulder, true);
-            if ((input[11] & 128) != 0)
-                controller.SetButtonState(Xbox360Button.Y, true);
-            if ((input[11] & 32) != 0)
-                controller.SetButtonState(Xbox360Button.B, true);
-            if ((input[11] & 16) != 0)
-                controller.SetButtonState(Xbox360Button.A, true);
-            if ((input[11] & 64) != 0)
-                controller.SetButtonState(Xbox360Button.X, true);
-            if ((input[11] & 4) != 0)
-                controller.SetButtonState(Xbox360Button.Guide, true);
-
-            controller.SetSliderValue(Xbox360Slider.LeftTrigger, input[12]);
-            controller.SetSliderValue(Xbox360Slider.RightTrigger, input[13]);
-
-            controller.SetAxisValue(Xbox360Axis.LeftThumbX, BitConverter.ToInt16(input, 14));
-            controller.SetAxisValue(Xbox360Axis.LeftThumbY, BitConverter.ToInt16(input, 16));
-            controller.SetAxisValue(Xbox360Axis.RightThumbX, BitConverter.ToInt16(input, 18));
-            controller.SetAxisValue(Xbox360Axis.RightThumbY, BitConverter.ToInt16(input, 20));
-
-            controller.SubmitReport();
-            return true;
+            return controller;
         }
     }
 }
