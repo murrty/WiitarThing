@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -7,6 +8,8 @@ using NintrollerLib;
 using System.Xml.Serialization;
 using System.IO;
 using Shared.Windows;
+using System.Threading;
+using System.Diagnostics;
 
 namespace WiitarThing
 {
@@ -665,13 +668,6 @@ namespace WiitarThing
             }
         }
 
-        static System.Threading.Tasks.Task Delay(int milliseconds)
-        {
-            var tcs = new System.Threading.Tasks.TaskCompletionSource<object>();
-            new System.Threading.Timer(_ => tcs.SetResult(null)).Change(milliseconds, -1);
-            return tcs.Task;
-        }
-
         private void SetBatteryStatus(bool isLow)
         {
             if (isLow && !lowBatteryFired)
@@ -894,38 +890,43 @@ namespace WiitarThing
             if (identifying)
                 return;
 
-            bool wasConnected = Connected;
-
-            if (wasConnected || (device.DataStream.Open() && device.DataStream.CanRead))
+            identifying = true;
+            Task.Run(() =>
             {
-                if (!wasConnected)
-                    device.BeginReading();
-
-                identifying = true;
-                device.SetPlayerLED(15);
-                device.RumbleEnabled = true;
-                Delay(500).ContinueWith(o =>
+                bool wasConnected = Connected;
+                if (wasConnected || (device.DataStream.Open() && device.DataStream.CanRead))
                 {
-                    identifying = false;
+                    if (!wasConnected)
+                        device.BeginReading();
+
+                    device.RumbleEnabled = true;
+
+                    // O___
+                    // _O__
+                    // __O_
+                    // ___O
+                    // __O_
+                    // _O__
+                    // O___
+                    for (int i = -3; i < 4; i++)
+                    {
+                        int led = 4 - Math.Abs(i);
+                        device.SetPlayerLED(led);
+                        Thread.Sleep(75);
+                    }
+
                     device.RumbleEnabled = false;
                     if (targetXDevice > -1)
                         device.SetPlayerLED(targetXDevice + 1);
-                    if (!wasConnected) device.StopReading();
-                });
+                    else
+                        device.SetBinaryLEDs(0b1001);
 
-                // light show
-                // disabled because of race conditions
-                // device.SetPlayerLED(1);
-                // const int LIGHTSHOW_LENGTH = 400;
-                // Delay((LIGHTSHOW_LENGTH / 7) * 1).ContinueWith(o => device.SetPlayerLED(2));
-                // Delay((LIGHTSHOW_LENGTH / 7) * 2).ContinueWith(o => device.SetPlayerLED(3));
-                // Delay((LIGHTSHOW_LENGTH / 7) * 3).ContinueWith(o => device.SetPlayerLED(4));
-                // Delay((LIGHTSHOW_LENGTH / 7) * 4).ContinueWith(o => device.SetPlayerLED(3));
-                // Delay((LIGHTSHOW_LENGTH / 7) * 5).ContinueWith(o => device.SetPlayerLED(2));
-                // Delay((LIGHTSHOW_LENGTH / 7) * 6).ContinueWith(o => device.SetPlayerLED(1));
-                // if (targetXDevice > -1)
-                //     Delay(LIGHTSHOW_LENGTH).ContinueWith(o => device.SetPlayerLED(targetXDevice + 1));
-            }
+                    if (!wasConnected)
+                        device.StopReading();
+                }
+
+                identifying = false;
+            });
         }
 
         //private void btnVjoy_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
