@@ -500,32 +500,32 @@ namespace WiitarThing.Holders
             return false;
         }
 
-        public short GetRawAxis(double axis)
+        public short GetRawAxis(float axis)
         {
-            if (axis > 1.0)
+            if (axis > 1f)
             {
-                return 32767;
+                return short.MaxValue;
             }
-            if (axis < -1.0)
+            else if (axis < -1f)
             {
-                return -32767;
+                return short.MinValue;
             }
 
-            return (short)(axis * 32767);
+            return (short)(axis * short.MaxValue);
         }
 
-        public byte GetRawTrigger(double trigger)
+        public byte GetRawTrigger(float trigger)
         {
-            if (trigger > 1.0)
+            if (trigger > 1f)
             {
-                return 255;
+                return byte.MaxValue;
             }
-            if (trigger < 0.0)
+            else if (trigger < -1f)
             {
-                return 0;
+                return byte.MinValue;
             }
 
-            return (Byte)(trigger * 255);
+            return (byte)(trigger * byte.MaxValue);
         }
     }
 
