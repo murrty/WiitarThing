@@ -463,10 +463,7 @@ namespace WiitarThing.Holders
 
             foreach (KeyValuePair<string, string> map in additional)
             {
-                if (!Mappings.ContainsKey(map.Key) && map.Key[0] != 'w')
-                {
-                    SetMapping(map.Key, map.Value);
-                }
+                SetMapping(map.Key, map.Value);
             }
         }
 
