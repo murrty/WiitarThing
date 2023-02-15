@@ -10,6 +10,36 @@ namespace WiitarThing.Holders
 {
     public class XInputHolder : Holder
     {
+        private struct StateReport
+        {
+            public float A;
+            public float B;
+            public float X;
+            public float Y;
+
+            public float Up;
+            public float Down;
+            public float Left;
+            public float Right;
+
+            public float LeftBumper;
+            public float RightBumper;
+            public float LeftStickClick;
+            public float RightStickClick;
+
+            public float Start;
+            public float Back;
+            public float Guide;
+
+            public float LeftStickX;
+            public float LeftStickY;
+            public float RightStickX;
+            public float RightStickY;
+
+            public float LeftTrigger;
+            public float RightTrigger;
+        }
+
         static internal bool[] availabe = { true, true, true, true };
 
         internal int minRumble = 20;
@@ -19,7 +49,6 @@ namespace WiitarThing.Holders
         private XBus bus;
         private bool connected;
         private int ID;
-        private Dictionary<string, float> writeReport;
 
         public static Dictionary<string, string> GetDefaultMapping(ControllerType type)
         {
@@ -311,7 +340,6 @@ namespace WiitarThing.Holders
             Values = new System.Collections.Concurrent.ConcurrentDictionary<string, float>();
             Mappings = new Dictionary<string, string>();
             Flags = new Dictionary<string, bool>();
-            ResetReport();
 
             //if (!Flags.ContainsKey(Inputs.Flags.RUMBLE))
             //{
@@ -322,28 +350,6 @@ namespace WiitarThing.Holders
             //{
             //    Values.TryAdd(Inputs.Flags.RUMBLE, 0f);
             //}
-        }
-
-        private void ResetReport()
-        {
-            writeReport = new Dictionary<string, float>()
-            {
-                {Inputs.Xbox360.A, 0},
-                {Inputs.Xbox360.B, 0},
-                {Inputs.Xbox360.X, 0},
-                {Inputs.Xbox360.Y, 0},
-                {Inputs.Xbox360.UP, 0},
-                {Inputs.Xbox360.DOWN, 0},
-                {Inputs.Xbox360.LEFT, 0},
-                {Inputs.Xbox360.RIGHT, 0},
-                {Inputs.Xbox360.LB, 0},
-                {Inputs.Xbox360.RB, 0},
-                {Inputs.Xbox360.BACK, 0},
-                {Inputs.Xbox360.START, 0},
-                {Inputs.Xbox360.GUIDE, 0},
-                {Inputs.Xbox360.LS, 0},
-                {Inputs.Xbox360.RS, 0},
-            };
         }
 
         public XInputHolder(ControllerType t) : this()
@@ -364,15 +370,7 @@ namespace WiitarThing.Holders
                 return;
             }
 
-            float LX = 0f;
-            float LY = 0f;
-            float RX = 0f;
-            float RY = 0f;
-
-            float LT = 0f;
-            float RT = 0f;
-
-            ResetReport();
+            var report = new StateReport();
 
             foreach (KeyValuePair<string, string> map in Mappings)
             {
@@ -381,51 +379,68 @@ namespace WiitarThing.Holders
                     continue;
                 }
 
-                if (writeReport.ContainsKey(map.Value))
+                switch (map.Value)
                 {
-                    writeReport[map.Value] += value;
-                }
-                else switch (map.Value)
-                {
-                    case Inputs.Xbox360.LLEFT: LX -= value; break;
-                    case Inputs.Xbox360.LRIGHT: LX += value; break;
-                    case Inputs.Xbox360.LUP: LY += value; break;
-                    case Inputs.Xbox360.LDOWN: LY -= value; break;
-                    case Inputs.Xbox360.RLEFT: RX -= value; break;
-                    case Inputs.Xbox360.RRIGHT: RX += value; break;
-                    case Inputs.Xbox360.RUP: RY += value; break;
-                    case Inputs.Xbox360.RDOWN: RY -= value; break;
-                    case Inputs.Xbox360.LT: LT += value; break;
-                    case Inputs.Xbox360.RT: RT += value; break;
+                    case Inputs.Xbox360.A:      report.A += value; break;
+                    case Inputs.Xbox360.B:      report.B += value; break;
+                    case Inputs.Xbox360.X:      report.X += value; break;
+                    case Inputs.Xbox360.Y:      report.Y += value; break;
+
+                    case Inputs.Xbox360.UP:     report.Up += value; break;
+                    case Inputs.Xbox360.DOWN:   report.Down += value; break;
+                    case Inputs.Xbox360.LEFT:   report.Left += value; break;
+                    case Inputs.Xbox360.RIGHT:  report.Right += value; break;
+
+                    case Inputs.Xbox360.LB:     report.LeftBumper += value; break;
+                    case Inputs.Xbox360.RB:     report.RightBumper += value; break;
+                    case Inputs.Xbox360.LS:     report.LeftStickClick += value; break;
+                    case Inputs.Xbox360.RS:     report.RightStickClick += value; break;
+
+                    case Inputs.Xbox360.START:  report.Start += value; break;
+                    case Inputs.Xbox360.BACK:   report.Back += value; break;
+                    case Inputs.Xbox360.GUIDE:  report.Guide += value; break;
+
+                    case Inputs.Xbox360.LLEFT:  report.LeftStickX -= value; break;
+                    case Inputs.Xbox360.LRIGHT: report.LeftStickX += value; break;
+                    case Inputs.Xbox360.LUP:    report.LeftStickY += value; break;
+                    case Inputs.Xbox360.LDOWN:  report.LeftStickY -= value; break;
+
+                    case Inputs.Xbox360.RLEFT:  report.RightStickX -= value; break;
+                    case Inputs.Xbox360.RRIGHT: report.RightStickX += value; break;
+                    case Inputs.Xbox360.RUP:    report.RightStickY += value; break;
+                    case Inputs.Xbox360.RDOWN:  report.RightStickY -= value; break;
+
+                    case Inputs.Xbox360.LT:     report.LeftTrigger += value; break;
+                    case Inputs.Xbox360.RT:     report.RightTrigger += value; break;
                 }
             }
 
-            controller.SetButtonState(Xbox360Button.A, writeReport[Inputs.Xbox360.A] > 0f);
-            controller.SetButtonState(Xbox360Button.B, writeReport[Inputs.Xbox360.B] > 0f);
-            controller.SetButtonState(Xbox360Button.X, writeReport[Inputs.Xbox360.X] > 0f);
-            controller.SetButtonState(Xbox360Button.Y, writeReport[Inputs.Xbox360.Y] > 0f);
+            controller.SetButtonState(Xbox360Button.A, report.A > 0f);
+            controller.SetButtonState(Xbox360Button.B, report.B > 0f);
+            controller.SetButtonState(Xbox360Button.X, report.X > 0f);
+            controller.SetButtonState(Xbox360Button.Y, report.Y > 0f);
 
-            controller.SetButtonState(Xbox360Button.Up, writeReport[Inputs.Xbox360.UP] > 0f);
-            controller.SetButtonState(Xbox360Button.Down, writeReport[Inputs.Xbox360.DOWN] > 0f);
-            controller.SetButtonState(Xbox360Button.Left, writeReport[Inputs.Xbox360.LEFT] > 0f);
-            controller.SetButtonState(Xbox360Button.Right, writeReport[Inputs.Xbox360.RIGHT] > 0f);
+            controller.SetButtonState(Xbox360Button.Up, report.Up > 0f);
+            controller.SetButtonState(Xbox360Button.Down, report.Down > 0f);
+            controller.SetButtonState(Xbox360Button.Left, report.Left > 0f);
+            controller.SetButtonState(Xbox360Button.Right, report.Right > 0f);
 
-            controller.SetButtonState(Xbox360Button.LeftShoulder, writeReport[Inputs.Xbox360.LB] > 0f);
-            controller.SetButtonState(Xbox360Button.RightShoulder, writeReport[Inputs.Xbox360.RB] > 0f);
-            controller.SetButtonState(Xbox360Button.LeftThumb, writeReport[Inputs.Xbox360.LS] > 0f);
-            controller.SetButtonState(Xbox360Button.RightThumb, writeReport[Inputs.Xbox360.RS] > 0f);
+            controller.SetButtonState(Xbox360Button.LeftShoulder, report.LeftBumper > 0f);
+            controller.SetButtonState(Xbox360Button.RightShoulder, report.RightBumper > 0f);
+            controller.SetButtonState(Xbox360Button.LeftThumb, report.LeftStickClick > 0f);
+            controller.SetButtonState(Xbox360Button.RightThumb, report.RightStickClick > 0f);
 
-            controller.SetButtonState(Xbox360Button.Start, writeReport[Inputs.Xbox360.START] > 0f);
-            controller.SetButtonState(Xbox360Button.Back, writeReport[Inputs.Xbox360.BACK] > 0f);
-            controller.SetButtonState(Xbox360Button.Guide, writeReport[Inputs.Xbox360.GUIDE] > 0f);
+            controller.SetButtonState(Xbox360Button.Start, report.Start > 0f);
+            controller.SetButtonState(Xbox360Button.Back, report.Back > 0f);
+            controller.SetButtonState(Xbox360Button.Guide, report.Guide > 0f);
             
-            controller.SetAxisValue(Xbox360Axis.LeftThumbX, GetRawAxis(LX));
-            controller.SetAxisValue(Xbox360Axis.LeftThumbY, GetRawAxis(LY));
-            controller.SetAxisValue(Xbox360Axis.RightThumbX, GetRawAxis(RX));
-            controller.SetAxisValue(Xbox360Axis.RightThumbY, GetRawAxis(RY));
+            controller.SetAxisValue(Xbox360Axis.LeftThumbX, GetRawAxis(report.LeftStickX));
+            controller.SetAxisValue(Xbox360Axis.LeftThumbY, GetRawAxis(report.LeftStickY));
+            controller.SetAxisValue(Xbox360Axis.RightThumbX, GetRawAxis(report.RightStickX));
+            controller.SetAxisValue(Xbox360Axis.RightThumbY, GetRawAxis(report.RightStickY));
 
-            controller.SetSliderValue(Xbox360Slider.LeftTrigger, GetRawTrigger(LT));
-            controller.SetSliderValue(Xbox360Slider.RightTrigger, GetRawTrigger(RT));
+            controller.SetSliderValue(Xbox360Slider.LeftTrigger, GetRawTrigger(report.LeftTrigger));
+            controller.SetSliderValue(Xbox360Slider.RightTrigger, GetRawTrigger(report.RightTrigger));
 
             controller.SubmitReport();
         }
