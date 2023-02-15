@@ -612,6 +612,7 @@ namespace NintrollerLib
                             break;
 
                         case StatusType.Unknown:
+                        case StatusType.DiscoverExtension:
                         default:
                             // Battery Level
                             _battery = report[6];
@@ -666,6 +667,7 @@ namespace NintrollerLib
                             }
                             break;
                     }
+                    _statusType = StatusType.Unknown;
                     #endregion
                     break;
 
@@ -1154,10 +1156,11 @@ namespace NintrollerLib
                             Debug.WriteLine("State Update Exception: " + ex.ToString());
                         }
                     }
-                    else
+                    else if (_statusType != StatusType.DiscoverExtension)
                     {
                         Log("State is null! Requesting status");
                         _currentType = ControllerType.Unknown;
+                        _statusType = StatusType.DiscoverExtension;
                         GetStatus();
                     }
                     break;
