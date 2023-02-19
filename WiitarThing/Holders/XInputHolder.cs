@@ -329,6 +329,57 @@ namespace WiitarThing.Holders
                     result.Add(Drums.InputNames.START, Inputs.Xbox360.START);
                     result.Add(Drums.InputNames.HOME, Inputs.Xbox360.GUIDE);
                     break;
+
+                case ControllerType.Turntable:
+
+                    result.Add(Turntable.InputNames.RG, Inputs.Xbox360.A);
+                    result.Add(Turntable.InputNames.RR, Inputs.Xbox360.B);
+                    result.Add(Turntable.InputNames.RB, Inputs.Xbox360.X);
+                    result.Add(Turntable.InputNames.LG, Inputs.Xbox360.A);
+                    result.Add(Turntable.InputNames.LR, Inputs.Xbox360.B);
+                    result.Add(Turntable.InputNames.LB, Inputs.Xbox360.X);
+
+                    result.Add(Turntable.InputNames.UP, Inputs.Xbox360.UP);
+                    result.Add(Turntable.InputNames.DOWN, Inputs.Xbox360.DOWN);
+                    result.Add(Turntable.InputNames.LEFT, Inputs.Xbox360.LEFT);
+                    result.Add(Turntable.InputNames.RIGHT, Inputs.Xbox360.RIGHT);
+
+                    result.Add(Turntable.InputNames.LTABLECTRCLKWISE, Inputs.Xbox360.LLEFT);
+                    result.Add(Turntable.InputNames.LTABLECLKWISE, Inputs.Xbox360.LRIGHT);
+                    result.Add(Turntable.InputNames.RTABLECTRCLKWISE, Inputs.Xbox360.LDOWN);
+                    result.Add(Turntable.InputNames.RTABLECLKWISE, Inputs.Xbox360.LUP);
+
+                    result.Add(Turntable.InputNames.EUPHORIA, Inputs.Xbox360.Y);
+                    result.Add(Turntable.InputNames.SELECT, Inputs.Xbox360.BACK);
+                    result.Add(Turntable.InputNames.START, Inputs.Xbox360.START);
+
+                    result.Add(Turntable.InputNames.DIALCLKWISE, Inputs.Xbox360.RRIGHT);
+                    result.Add(Turntable.InputNames.DIALCTRCLKWISE, Inputs.Xbox360.RLEFT);
+                    result.Add(Turntable.InputNames.CROSSFADERLEFT, Inputs.Xbox360.RDOWN);
+                    result.Add(Turntable.InputNames.CROSSFADERRIGHT, Inputs.Xbox360.RUP);
+
+                    result.Add(Turntable.InputNames.RBUTTONS, Inputs.Xbox360.RT);
+                    result.Add(Turntable.InputNames.LBUTTONS, Inputs.Xbox360.LT);
+
+                    result.Add(Wiimote.InputNames.UP, Inputs.Xbox360.LEFT);
+                    result.Add(Wiimote.InputNames.DOWN, Inputs.Xbox360.RIGHT);
+                    result.Add(Wiimote.InputNames.LEFT, Inputs.Xbox360.DOWN);
+                    result.Add(Wiimote.InputNames.RIGHT, Inputs.Xbox360.UP);
+                    result.Add(Wiimote.InputNames.A, Inputs.Xbox360.X);
+                    result.Add(Wiimote.InputNames.B, "");
+                    result.Add(Wiimote.InputNames.ONE, Inputs.Xbox360.B);
+                    result.Add(Wiimote.InputNames.TWO, Inputs.Xbox360.A);
+                    result.Add(Wiimote.InputNames.PLUS, Inputs.Xbox360.BACK);
+                    result.Add(Wiimote.InputNames.MINUS, Inputs.Xbox360.START);
+                    result.Add(Wiimote.InputNames.HOME, Inputs.Xbox360.GUIDE);
+                    result.Add(Wiimote.InputNames.ACC_SHAKE_X, "");
+                    result.Add(Wiimote.InputNames.ACC_SHAKE_Y, "");
+                    result.Add(Wiimote.InputNames.ACC_SHAKE_Z, "");
+                    result.Add(Wiimote.InputNames.TILT_RIGHT, "");
+                    result.Add(Wiimote.InputNames.TILT_LEFT, "");
+                    result.Add(Wiimote.InputNames.TILT_UP, "");
+                    result.Add(Wiimote.InputNames.TILT_DOWN, "");
+                    break;
             }
 
             return result;

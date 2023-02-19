@@ -866,6 +866,22 @@ namespace NintrollerLib
 
                                         break;
 
+                                    case ControllerType.Turntable:
+                                        _state = new Turntable(_calibrations.WiimoteCalibration);
+
+                                        if (_calibrations.ClassicProCalibration.CalibrationEmpty)
+                                        {
+                                            _state.SetCalibration(Calibrations.CalibrationPreset.None);
+                                        }
+                                        else
+                                        {
+                                            _state.SetCalibration(_calibrations.TurntableCalibration);
+                                        }
+
+                                        applyReport = InputReport.BtnsAccExt;
+
+                                        break;
+
                                     case ControllerType.MotionPlus:
                                         _state = new WiimotePlus();
                                         // TODO: Calibration: apply stored motion plus calibration
@@ -1436,7 +1452,8 @@ namespace NintrollerLib
                 _currentType == ControllerType.NunchukB ||
                 _currentType == ControllerType.ClassicController || 
                 _currentType == ControllerType.ClassicControllerPro ||
-                _currentType == ControllerType.Guitar))
+                _currentType == ControllerType.Guitar ||
+                _currentType == ControllerType.Turntable))
             {
                 _state.SetCalibration(wiimoteCalibration);
             }
@@ -1491,6 +1508,19 @@ namespace NintrollerLib
             if (_state != null && _currentType == ControllerType.ProController)
             {
                 _state.SetCalibration(proCalibration);
+            }
+        }
+        /// <summary>
+        /// Sets the controller calibration for the Turntable
+        /// </summary>
+        /// <param name="turntableCalibration">The Turntable Struct with the calibration values to use</param>
+        public void SetCalibration(Turntable turntableCalibration)
+        {
+            _calibrations.TurntableCalibration = turntableCalibration;
+
+            if (_state != null && _currentType == ControllerType.Turntable)
+            {
+                _state.SetCalibration(turntableCalibration);
             }
         }
 

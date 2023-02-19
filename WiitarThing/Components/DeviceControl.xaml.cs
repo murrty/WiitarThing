@@ -537,6 +537,54 @@ namespace WiitarThing
                     holder.SetValue(Drums.InputNames.SELECT, drm.Select);
 #endregion
                 break;
+
+                case ControllerType.Turntable:
+#region Wii Turntable
+                    Turntable ttb = (Turntable)e.state;
+
+                    SetWiimoteInputs(ttb.wiimote);
+
+                    // analog
+                    holder.SetValue(Turntable.InputNames.LUP, ttb.Joy.Y > 0 ? ttb.Joy.Y : 0f);
+                    holder.SetValue(Turntable.InputNames.LDOWN, ttb.Joy.Y < 0 ? -ttb.Joy.Y : 0f);
+                    holder.SetValue(Turntable.InputNames.LLEFT, ttb.Joy.X < 0 ? -ttb.Joy.X : 0f);
+                    holder.SetValue(Turntable.InputNames.LRIGHT, ttb.Joy.X > 0 ? ttb.Joy.X : 0f);
+
+                    // digital
+                    holder.SetValue(Turntable.InputNames.UP, ttb.Joy.Y > 0.5f ? 1f : 0f);
+                    holder.SetValue(Turntable.InputNames.DOWN, ttb.Joy.Y < -0.5f ? -1f : 0f);
+                    holder.SetValue(Turntable.InputNames.LEFT, ttb.Joy.X < -0.5f ? -1f : 0f);
+                    holder.SetValue(Turntable.InputNames.RIGHT, ttb.Joy.X > 0.5f ? 1f : 0f);
+
+                    holder.SetValue(Turntable.InputNames.LTABLECLKWISE, ttb.JoyTableLR.X > 0 ? ttb.JoyTableLR.X : 0f);
+                    holder.SetValue(Turntable.InputNames.LTABLECTRCLKWISE, ttb.JoyTableLR.X < 0 ? -ttb.JoyTableLR.X : 0f);
+
+                    holder.SetValue(Turntable.InputNames.RTABLECLKWISE, ttb.JoyTableLR.Y > 0 ? ttb.JoyTableLR.Y : 0f);
+                    holder.SetValue(Turntable.InputNames.RTABLECTRCLKWISE, ttb.JoyTableLR.Y < 0 ? -ttb.JoyTableLR.Y : 0f);
+
+                    holder.SetValue(Turntable.InputNames.RG, ttb.RG);
+                    holder.SetValue(Turntable.InputNames.RR, ttb.RR);
+                    holder.SetValue(Turntable.InputNames.RB, ttb.RB);
+                    holder.SetValue(Turntable.InputNames.RBUTTONS, ttb.RButtons.value);
+
+                    holder.SetValue(Turntable.InputNames.LG, ttb.LG);
+                    holder.SetValue(Turntable.InputNames.LR, ttb.LR);
+                    holder.SetValue(Turntable.InputNames.LB, ttb.LB);
+                    holder.SetValue(Turntable.InputNames.LBUTTONS, ttb.LButtons.value);
+
+                    holder.SetValue(Turntable.InputNames.DIALCLKWISE, ttb.JoyDialCrossfade.X > 0 ? ttb.JoyDialCrossfade.X : 0f);
+                    holder.SetValue(Turntable.InputNames.DIALCTRCLKWISE, ttb.JoyDialCrossfade.X < 0 ? -ttb.JoyDialCrossfade.X : 0f);
+                    holder.SetValue(Turntable.InputNames.DIALT, ttb.Dial.value);
+
+                    holder.SetValue(Turntable.InputNames.CROSSFADERLEFT, ttb.JoyDialCrossfade.Y < 0 ? -ttb.JoyDialCrossfade.Y : 0f);
+                    holder.SetValue(Turntable.InputNames.CROSSFADERRIGHT, ttb.JoyDialCrossfade.Y > 0 ? ttb.JoyDialCrossfade.Y : 0f);
+                    holder.SetValue(Turntable.InputNames.CROSSFADERT, ttb.Crossfader.value);
+
+                    holder.SetValue(Turntable.InputNames.EUPHORIA, ttb.Euphoria);
+                    holder.SetValue(Turntable.InputNames.SELECT, ttb.Select);
+                    holder.SetValue(Turntable.InputNames.START, ttb.Start);
+#endregion
+                    break;
             }
             
             holder.Update();
@@ -629,7 +677,8 @@ namespace WiitarThing
 
             bool currentRumbleState = device.RumbleEnabled;
 
-            if (!properties.useRumble)
+            // disable rumble for turntables
+            if (!properties.useRumble || device.Type == ControllerType.Turntable)
             {
                 if (currentRumbleState) device.RumbleEnabled = false;
                 return;
@@ -765,6 +814,11 @@ namespace WiitarThing
                 case ControllerType.Drums:
                     icon.Source = (ImageSource)Application.Current.Resources["DRMIcon"];
                     UserPrefs.Instance.UpdateDeviceIcon(devicePath, "DRMIcon");
+                    break;
+
+                case ControllerType.Turntable:
+                    icon.Source = (ImageSource)Application.Current.Resources["TTBIcon"];
+                    UserPrefs.Instance.UpdateDeviceIcon(devicePath, "TTBIcon");
                     break;
 
                 default:
