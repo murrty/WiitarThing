@@ -12,50 +12,50 @@ namespace NintrollerLib
     {
         public static class InputNames
         {
-            public const string UP = "wtbUP";
-            public const string DOWN = "wtbDOWN";
-            public const string LEFT = "wtbLEFT";
-            public const string RIGHT = "wtbRIGHT";
+            public const string UP = "ttbUP";
+            public const string DOWN = "ttbDOWN";
+            public const string LEFT = "ttbLEFT";
+            public const string RIGHT = "ttbRIGHT";
 
-            public const string LUP = "wtbLUP";
-            public const string LDOWN = "wtbLDOWN";
-            public const string LLEFT = "wtbLLEFT";
-            public const string LRIGHT = "wtbLRIGHT";
+            public const string LUP = "ttbLUP";
+            public const string LDOWN = "ttbLDOWN";
+            public const string LLEFT = "ttbLLEFT";
+            public const string LRIGHT = "ttbLRIGHT";
 
-            public const string LX = "wtbLX";
-            public const string LY = "wtbLY";
+            public const string LX = "ttbLX";
+            public const string LY = "ttbLY";
 
-            public const string LTABLECLKWISE = "wtbLTABLECLKWISE";
-            public const string LTABLECTRCLKWISE = "wtbLTABLECTRCLKWISE";
-            public const string LTABLE = "wtbLTABLE";
+            public const string LTABLECLKWISE = "ttbLTABLECLKWISE";
+            public const string LTABLECTRCLKWISE = "ttbLTABLECTRCLKWISE";
+            public const string LTABLE = "ttbLTABLE";
 
-            public const string RTABLECLKWISE = "wtbRTABLECLKWISE";
-            public const string RTABLECTRCLKWISE = "wtbRTABLECTRCLKWISE";
-            public const string RTABLE = "wtbRTABLE";
+            public const string RTABLECLKWISE = "ttbRTABLECLKWISE";
+            public const string RTABLECTRCLKWISE = "ttbRTABLECTRCLKWISE";
+            public const string RTABLE = "ttbRTABLE";
 
-            public const string LG = "wtbLG";
-            public const string LR = "wtbLR";
-            public const string LB = "wtbLB";
-            public const string LBUTTONS = "wtbLBUTTONS";
+            public const string LG = "ttbLG";
+            public const string LR = "ttbLR";
+            public const string LB = "ttbLB";
+            public const string LBUTTONS = "ttbLBUTTONS";
 
-            public const string RG = "wtbRG";
-            public const string RR = "wtbRR";
-            public const string RB = "wtbRB";
-            public const string RBUTTONS = "wtbRBUTTONS";
+            public const string RG = "ttbRG";
+            public const string RR = "ttbRR";
+            public const string RB = "ttbRB";
+            public const string RBUTTONS = "ttbRBUTTONS";
 
-            public const string DIALCLKWISE = "wtbDIALCLKWISE";
-            public const string DIALCTRCLKWISE = "wtbDIALCTRCLKWISE";
-            public const string DIAL = "wtbDIAL";
-            public const string DIALT = "wtbDIALT";
+            public const string DIALCLKWISE = "ttbDIALCLKWISE";
+            public const string DIALCTRCLKWISE = "ttbDIALCTRCLKWISE";
+            public const string DIAL = "ttbDIAL";
+            public const string DIALT = "ttbDIALT";
 
-            public const string CROSSFADERLEFT = "wtbCROSSFADERLEFT";
-            public const string CROSSFADERRIGHT = "wtbCROSSFADERRIGHT";
-            public const string CROSSFADER = "wtbCROSSFADER";
-            public const string CROSSFADERT = "wtbCROSSFADERT";
+            public const string CROSSFADERLEFT = "ttbCROSSFADERLEFT";
+            public const string CROSSFADERRIGHT = "ttbCROSSFADERRIGHT";
+            public const string CROSSFADER = "ttbCROSSFADER";
+            public const string CROSSFADERT = "ttbCROSSFADERT";
 
-            public const string EUPHORIA = "wtbEUPHORIA";
-            public const string SELECT = "wtbSELECT";
-            public const string START = "wtbSTART";
+            public const string EUPHORIA = "ttbEUPHORIA";
+            public const string SELECT = "ttbSELECT";
+            public const string START = "ttbSTART";
         }
 
 #if DEBUG
@@ -476,7 +476,7 @@ namespace NintrollerLib
         public string GetCalibrationString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("-wtb");
+            sb.Append("-ttb");
             sb.Append(":joy");
                 sb.Append("|"); sb.Append(Joy.centerX);
                 sb.Append("|"); sb.Append(Joy.minX);

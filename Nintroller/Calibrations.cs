@@ -1142,7 +1142,7 @@
                 {
                     ProCalibration.SetCalibration(calStr);
                 }
-                else if (calStr.StartsWith("wtb"))
+                else if (calStr.StartsWith("ttb"))
                 {
                     TurntableCalibration.SetCalibration(calStr);
                 }
