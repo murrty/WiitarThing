@@ -111,6 +111,7 @@
     <Resource Include="Images\ClassicController_map.png" />
     <Resource Include="Images\ClassicControllerPro_map.png" />
     <Resource Include="Images\ClassicPro_white_32.png" />
+    <Resource Include="Images\DJHero_Turntable.png" />
     <Resource Include="Images\GHWT_Wii_Drums.png" />
     <Resource Include="Images\GHWT_Wii_Guitar.png" />
     <Resource Include="Images\Nunchuck_map.png" />
