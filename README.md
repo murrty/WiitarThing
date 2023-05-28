@@ -1,6 +1,6 @@
 # WiitarThing
 
-Connect Wii Guitar Hero instruments to a Windows PC wirelessly using a wiimote.
+A program that lets you connect Wii Guitar Hero instruments to a Windows PC wirelessly using a wiimote and Bluetooth.
 
 ## Setup
 
@@ -29,7 +29,13 @@ Guitars must be calibrated before use, otherwise your tilt or whammy may not wor
 
 Join the [official Clone Hero server on Discord](https://discordapp.com/invite/Hsn4Cgu) and ask in the `#help-line` channel if you're having trouble setting things up or have any other questions.
 
-You may also take a look at some of the alternate instructions in [the Wiki page](https://github.com/TheNathannator/WiitarThing/wiki) for things like using a Dolphinbar to connect your wiimotes.
+## Other Instructions
+
+### Using a Dolphinbar
+
+1. Press the mode button on your Dolphinbar until it goes into mode 4, then sync your wiimote to it.
+2. Open WiitarThing. 4 wiimotes will show up on the left, regardless of how many are connected to the Dolphinbar.
+3. Click the ID button on each entry until your wiimote vibrates, then click Connect on it.
 
 ## Credits
 
