@@ -27,6 +27,10 @@ A program that lets you connect Wii Guitar Hero instruments to a Windows PC wire
 1. Download and install [ViGEmBus](https://github.com/ViGEm/ViGEmBus/releases).
 2. Download WiitarThing from [the "Releases" tab](https://github.com/TheNathannator/WiitarThing/releases), and extract it into a new folder.
 
+#### A Note About Older Versions
+
+If you're updating from v2.7.0 or earlier, you should uninstall the ScpDriver that it required, as it is no longer necessary. It is not required to be uninstalled however, if you have other programs that use it then you can leave it installed.
+
 ### Connect Your Wiimote
 
 1. Start up WiitarThing, then hit the Sync button in the top-left.
@@ -60,6 +64,8 @@ The following wiimote extensions are supported:
 - Nunchuk
 - Classic Controller
 - Classic Controller Pro
+
+Wiimotes can also be used standalone, currently with mappings that are intended for using a wiimote like you would a gamepad with Gamepad Mode enabled.
 
 The Wii U Pro Controller is also supported, and can be synced the same way as a wiimote can.
 
