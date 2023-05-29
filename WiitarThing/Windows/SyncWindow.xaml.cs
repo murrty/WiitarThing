@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,40 +29,41 @@ namespace WiitarThing.Windows
 
         public event EventHandler NewDeviceFound;
 
-        const int ERROR_SUCCESS = 0x00000000;
-        const int ERROR_DEVICE_NOT_CONNECTED = 0x0000048F;
-        const int WAIT_TIMEOUT = 0x00000102;
-        const int ERROR_GEN_FAILURE = 0x0000001F;
-        const int ERROR_NOT_AUTHENTICATED = 0x000004DC;
-        const int ERROR_NOT_ENOUGH_MEMORY = 0x00000008;
-        const int ERROR_REQ_NOT_ACCEP = 0x00000047;
-        const int ERROR_ACCESS_DENIED = 0x00000005;
-        const int ERROR_NOT_READY = 0x00000015;
-        const int ERROR_VC_DISCONNECTED = 0x000000F0;
-        const int ERROR_INVALID_PARAMETER = 0x00000057;
-        const int ERROR_SERVICE_DOES_NOT_EXIST = 0x00000424;
-
-        const int ERROR_NO_MORE_ITEMS = 0x00000103;
+        private enum BluetoothError
+        {
+            Success = 0x00000000,               // ERROR_SUCCESS, BTH_ERROR_SUCCESS
+            Disconnected = 0x0000048F,          // ERROR_DEVICE_NOT_CONNECTED, BTH_ERROR_NO_CONNECTION
+            Timeout = 0x00000102,               // WAIT_TIMEOUT, BTH_ERROR_PAGE_TIMEOUT, BTH_ERROR_CONNECTION_TIMEOUT, BTH_ERROR_LMP_RESPONSE_TIMEOUT
+            HardwareFailure = 0x0000001F,       // ERROR_GEN_FAILURE, BTH_ERROR_HARDWARE_FAILURE
+            AuthFailure = 0x000004DC,           // ERROR_NOT_AUTHENTICATED, BTH_ERROR_AUTHENTICATION_FAILURE
+            OutOfMemory = 0x00000008,           // ERROR_NOT_ENOUGH_MEMORY, BTH_ERROR_MEMORY_FULL
+            MaxConnections = 0x00000047,        // ERROR_REQ_NOT_ACCEP, BTH_ERROR_MAX_NUMBER_OF_CONNECTIONS
+            PairingNotAllowed = 0x00000005,     // ERROR_ACCESS_DENIED, BTH_ERROR_PAIRING_NOT_ALLOWED
+            ConnectionTerminated = 0x000000F0,  // ERROR_VC_DISCONNECTED, BTH_ERROR_LOCAL_HOST_TERMINATED_CONNECTION
+            AlreadyAuthenticated = 0x00000103,  // ERROR_NO_MORE_ITEMS
+            Unspecified = 0x00000015,           // ERROR_NOT_READY, BTH_ERROR_UNSPECIFIED_ERROR
+        }
 
         static string GetBluetoothAuthenticationError(uint errCode)
         {
-            string msg = "(ERROR CODE 0x" + errCode.ToString("X") + ")";
-
-            switch ((int)errCode)
+            string msg;
+            switch ((BluetoothError)errCode)
             {
-                case ERROR_SUCCESS: msg = "Success."; break;
-                case ERROR_DEVICE_NOT_CONNECTED: msg = "Wiimote broke connection."; break;
-                case ERROR_GEN_FAILURE: msg = "Bluetooth Hardware Failure."; break;
-                case ERROR_NOT_AUTHENTICATED: msg = "Failed to authenticate. Wiimote rejected auto-generated PIN."; break;
-                case ERROR_NOT_ENOUGH_MEMORY: msg = "Not enough RAM to connect."; break;
-                case WAIT_TIMEOUT: msg = "Wiimote not responding to Bluetooth pair signal..."; break;
-                case ERROR_REQ_NOT_ACCEP: msg = "Max number of Bluetooth connections for this adapter has already been reached. Cannot pair any more devices."; break;
-                case ERROR_ACCESS_DENIED: msg = "Couldn't get permission to pair."; break;
-                case ERROR_NOT_READY: msg = "Unspecified error; Windows has refused to connect the Wiimote without telling us why."; break;
-                case ERROR_VC_DISCONNECTED: msg = "Windows forced the connection to be dropped."; break;
-                case ERROR_NO_MORE_ITEMS: msg = "Be patient; Wiimote restarted the pairing process for some reason..."; break;
+                case BluetoothError.Success: msg = "Success."; break;
+                case BluetoothError.Disconnected: msg = "Wiimote broke connection."; break;
+                case BluetoothError.HardwareFailure: msg = "Bluetooth hardware failure."; break;
+                case BluetoothError.AuthFailure: msg = "Failed to authenticate. Wiimote rejected auto-generated PIN."; break;
+                case BluetoothError.OutOfMemory: msg = "Not enough RAM to connect."; break;
+                case BluetoothError.Timeout: msg = "Wiimote not responding to Bluetooth pair signal..."; break;
+                case BluetoothError.MaxConnections: msg = "Max number of Bluetooth connections for this adapter has already been reached. Cannot pair any more devices."; break;
+                case BluetoothError.PairingNotAllowed: msg = "Couldn't get permission to pair."; break;
+                case BluetoothError.ConnectionTerminated: msg = "Windows forced the connection to be dropped."; break;
+                case BluetoothError.AlreadyAuthenticated: msg = "Be patient; Wiimote restarted the pairing process for some reason..."; break;
+                case BluetoothError.Unspecified: msg = "Unspecified error; Windows has refused to connect the Wiimote without telling us why."; break;
+                default: msg = "Unhandled error!"; break;
             }
 
+            msg += $" (error code: 0x{errCode:X8})";
             return msg;
         }
 
