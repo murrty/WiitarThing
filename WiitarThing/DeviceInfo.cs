@@ -5,10 +5,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
 using NintrollerLib;
-using static Shared.Windows.NativeImports;
 
-namespace Shared
+namespace WiitarThing
 {
+    using static NativeImports;
+
     public class DeviceInfo
     {
         public enum BtStack

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Shared.Windows;
 using System.ComponentModel;
 using System.Windows.Interop;
 using System.Linq;

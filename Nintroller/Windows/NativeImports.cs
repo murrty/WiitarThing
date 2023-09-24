@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
 
-namespace Shared.Windows
+namespace NintrollerLib
 {
-    public static class NativeImports
+    internal static class NativeImports
     {
         public enum Win32Error : int
         {

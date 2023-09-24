@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using System.Windows.Input;
-using Shared;
-using Shared.Windows;
 using System.Diagnostics;
 using Nefarius.ViGEm.Client;
 

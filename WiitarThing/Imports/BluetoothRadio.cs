@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 using System.Collections.Generic;
 
-namespace Shared.Windows
+namespace WiitarThing
 {
     using static NativeImports;
 

@@ -7,9 +7,9 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Shared.Windows
+namespace NintrollerLib
 {
-    using static Shared.Windows.NativeImports;
+    using static NintrollerLib.NativeImports;
 
     public class HidDeviceStream : Stream
     {

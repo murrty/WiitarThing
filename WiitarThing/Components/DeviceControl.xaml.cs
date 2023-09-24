@@ -7,7 +7,6 @@ using System.Windows.Media;
 using NintrollerLib;
 using System.Xml.Serialization;
 using System.IO;
-using Shared.Windows;
 using System.Threading;
 using System.Diagnostics;
 
