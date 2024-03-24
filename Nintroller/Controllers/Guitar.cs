@@ -509,8 +509,8 @@ namespace NintrollerLib
             if (SpecialButtonTiltCalibMax)
                 CALIB_Tilt_Tilted = tiltAngle;
 
-            oldTilt = tiltAngle;
             float tilt = _MapRange((CALIB_Tilt_Weight * tiltAngle) + ((1 - CALIB_Tilt_Weight) * oldTilt), CALIB_Tilt_Neutral, CALIB_Tilt_Tilted, 0, 1);
+            oldTilt = tiltAngle;
 
             TiltHigh = Math.Min(Math.Max(tilt, 0), 1);
             TiltLow = Math.Max(Math.Min(tilt, 0), -1);
