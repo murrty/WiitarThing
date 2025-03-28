@@ -89,7 +89,7 @@ namespace WiitarThing
 
 
             Version version = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
-            Title = "WiitarThing v" + version.ToString();
+            Title = "WiitarThing v" + version.ToString() + " (no joy)";
 
 #if DEBUG
             Title += " Debug Build";

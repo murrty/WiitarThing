@@ -8,11 +8,13 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>false</Optimize>
+    <Optimize>True</Optimize>
     <DebugSymbols>true</DebugSymbols>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugLB|AnyCPU'">
@@ -27,6 +29,11 @@
     <OutputPath>bin\ReleaseLB\</OutputPath>
     <DefineConstants>TRACE;LOW_BANDWIDTH</DefineConstants>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>embedded</DebugType>
+    <Optimize>False</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
