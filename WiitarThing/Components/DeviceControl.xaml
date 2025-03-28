@@ -8,7 +8,7 @@
     <Grid Width="280" Height="80">
         <Rectangle Height="80" Margin="0" Width="280" StrokeThickness="4" RadiusX="0" RadiusY="0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
             <Rectangle.Stroke>
-                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.MenuColorKey}}"/>
+                <SolidColorBrush x:Name="bgColor" Color="{DynamicResource {x:Static SystemColors.MenuColorKey}}"/>
             </Rectangle.Stroke>
         </Rectangle>
         <Label x:Name="labelUnavailable" Content="Device Unavailable" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" FontSize="16" FontStyle="Italic" Width="145" Foreground="#FF939393" Visibility="Hidden"/>
