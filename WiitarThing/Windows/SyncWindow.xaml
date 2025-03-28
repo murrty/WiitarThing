@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WiitarThing.Windows"
         mc:Ignorable="d"
-        Title="Sync Devices" Height="300" Width="564.333" MinWidth="457" MinHeight="300" Icon="../Images/WiinUSoft_Icon32.png" Background="{DynamicResource BrushSocialBlue}" Closing="Window_Closing" Loaded="Window_Loaded">
+        Title="Sync Devices" Height="300" Width="564.333" MinWidth="457" MinHeight="300" Icon="../Images/WiinUSoft_Icon32.png" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Closing="Window_Closing" Loaded="Window_Loaded">
     <Grid>
-        <TextBlock x:Name="info" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="78">
+        <TextBlock x:Name="info" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="78" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
             <Run Text="Press the red SYNC button on the controller to pair. If that fails, press 1+2."/>
             <LineBreak/>
             <Run FontStyle="Italic"  FontSize="10" Text="You can copy and paste the output from the box below when asking for help!" />
@@ -17,12 +17,12 @@
             <LineBreak/>
             <Run Text="Output:"/>
         </TextBlock>
-        <RichTextBox x:Name="promptBoxContainer" Margin="10,88,10,44" Background="{DynamicResource BrushAntemWhite}" ScrollViewer.VerticalScrollBarVisibility="Visible" FontSize="14">
+        <RichTextBox x:Name="promptBoxContainer" Margin="10,88,10,44" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" ScrollViewer.VerticalScrollBarVisibility="Visible" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
             <FlowDocument x:Name="prompt" PagePadding="2">
                 
             </FlowDocument>
         </RichTextBox>
-        <Button x:Name="cancelBtn" Content="Cancel Scan" Margin="0,0,10,10" Background="{DynamicResource ButonFillBrush1}" BorderBrush="{DynamicResource BrushAntemBlue}" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}" HorizontalAlignment="Right" Width="84" Height="26" VerticalAlignment="Bottom" Click="cancelBtn_Click"/>
+        <Button x:Name="cancelBtn" Content="Cancel Scan" Margin="0,0,10,10" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" HorizontalAlignment="Right" Width="84" Height="26" VerticalAlignment="Bottom" Click="cancelBtn_Click"/>
 
     </Grid>
 </Window>
