@@ -98,6 +98,7 @@ namespace WiitarThing
         public Property defaultProperty;
         public bool autoStartup;
         public bool startMinimized;
+        public bool enableJoystick;
         public bool greedyMode;
         public bool toshibaMode;
         public bool autoRefresh = true;
