@@ -83,6 +83,7 @@ namespace WiitarThing
             deviceList = new List<DeviceControl>();
 
             InitializeComponent();
+            menu_EnableJoystick.IsChecked = Guitar.AllowJoystick;
 
             Instance = this;
 
@@ -544,6 +545,10 @@ namespace WiitarThing
             UserPrefs.Instance.autoRefresh = menu_AutoRefresh.IsChecked;
             UserPrefs.SavePrefs();
             AutoRefresh(menu_AutoRefresh.IsChecked && ApplicationIsActivated());
+        }
+
+        private void menu_EnableJoystick_Click(object sender, RoutedEventArgs e) {
+            Guitar.AllowJoystick = (menu_EnableJoystick.IsChecked ^= true);
         }
 
         private void menu_SetDefaultCalibration_Click(object sender, RoutedEventArgs e)

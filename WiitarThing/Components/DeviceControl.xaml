@@ -6,38 +6,25 @@
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="300" Width="280" Height="80">
     <Grid Width="280" Height="80">
-        <Rectangle Height="80" Margin="0" Width="280" StrokeThickness="4" RadiusX="0" RadiusY="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <Rectangle Height="80" Margin="0" Width="280" StrokeThickness="4" RadiusX="0" RadiusY="0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
             <Rectangle.Stroke>
-                <SolidColorBrush Color="{DynamicResource JohnTheRevelater}"/>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.MenuColorKey}}"/>
             </Rectangle.Stroke>
-            <Rectangle.Fill>
-                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                    <GradientStop Color="{DynamicResource Eyeing}" Offset="0"/>
-                    <GradientStop x:Name="statusGradient" Color="{DynamicResource AntemBlue}" Offset="1"/>
-                </LinearGradientBrush>
-            </Rectangle.Fill>
         </Rectangle>
         <Label x:Name="labelUnavailable" Content="Device Unavailable" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" FontSize="16" FontStyle="Italic" Width="145" Foreground="#FF939393" Visibility="Hidden"/>
         <Image x:Name="icon" HorizontalAlignment="Left" Margin="12,16,0,0" VerticalAlignment="Top" Source="{DynamicResource UIcon}" Width="80" Height="48"/>
-        <Label x:Name="labelName" Content="Unknown Device" HorizontalAlignment="Left" Margin="100,8,0,0" VerticalAlignment="Top" Width="160" FontSize="14" Height="26"/>
-        <Button x:Name="btnDebugView" HorizontalAlignment="Left" Margin="81,46,0,0" VerticalAlignment="Top" Width="24" Height="24" BorderBrush="#FFEA0000" BorderThickness="2" FontSize="11" ToolTip="Debug View" Click="btnDebugView_Click">
-            <Button.Background>
-                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                    <GradientStop Color="#FFFFBEBE" Offset="0"/>
-                    <GradientStop Color="#FFFF5C5C" Offset="0.5"/>
-                    <GradientStop Color="#FFFF2828" Offset="1"/>
-                </LinearGradientBrush>
-            </Button.Background>
+        <Label x:Name="labelName" Content="Unknown Device" HorizontalAlignment="Left" Margin="100,8,0,0" VerticalAlignment="Top" Width="160" FontSize="14" Height="26" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Button x:Name="btnDebugView" HorizontalAlignment="Left" Margin="81,46,0,0" VerticalAlignment="Top" Width="24" Height="24" BorderBrush="#FF7B3636" BorderThickness="2" FontSize="11" ToolTip="Debug View" Click="btnDebugView_Click" Background="#FFDE5E5E">
             <Image Source="/WiitarThing;component/Images/Properties-icon.png"/>
         </Button>
-        <Button x:Name="btnIdentify" HorizontalAlignment="Left" Margin="110,39,0,0" VerticalAlignment="Top" Width="32" Height="32" BorderBrush="{DynamicResource BrushAntemBlue}" BorderThickness="2" FontSize="11" ToolTip="Identify" Background="{DynamicResource ButonFillBrush1}" Click="btnIdentify_Click">
+        <Button x:Name="btnIdentify" HorizontalAlignment="Left" Margin="110,39,0,0" VerticalAlignment="Top" Width="32" Height="32" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" FontSize="11" ToolTip="Identify" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="btnIdentify_Click">
             <Image Source="../Images/IDicon3.png"/>
         </Button>
-        <Button x:Name="btnProperties" HorizontalAlignment="Left" Margin="147,39,0,0" VerticalAlignment="Top" Width="32" Height="32" BorderBrush="{DynamicResource BrushAntemBlue}" BorderThickness="2" FontSize="11" ToolTip="Properties" Background="{DynamicResource ButonFillBrush1}" Click="btnProperties_Click">
+        <Button x:Name="btnProperties" HorizontalAlignment="Left" Margin="147,39,0,0" VerticalAlignment="Top" Width="32" Height="32" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" FontSize="11" ToolTip="Properties" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="btnProperties_Click">
             <Image Source="../Images/Properties-icon.png" Opacity="0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="28" Height="28" />
 
         </Button>
-        <Button x:Name="btnXinput" Content="CONNECT" HorizontalAlignment="Left" Margin="184,36,0,0" VerticalAlignment="Top" Width="80" Height="38" BorderBrush="{DynamicResource BrushAntemBlue}" BorderThickness="2" Click="btnXinput_Click" ToolTip="Connect as an Xbox 360 controller" Background="{DynamicResource ButonFillBrush1}" IsEnabledChanged="btnXinput_IsEnabledChanged" FontWeight="Bold">
+        <Button x:Name="btnXinput" Content="CONNECT" HorizontalAlignment="Left" Margin="184,36,0,0" VerticalAlignment="Top" Width="80" Height="38" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" Click="btnXinput_Click" ToolTip="Connect as an Xbox 360 controller" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" IsEnabledChanged="btnXinput_IsEnabledChanged" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
             <Button.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="XOption1" Header="Player 1" Click="XOption_Click"/>

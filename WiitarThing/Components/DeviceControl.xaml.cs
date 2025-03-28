@@ -213,11 +213,6 @@ namespace WiitarThing
             holder?.Close();
             lowBatteryFired = false;
             ConnectionState = DeviceState.Discovered;
-            Dispatcher.BeginInvoke
-            (
-                System.Windows.Threading.DispatcherPriority.Background,
-                new Action(() => statusGradient.Color = (Color)FindResource("AntemBlue")
-            ));
         }
 
         public void SetState(DeviceState newState)
@@ -724,7 +719,6 @@ namespace WiitarThing
                     System.Windows.Threading.DispatcherPriority.Background,
                     new Action(() =>
                         {
-                            statusGradient.Color = (Color)FindResource("LowBattery");
                             if (MainWindow.Instance.trayIcon.Visibility == Visibility.Visible)
                             {
                                 lowBatteryFired = true;
@@ -742,7 +736,6 @@ namespace WiitarThing
             }
             else if (!isLow && lowBatteryFired)
             {
-                statusGradient = (GradientStop)FindResource("AntemBlue");
                 lowBatteryFired = false;
             }
         }

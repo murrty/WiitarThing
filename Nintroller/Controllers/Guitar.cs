@@ -126,6 +126,11 @@ namespace NintrollerLib
 
         public bool CALIB_Enable_TouchStrip;
 
+        public static bool AllowJoystick {
+            get;
+            set;
+        }
+
         public float CALIB_Tilt_Neutral;
         public float CALIB_Tilt_Weight;
         public float CALIB_Tilt_Tilted;
@@ -269,7 +274,7 @@ namespace NintrollerLib
                     double joyDirection = (int)((Math.Atan2(Joy.Y, Joy.X) + (Math.PI / 2)) / (Math.PI / 8));
                     int joyDirStep = (int)(Math.Abs(joyDirection));
 
-                    if (isJoyPressed)
+                    if (AllowJoystick && isJoyPressed)
                     {
                         if (joyDirection < 0)
                         {
