@@ -548,8 +548,8 @@ namespace WiitarThing
         }
 
         private void menu_EnableJoystick_Click(object sender, RoutedEventArgs e) {
-            Guitar.AllowJoystick = (menu_EnableJoystick.IsChecked ^= true);
-            UserPrefs.Instance.enableJoystick = menu_EnableJoystick.IsChecked;
+            Guitar.AllowJoystick =
+                UserPrefs.Instance.enableJoystick = (menu_EnableJoystick.IsChecked ^= true);
             UserPrefs.SavePrefs();
         }
 
