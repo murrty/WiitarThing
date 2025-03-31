@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="350" d:DesignWidth="300" Width="280" Height="80">
-    <Grid Width="280" Height="80">
-        <Rectangle Height="80" Margin="0" Width="280" StrokeThickness="4" RadiusX="0" RadiusY="0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+             d:DesignHeight="350" d:DesignWidth="308" Width="288" Height="80">
+    <Grid Width="288" Height="80">
+        <Rectangle Height="80" Margin="0" Width="288" StrokeThickness="4" RadiusX="0" RadiusY="0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
             <Rectangle.Stroke>
-                <SolidColorBrush x:Name="bgColor" Color="{DynamicResource {x:Static SystemColors.MenuColorKey}}"/>
+                <SolidColorBrush x:Name="bgColor" Color="{DynamicResource {x:Static SystemColors.ControlDarkDarkColorKey}}"/>
             </Rectangle.Stroke>
         </Rectangle>
         <Label x:Name="labelUnavailable" Content="Device Unavailable" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" FontSize="16" FontStyle="Italic" Width="145" Foreground="#FF939393" Visibility="Hidden"/>
@@ -17,14 +17,14 @@
         <Button x:Name="btnDebugView" HorizontalAlignment="Left" Margin="81,46,0,0" VerticalAlignment="Top" Width="24" Height="24" BorderBrush="#FF7B3636" BorderThickness="2" FontSize="11" ToolTip="Debug View" Click="btnDebugView_Click" Background="#FFDE5E5E">
             <Image Source="/WiitarThing;component/Images/Properties-icon.png"/>
         </Button>
-        <Button x:Name="btnIdentify" HorizontalAlignment="Left" Margin="110,39,0,0" VerticalAlignment="Top" Width="32" Height="32" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" FontSize="11" ToolTip="Identify" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="btnIdentify_Click">
+        <Button x:Name="btnIdentify" HorizontalAlignment="Left" Margin="110,39,0,0" VerticalAlignment="Top" Width="32" Height="32" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" FontSize="11" ToolTip="Identify" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Click="btnIdentify_Click">
             <Image Source="../Images/IDicon3.png"/>
         </Button>
-        <Button x:Name="btnProperties" HorizontalAlignment="Left" Margin="147,39,0,0" VerticalAlignment="Top" Width="32" Height="32" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" FontSize="11" ToolTip="Properties" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="btnProperties_Click">
+        <Button x:Name="btnProperties" HorizontalAlignment="Left" Margin="147,39,0,0" VerticalAlignment="Top" Width="32" Height="32" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" FontSize="11" ToolTip="Properties" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Click="btnProperties_Click">
             <Image Source="../Images/Properties-icon.png" Opacity="0.5" HorizontalAlignment="Center" VerticalAlignment="Center" Width="28" Height="28" />
 
         </Button>
-        <Button x:Name="btnXinput" Content="CONNECT" HorizontalAlignment="Left" Margin="184,36,0,0" VerticalAlignment="Top" Width="80" Height="38" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" Click="btnXinput_Click" ToolTip="Connect as an Xbox 360 controller" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" IsEnabledChanged="btnXinput_IsEnabledChanged" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
+        <Button x:Name="btnXinput" Content="Connect" HorizontalAlignment="Left" Margin="184,36,0,0" VerticalAlignment="Top" Width="80" Height="38" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" Click="btnXinput_Click" ToolTip="Connect as an Xbox 360 controller" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" IsEnabledChanged="btnXinput_IsEnabledChanged" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
             <Button.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="XOption1" Header="Player 1" Click="XOption_Click"/>
@@ -43,8 +43,8 @@
         <!--<Button x:Name="btnConfig" HorizontalAlignment="Left" Margin="184,36,0,0" VerticalAlignment="Top" Width="38" Height="38" BorderBrush="{DynamicResource BrushAntemBlue}" BorderThickness="2" FontSize="11" Visibility="Hidden" Click="btnConfig_Click" ToolTip="Configure" Background="{DynamicResource ButonFillBrush1}">
             <Image Source="../Images/wrench-icon.png" />
         </Button>-->
-        <Button x:Name="btnDetatch" HorizontalAlignment="Left" Margin="185,36,0,0" VerticalAlignment="Top" Width="79" Height="38" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" FontSize="10" Click="btnDetatch_Click" Visibility="Hidden" ToolTip="Detatch" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
-            DISCONNECT
+        <Button x:Name="btnDetatch" HorizontalAlignment="Left" Margin="185,36,0,0" VerticalAlignment="Top" Width="79" Height="38" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" FontSize="10" Click="btnDetatch_Click" Visibility="Hidden" ToolTip="Detatch" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
+            Disconnect
         </Button>
     </Grid>
 </UserControl>

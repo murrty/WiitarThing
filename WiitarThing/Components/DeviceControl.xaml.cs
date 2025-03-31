@@ -905,15 +905,33 @@ namespace WiitarThing
         private void XOption_Click(object sender, RoutedEventArgs e)
         {
             if (Device.Type != ControllerType.ProController)
-                MessageBox.Show("Press 1+2 on the Wii remote and press OK to continue.", "Connect Wii Remote", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Press 1+2 on the Wii remote and press OK to continue.\r\n\r\nAdditionally, if the guitar peripheral does not appear on the device list item, pressing any button on the wiimote itself should refresh the peripheral state.", "Connect Wii Remote", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            if (device.DataStream.Open() && device.DataStream.CanRead)
+            if (sender is MenuItem m && device.DataStream.Open() && device.DataStream.CanRead)
             {
-                int tmp = 0;
-                if (int.TryParse(((MenuItem)sender).Name.Replace("XOption", ""), out tmp))
-                {
-                    AssignToXinputPlayer(tmp - 1);
+                switch (m.Name) {
+                    case nameof(XOption1):
+                        AssignToXinputPlayer(0);
+                        break;
+
+                    case nameof(XOption2):
+                        AssignToXinputPlayer(1);
+                        break;
+
+                    case nameof(XOption3):
+                        AssignToXinputPlayer(2);
+                        break;
+
+                    case nameof(XOption4):
+                        AssignToXinputPlayer(3);
+                        break;
                 }
+
+                //int tmp = 0;
+                //if (int.TryParse(((MenuItem)sender).Name.Replace("XOption", ""), out tmp))
+                //{
+                //    AssignToXinputPlayer(tmp - 1);
+                //}
             }
 
             

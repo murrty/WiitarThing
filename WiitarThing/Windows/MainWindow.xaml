@@ -8,7 +8,8 @@
         <Grid.Resources>
             <local:ShowWindowCommand x:Key="ShowWindow" />
         </Grid.Resources>
-        <Label Content="Credits: WiinUSoft (Justin Keys), Guitar support (Meowmaritus), Turntable support (shockdude)&#xA;ViGEm support (MWisBest), Almost nothing (Aida Enna), Toggle guitar joystick (murrty)" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="0" FontSize="11" Margin="8,0,0,0" Width="600" Height="32" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Label xml:space="preserve" Content="Hover for credits" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="0" FontSize="14" Margin="4,0,0,4" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" ToolTip="Justin Keys - WiinUSoft &#10;Meowmaritus - Guitar support &#10;shockdude - Turntable support &#10;MWisBest - ViGEm support &#10;Aida Enna - explain yourself &#10;murrty - Quality of life">
+        </Label>
         <tb:TaskbarIcon x:Name="trayIcon" 
                         IconSource="/WiitarThing;component/GHWT_Wii_Guitar.ico"
                         ToolTipText="WiitarThing" 
@@ -24,12 +25,12 @@
         </tb:TaskbarIcon>
         <Border CornerRadius="0" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" Margin="8,81,0,64" HorizontalAlignment="Left" Width="292">
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                <StackPanel x:Name="groupAvailable" HorizontalAlignment="Left" Width="280" Margin="4,4,0,0" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+                <StackPanel x:Name="groupAvailable" HorizontalAlignment="Left" Width="290" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
             </ScrollViewer>
         </Border>
         <Border CornerRadius="0" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" Margin="308,81,0,64" HorizontalAlignment="Left" Width="292">
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                <StackPanel x:Name="groupXinput" HorizontalAlignment="Left" Margin="4,4,0,0" Width="280" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+                <StackPanel x:Name="groupXinput" HorizontalAlignment="Left" Width="290" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
             </ScrollViewer>
         </Border>
         <Border CornerRadius="6" BorderBrush="{DynamicResource BrushJohnTheRevelator}" Background="{DynamicResource BrushAntemWhite}" BorderThickness="2" Margin="608,42,0,8" HorizontalAlignment="Left" Width="292" Grid.ColumnSpan="2" Visibility="Hidden">
@@ -37,11 +38,11 @@
                 <StackPanel HorizontalAlignment="Left" Margin="4,4,0,0" Width="280"/>
             </ScrollViewer>
         </Border>
-        <Label Content="Detected (But not Connected) Devices:" HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top" FontWeight="Bold" Width="230" Height="18" Padding="5,0" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Label Content="Detected (But not Connected) Devices:" HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top" FontWeight="SemiBold" Width="230" Height="18" Padding="5,0" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Label Content="If your device doesn't show up, try restarting the app." HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="290" Height="16" FontSize="10" Padding="5,0" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-        <Button x:Name="buttonTestInputs" HorizontalAlignment="Left" Margin="308,11,0,0" VerticalAlignment="Top" Width="292" Height="42" FontSize="12" Padding="5,0" FontWeight="Bold" Click="buttonTestInputs_Click"
-                Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
+        <Button x:Name="buttonTestInputs" HorizontalAlignment="Left" Margin="308,11,0,0" VerticalAlignment="Top" Width="292" Height="42" FontSize="12" Padding="5,0" FontWeight="SemiBold" Click="buttonTestInputs_Click"
+                Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
                 BorderThickness="2" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
                 >
             <TextBlock>
@@ -54,21 +55,21 @@
         </Button>
         <Label Content="Devices Connected as Xbox 360 Controllers:" HorizontalAlignment="Left" Margin="308,53,0,0" VerticalAlignment="Top" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
         <!--<Label Content="Connected as VJoy Devices:" HorizontalAlignment="Left" Margin="637,10,0,0" VerticalAlignment="Top" Visibility="Visible" FontWeight="Bold" />-->
-        <Button x:Name="btnSync" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="44" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" FontWeight="Black" FontSize="12" ToolTip="Sync" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="btnSync_Click" Foreground="#FFDE5E5E" Padding="0.6,1,1,1" >
-            SYNC
+        <Button x:Name="btnSync" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="44" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderThickness="2" FontWeight="Black" FontSize="12" ToolTip="Sync" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Click="btnSync_Click" Foreground="#FFDE5E5E" Padding="0.6,1,1,1" >
+            Sync
         </Button>
-        <Button x:Name="btnRefresh" HorizontalAlignment="Left" Margin="8,0,0,35" VerticalAlignment="Bottom" Width="292" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" FontSize="10" FontWeight="SemiBold" ToolTip="Refresh Connected Device List" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="btnRefresh_Click" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
+        <Button x:Name="btnRefresh" HorizontalAlignment="Left" Margin="8,0,0,35" VerticalAlignment="Bottom" Width="292" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderThickness="2" FontSize="10" FontWeight="SemiBold" ToolTip="Refresh Connected Device List" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Click="btnRefresh_Click" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
             Refresh Connected Device List
         </Button>
-        <Button x:Name="btnRemoveAllWiimotes" HorizontalAlignment="Left" Margin="59,10,0,0" VerticalAlignment="Top" Width="155" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" FontSize="12" FontWeight="Bold" ToolTip="Refresh" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="btnRemoveAllWiimotes_Click" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" >
-            REMOVE ALL WIIMOTES
+        <Button x:Name="btnRemoveAllWiimotes" HorizontalAlignment="Left" Margin="59,10,0,0" VerticalAlignment="Top" Width="155" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderThickness="2" FontSize="12" FontWeight="SemiBold" ToolTip="Refresh" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Click="btnRemoveAllWiimotes_Click" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" >
+            Remove All Wiimotes
         </Button>
-        <Button x:Name="btnDetatchAllXInput" HorizontalAlignment="Left" Margin="308,0,0,35" VerticalAlignment="Bottom" Width="292" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" BorderThickness="2" FontSize="10" FontWeight="SemiBold" Click="btnDetatchAllXInput_Click" ToolTip="Detatch All" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
+        <Button x:Name="btnDetatchAllXInput" HorizontalAlignment="Left" Margin="308,0,0,35" VerticalAlignment="Bottom" Width="292" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderThickness="2" FontSize="10" FontWeight="SemiBold" Click="btnDetatchAllXInput_Click" ToolTip="Detatch All" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
             Disconnect All Devices
         </Button>
-        <Button x:Name="btnSettings" HorizontalAlignment="Left" Margin="219,10,0,0" VerticalAlignment="Top" Width="81" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" 
-                BorderThickness="2" FontSize="9" FontWeight="Normal" ToolTip="Advanced Configuration (don't mess with this unless you know what you're doing)." 
-                Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="btnSettings_Click" VerticalContentAlignment="Center" Padding="0,2,0,1">
+        <Button x:Name="btnSettings" HorizontalAlignment="Left" Margin="219,10,0,0" VerticalAlignment="Top" Width="81" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" 
+                BorderThickness="2" FontSize="12" FontWeight="SemiBold" ToolTip="Advanced Configuration (don't mess with this unless you know what you're doing)." 
+                Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Click="btnSettings_Click" VerticalContentAlignment="Center" Padding="0,2,0,1">
             <Button.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="menu_AutoStart" Header="Auto Startup" Click="menu_AutoStart_Click"/>
@@ -83,16 +84,16 @@
                     <MenuItem x:Name="menu_version" Header="version 2.0" IsEnabled="False"/>
                 </ContextMenu>
             </Button.ContextMenu>
-            Advanced Config
+            Config
         </Button>
-        <Label x:Name="labelDebugBuild" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="162" FontWeight="Black" FontSize="14" Foreground="Red" Padding="0" Height="32" Margin="438,0,0,0">
+        <Label x:Name="labelDebugBuild" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="162" FontWeight="Black" FontSize="14" Foreground="Firebrick" Padding="0" Height="32" Margin="0,0,2,2">
             <!--<Label.Effect>
                 <DropShadowEffect ShadowDepth="1.5" BlurRadius="1"/>
             </Label.Effect>-->
-            <TextBlock Foreground="#FFDE5E5E">
-                <Run Text="(DEBUG BUILD)"/>
+            <TextBlock Foreground="Firebrick" HorizontalAlignment="Right">
+                <Run Text="(DEBUG)"/>
                 <LineBreak/>
-                <Run Text="Press HOME to view Wiimote data." FontSize="9"/>
+                <Run Text="Press HOME to view Wiimote data" FontSize="9"/>
             </TextBlock>
         </Label>
     </Grid>
