@@ -213,11 +213,8 @@ namespace WiitarThing
             holder?.Close();
             lowBatteryFired = false;
             ConnectionState = DeviceState.Discovered;
-            //Dispatcher.BeginInvoke
-            //(
-            //    System.Windows.Threading.DispatcherPriority.Background,
-            //    new Action(() => bgColor.Color = Colors.Firebrick
-            //));
+
+            // Keep the border color as-is to preserve battery status for the user.
         }
 
         public void SetState(DeviceState newState)
@@ -724,17 +721,15 @@ namespace WiitarThing
                     System.Windows.Threading.DispatcherPriority.Background,
                     new Action(() =>
                         {
-                            bgColor.Color = Colors.Firebrick;
+                            deviceBorder.Color = Colors.Firebrick;
                             if (MainWindow.Instance.trayIcon.Visibility == Visibility.Visible)
                             {
                                 lowBatteryFired = true;
                                 MainWindow.Instance.ShowBalloon
                                 (
                                     "Battery Low",
-                                    dName + (!dName.Equals(device.Type.ToString()) ? " (" + device.Type.ToString() + ") " : " ")
-                                    + "is running low on battery life.",
-                                    Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Warning,
-                                    System.Media.SystemSounds.Hand
+                                    $"{dName}{(!dName.Equals(device.Type.ToString()) ? $" ({device.Type}) " : " ")}is running low on battery life.",
+                                    Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Warning
                                 );
                             }
                         }
@@ -744,7 +739,7 @@ namespace WiitarThing
             {
                 Dispatcher.BeginInvoke(
                     System.Windows.Threading.DispatcherPriority.Background,
-                    new Action(() => bgColor.Color = SystemColors.MenuColor));
+                    new Action(() => deviceBorder.Color = SystemColors.ControlDarkDarkColor));
 
                 lowBatteryFired = false;
             }
