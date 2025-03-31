@@ -83,10 +83,14 @@ namespace WiitarThing
             deviceList = new List<DeviceControl>();
 
             InitializeComponent();
-            menu_EnableJoystick.IsChecked = Guitar.AllowJoystick;
 
             Instance = this;
 
+            if (UserPrefs.Instance.lastPos.X != -32_000 && UserPrefs.Instance.lastPos.Y != -32_000) {
+                this.WindowStartupLocation = WindowStartupLocation.Manual;
+                this.Left = UserPrefs.Instance.lastPos.X;
+                this.Top = UserPrefs.Instance.lastPos.Y;
+            }
 
             Version version = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
             Title = "WiitarThing v" + version.ToString() + " (no joy)";
@@ -322,7 +326,7 @@ namespace WiitarThing
             try
             {
                 Version version = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
-                menu_version.Header = "Version " + version.ToString(); 
+                menu_version.Header = "Version " + version.ToString();
             }
             catch { }
 
@@ -337,13 +341,6 @@ namespace WiitarThing
             menu_EnableJoystick.IsChecked = Guitar.AllowJoystick = UserPrefs.Instance.enableJoystick;
             menu_AutoRefresh.IsChecked = UserPrefs.Instance.autoRefresh;
             menu_MsBluetooth.IsChecked = !UserPrefs.Instance.toshibaMode;
-
-            if (UserPrefs.Instance.lastPos.X != -32_000 && UserPrefs.Instance.lastPos.Y != -32_000)
-            {
-                this.WindowStartupLocation = WindowStartupLocation.Manual;
-                this.Left = UserPrefs.Instance.lastPos.X;
-                this.Top = UserPrefs.Instance.lastPos.Y;
-            }
 
             Refresh();
             AutoRefresh(menu_AutoRefresh.IsChecked && ApplicationIsActivated());
@@ -642,23 +639,24 @@ namespace WiitarThing
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (groupXinput.Children.Count < 1)
-                return;
-
-            var dlg = MessageBox.Show("Are you sure you want to close WiitarThing? Any devices connected will be disconnected.", "Close WiitarThing?", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-            if (dlg != MessageBoxResult.Yes)
+            if (groupXinput.Children.Count > 0)
             {
-                e.Cancel = true;
-                return;
+                var dlg = MessageBox.Show("Are you sure you want to close WiitarThing? Any devices connected will be disconnected.", "Close WiitarThing?", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (dlg != MessageBoxResult.Yes)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
+                foreach (DeviceControl d in groupXinput.Children)
+                {
+                    d.Detatch();
+                }
             }
 
-            foreach (DeviceControl d in groupXinput.Children)
-            {
-                d.Detatch();
-            }
+            PointD pos = NativeImports.ActualPosition.ActualPos(this);
 
-            PointD pos = NativeImports.ActualSize.ActualPos(this);
             if (UserPrefs.Instance.lastPos != pos)
             {
                 UserPrefs.Instance.lastPos = pos;

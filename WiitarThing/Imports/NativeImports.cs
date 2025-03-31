@@ -698,53 +698,8 @@ namespace WiitarThing
             IntPtr hWnd,
             out RECT lpRect);
 
-        public static class ActualSize
+        public static class ActualPosition
         {
-
-            public static double ActualTop(System.Windows.Window w)
-            {
-                switch (w.WindowState)
-                {
-                    case System.Windows.WindowState.Normal:
-                        return w.Top;
-
-                    case System.Windows.WindowState.Minimized:
-                        return w.RestoreBounds.Top;
-
-                    case System.Windows.WindowState.Maximized:
-                        if (!GetWindowRect(new System.Windows.Interop.WindowInteropHelper(w).Handle, out RECT r))
-                        {
-                            break;
-                        }
-
-                        return r.Top;
-                }
-
-                return -32_000;
-            }
-
-            public static double ActualLeft(System.Windows.Window w)
-            {
-                switch (w.WindowState)
-                {
-                    case System.Windows.WindowState.Normal:
-                        return w.Left;
-
-                    case System.Windows.WindowState.Minimized:
-                        return w.RestoreBounds.Left;
-
-                    case System.Windows.WindowState.Maximized:
-                        if (!GetWindowRect(new System.Windows.Interop.WindowInteropHelper(w).Handle, out RECT r))
-                        {
-                            break;
-                        }
-
-                        return r.Left;
-                }
-
-                return -32_000;
-            }
-
             internal static PointD ActualPos(System.Windows.Window w) {
                 switch (w.WindowState)
                 {
