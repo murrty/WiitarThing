@@ -334,8 +334,16 @@ namespace WiitarThing
             
             menu_AutoStart.IsChecked = UserPrefs.Instance.autoStartup;
             menu_NoSharing.IsChecked = UserPrefs.Instance.greedyMode;
+            menu_EnableJoystick.IsChecked = Guitar.AllowJoystick = UserPrefs.Instance.enableJoystick;
             menu_AutoRefresh.IsChecked = UserPrefs.Instance.autoRefresh;
             menu_MsBluetooth.IsChecked = !UserPrefs.Instance.toshibaMode;
+
+            if (UserPrefs.Instance.lastPos.X != -32_000 && UserPrefs.Instance.lastPos.Y != -32_000)
+            {
+                this.WindowStartupLocation = WindowStartupLocation.Manual;
+                this.Left = UserPrefs.Instance.lastPos.X;
+                this.Top = UserPrefs.Instance.lastPos.Y;
+            }
 
             Refresh();
             AutoRefresh(menu_AutoRefresh.IsChecked && ApplicationIsActivated());
@@ -576,8 +584,11 @@ namespace WiitarThing
         {
             IShellLink link = (IShellLink)new ShellLink();
 
+            string pPath = System.Reflection.Assembly.GetEntryAssembly().CodeBase;
+
             link.SetDescription("WiitarThing");
-            link.SetPath(new Uri(System.Reflection.Assembly.GetEntryAssembly().CodeBase).LocalPath);
+            link.SetPath(new Uri(pPath).LocalPath);
+            link.SetWorkingDirectory(pPath);
 
             IPersistFile file = (IPersistFile)link;
             file.Save(Path.Combine(path, "WiitarThing.lnk"), false);
@@ -585,9 +596,7 @@ namespace WiitarThing
 
         [ComImport]
         [Guid("00021401-0000-0000-C000-000000000046")]
-        internal class ShellLink
-        {
-        }
+        internal class ShellLink;
 
         [ComImport]
         [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -633,26 +642,39 @@ namespace WiitarThing
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            var dlg = groupXinput.Children.Count == 0 ? MessageBoxResult.Yes : MessageBox.Show("Are you sure you want to close WiitarThing?\n\nALL connected controllers will STOP WORKING!", "Close WiitarThing?", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (groupXinput.Children.Count < 1)
+                return;
 
-            e.Cancel = (dlg != MessageBoxResult.Yes);
+            var dlg = MessageBox.Show("Are you sure you want to close WiitarThing? Any devices connected will be disconnected.", "Close WiitarThing?", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            if (!e.Cancel)
+            if (dlg != MessageBoxResult.Yes)
             {
-                List<DeviceControl> detatchList = new List<DeviceControl>();
-                foreach (DeviceControl d in groupXinput.Children)
-                {
-                    detatchList.Add(d);
-                }
-                foreach (DeviceControl d in detatchList)
-                {
-                    d.Detatch();
-                }
+                e.Cancel = true;
+                return;
+            }
+
+            foreach (DeviceControl d in groupXinput.Children)
+            {
+                d.Detatch();
+            }
+
+            Point pos = this.PointToScreen(new Point(0, 0));
+
+            if (UserPrefs.Instance.lastPos != pos)
+            {
+                UserPrefs.Instance.lastPos = pos;
+                UserPrefs.SavePrefs();
             }
         }
 
         private void buttonTestInputs_Click(object sender, RoutedEventArgs e)
         {
+            if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+            {
+                MessageBox.Show("Cannot run input test on a non-Win32 NT OS. Figure it out yourself. If there's an equivalent to 'joy.cpl', open an issue and tell me about it.", "WiitarThing", MessageBoxButton.OK);
+                return;
+            }
+
             Process.Start("joy.cpl");
         }
     }

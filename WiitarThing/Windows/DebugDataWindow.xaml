@@ -22,7 +22,7 @@
                 
             </FlowDocument>
         </RichTextBox>
-        <Button x:Name="cancelBtn" Content="Cancel Scan" Margin="0,0,10,10" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" HorizontalAlignment="Right" Width="84" Height="26" VerticalAlignment="Bottom" Click="cancelBtn_Click"/>
+        <Button x:Name="cancelBtn" Content="Cancel Scan" Margin="0,0,10,10" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" HorizontalAlignment="Right" Width="84" Height="26" VerticalAlignment="Bottom" Click="cancelBtn_Click"/>
 
     </Grid>
 </Window>

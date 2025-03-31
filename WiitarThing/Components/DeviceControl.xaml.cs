@@ -213,11 +213,11 @@ namespace WiitarThing
             holder?.Close();
             lowBatteryFired = false;
             ConnectionState = DeviceState.Discovered;
-            Dispatcher.BeginInvoke
-            (
-                System.Windows.Threading.DispatcherPriority.Background,
-                new Action(() => bgColor.Color = Colors.Firebrick
-            ));
+            //Dispatcher.BeginInvoke
+            //(
+            //    System.Windows.Threading.DispatcherPriority.Background,
+            //    new Action(() => bgColor.Color = Colors.Firebrick
+            //));
         }
 
         public void SetState(DeviceState newState)
@@ -742,7 +742,10 @@ namespace WiitarThing
             }
             else if (!isLow && lowBatteryFired)
             {
-                bgColor.Color = SystemColors.MenuColor;
+                Dispatcher.BeginInvoke(
+                    System.Windows.Threading.DispatcherPriority.Background,
+                    new Action(() => bgColor.Color = SystemColors.MenuColor));
+
                 lowBatteryFired = false;
             }
         }
@@ -909,7 +912,8 @@ namespace WiitarThing
 
             if (sender is MenuItem m && device.DataStream.Open() && device.DataStream.CanRead)
             {
-                switch (m.Name) {
+                switch (m.Name)
+                {
                     case nameof(XOption1):
                         AssignToXinputPlayer(0);
                         break;

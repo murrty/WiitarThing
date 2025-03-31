@@ -3,11 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="ConfigWindow" Height="485.925" Width="716" Icon="../Images/WiinUSoft_Icon32.png" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
     <Canvas x:Name="configCanvas">
-        <Button x:Name="btnApply" Content="Apply" Canvas.Left="550" Canvas.Top="324" Width="128" Height="32" Click="btnApply_Click" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-        <Button x:Name="btnDefault" Content="Default" Canvas.Left="550" Canvas.Top="369" Width="128" Height="32" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Click="btnDefault_Click" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-        <Button x:Name="btnSave" Content="Save" Canvas.Left="400" Canvas.Top="324" Width="128" Height="32" Click="btnSave_Click" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" FontWeight="Bold"/>
-        <Button x:Name="btnLoad" Content="Load" Canvas.Left="400" Canvas.Top="369" Width="128" Height="32" Click="btnLoad_Click" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-        <Button x:Name="btnCancel" Content="Cancel" Canvas.Left="550" Canvas.Top="414" Width="128" Height="32" Click="btnCancel_Click" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Button x:Name="btnApply" Content="Apply" Canvas.Left="550" Canvas.Top="324" Width="128" Height="32" Click="btnApply_Click" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Button x:Name="btnDefault" Content="Default" Canvas.Left="550" Canvas.Top="369" Width="128" Height="32" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Click="btnDefault_Click" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Button x:Name="btnSave" Content="Save" Canvas.Left="400" Canvas.Top="324" Width="128" Height="32" Click="btnSave_Click" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" FontWeight="SemiBold"/>
+        <Button x:Name="btnLoad" Content="Load" Canvas.Left="400" Canvas.Top="369" Width="128" Height="32" Click="btnLoad_Click" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Button x:Name="btnCancel" Content="Cancel" Canvas.Left="550" Canvas.Top="414" Width="128" Height="32" Click="btnCancel_Click" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Line x:Name="guideMeet" X1="174" X2="538" Canvas.Left="0" Canvas.Top="30" Stroke="{DynamicResource BrushAntemBlue}" StrokeThickness="5"/>
         <Polygon Points="-2,-2 32,15 -2,32" Fill="{DynamicResource BrushJohnTheRevelator}" Canvas.Left="330" Canvas.Top="15" />
         <Polygon Points="0,0 30,15 0,30" Fill="{DynamicResource BrushAntemBlue}" Canvas.Left="330" Canvas.Top="15" />
@@ -48,7 +48,7 @@
         </Grid>
         <Line x:Name="guideMap" X1="0" Y2="150" Canvas.Left="538" Canvas.Top="28" Stroke="{DynamicResource BrushAntemBlue}" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" IsHitTestVisible="False"/>
         <Ellipse x:Name="selectionMap" Height="36" Canvas.Left="520" Stroke="{DynamicResource BrushAntemBlue}" Canvas.Top="178" Width="36" StrokeThickness="5" IsHitTestVisible="False"/>
-        <Label x:Name="mapLabel" Content="Guide" Canvas.Left="365" Canvas.Top="-2" Width="100" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Label x:Name="mapLabel" Content="Guide" Canvas.Left="365" Canvas.Top="-2" Width="100" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <!-- Device to Map (Pro Controller) -->
         <Grid x:Name="ProGrid" Canvas.Left="10" Canvas.Top="94" Height="200" Visibility="Visible">
             <Image Source="../Images/ProController_map_white.png" Height="220" IsHitTestVisible="False" Margin="16,-16,-16,-4"/>
@@ -190,6 +190,6 @@
         </Grid>
         <Ellipse x:Name="selectionDevice" Height="36" Canvas.Left="158" Stroke="{DynamicResource BrushAntemBlue}" Canvas.Top="178" Width="36" StrokeThickness="5" IsHitTestVisible="False"/>
         <Line x:Name="guideDevice" X1="0" Y2="150" Canvas.Left="176" Canvas.Top="28" Stroke="{DynamicResource BrushAntemBlue}" StrokeThickness="5" RenderTransformOrigin="0.5,0.5" IsHitTestVisible="False"/>
-        <Label x:Name="deviceLabel" Content="Home" Canvas.Left="220" Canvas.Top="-2" HorizontalContentAlignment="Right" Width="100" BorderThickness="1,0,0,0" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Label x:Name="deviceLabel" Content="Home" Canvas.Left="220" Canvas.Top="-2" HorizontalContentAlignment="Right" Width="100" BorderThickness="1,0,0,0" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
     </Canvas>
 </Window>

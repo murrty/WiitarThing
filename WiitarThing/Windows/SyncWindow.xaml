@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WiitarThing.Windows"
         mc:Ignorable="d"
-        Title="Sync Devices" Height="300" Width="564.333" MinWidth="457" MinHeight="300" Icon="../Images/WiinUSoft_Icon32.png" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Closing="Window_Closing" Loaded="Window_Loaded">
+        Title="Sync Devices" Height="300" Width="564.333" MinWidth="457" MinHeight="300" Icon="../Images/WiinUSoft_Icon32.png" Closing="Window_Closing" Loaded="Window_Loaded">
     <Grid>
         <TextBlock x:Name="info" Margin="10,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="78" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
             <Run Text="Press the red SYNC button on the controller to pair. If that fails, press 1+2."/>
@@ -22,7 +22,7 @@
                 
             </FlowDocument>
         </RichTextBox>
-        <Button x:Name="cancelBtn" Content="Cancel Scan" Margin="0,0,10,10" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" HorizontalAlignment="Right" Width="84" Height="26" VerticalAlignment="Bottom" Click="cancelBtn_Click"/>
+        <Button x:Name="cancelBtn" Content="Cancel Scan" Margin="0,0,10,10" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" HorizontalAlignment="Right" Width="84" Height="26" VerticalAlignment="Bottom" Click="cancelBtn_Click"/>
 
     </Grid>
 </Window>

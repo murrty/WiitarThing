@@ -680,5 +680,93 @@ namespace WiitarThing
             [MarshalAs(UnmanagedType.Bool)] bool fEnabled);
 
         #endregion
+
+        #region user32.dll
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowRect(
+            IntPtr hWnd,
+            out RECT lpRect);
+
+        public static class ActualSize
+        {
+
+            public static double ActualTop(System.Windows.Window w)
+            {
+                switch (w.WindowState)
+                {
+                    case System.Windows.WindowState.Normal:
+                        return w.Top;
+
+                    case System.Windows.WindowState.Minimized:
+                        return w.RestoreBounds.Top;
+
+                    case System.Windows.WindowState.Maximized:
+                        if (!GetWindowRect(new System.Windows.Interop.WindowInteropHelper(w).Handle, out RECT r))
+                        {
+                            break;
+                        }
+
+                        return r.Top;
+                }
+
+                return -32_000;
+            }
+
+            public static double ActualLeft(System.Windows.Window w)
+            {
+                switch (w.WindowState)
+                {
+                    case System.Windows.WindowState.Normal:
+                        return w.Left;
+
+                    case System.Windows.WindowState.Minimized:
+                        return w.RestoreBounds.Left;
+
+                    case System.Windows.WindowState.Maximized:
+                        if (!GetWindowRect(new System.Windows.Interop.WindowInteropHelper(w).Handle, out RECT r))
+                        {
+                            break;
+                        }
+
+                        return r.Left;
+                }
+
+                return -32_000;
+            }
+
+            internal static PointD ActualPos(System.Windows.Window w) {
+                switch (w.WindowState)
+                {
+                    case System.Windows.WindowState.Normal:
+                        return new PointD(w.Left, w.Top);
+
+                    case System.Windows.WindowState.Minimized:
+                        return new PointD(w.RestoreBounds.Left, w.RestoreBounds.Top);
+
+                    case System.Windows.WindowState.Maximized:
+                        if (!GetWindowRect(new System.Windows.Interop.WindowInteropHelper(w).Handle, out RECT r))
+                        {
+                            break;
+                        }
+
+                        return new PointD(r.Left, r.Top);
+                }
+
+                return new PointD(-32_000, -32_000);
+            }
+        }
+
+        #endregion
     }
 }

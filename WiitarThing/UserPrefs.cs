@@ -102,15 +102,13 @@ namespace WiitarThing
         public bool greedyMode;
         public bool toshibaMode;
         public bool autoRefresh = true;
-
-        public UserPrefs()
-        { }
+        public System.Windows.Point lastPos = new(-32_000, -32_000);
 
         public static bool LoadPrefs()
         {
             bool successful = false;
             XmlSerializer X = new XmlSerializer(typeof(UserPrefs));
-            
+
             try
             {
                 if (File.Exists(DataPath))
