@@ -147,6 +147,12 @@ namespace WiitarThing.Windows
                                 MessageBox.Show("DEBUG - Failed to remove bluetooth device.");
                             }
 #endif
+
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                WiitarDebug.Log("FUNC ABORT - RemoveAllWiimotes");
+                                return;
+                            }
                         }
 
                     }
