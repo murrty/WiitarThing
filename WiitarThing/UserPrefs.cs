@@ -102,7 +102,7 @@ namespace WiitarThing
         public bool greedyMode;
         public bool toshibaMode;
         public bool autoRefresh = true;
-        internal PointD lastPos = new(-32_000, -32_000);
+        public PointD lastPos = new(-32_000, -32_000);
 
         public static bool LoadPrefs()
         {

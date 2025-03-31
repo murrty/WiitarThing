@@ -12,8 +12,6 @@ namespace WiitarThing
         [STAThread]
         public static void Main()
         {
-            System.Threading.Thread.Sleep(250);
-
             if (SingleInstance<App>.InitializeAsFirstInstance(Unique))
             {
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;

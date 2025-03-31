@@ -658,8 +658,7 @@ namespace WiitarThing
                 d.Detatch();
             }
 
-            Point pos = this.PointToScreen(new Point(0, 0));
-
+            PointD pos = NativeImports.ActualSize.ActualPos(this);
             if (UserPrefs.Instance.lastPos != pos)
             {
                 UserPrefs.Instance.lastPos = pos;
