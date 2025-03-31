@@ -86,7 +86,8 @@ namespace WiitarThing
 
             Instance = this;
 
-            if (UserPrefs.Instance.lastPos.X != -32_000 && UserPrefs.Instance.lastPos.Y != -32_000) {
+            if (UserPrefs.Instance.lastPos.X != -32_000 && UserPrefs.Instance.lastPos.Y != -32_000)
+            {
                 this.WindowStartupLocation = WindowStartupLocation.Manual;
                 this.Left = UserPrefs.Instance.lastPos.X;
                 this.Top = UserPrefs.Instance.lastPos.Y;
