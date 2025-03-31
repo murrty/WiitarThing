@@ -18,42 +18,31 @@ namespace WiitarThing.Windows
     /// </summary>
     public partial class RemoveAllWiimotesWindow : Window
     {
-        System.Threading.Thread workThread;
+        System.Threading.Tasks.Task _workTask;
+        System.Threading.CancellationTokenSource _cancelToken;
 
         public RemoveAllWiimotesWindow()
         {
             InitializeComponent();
+            labelCancelling.Visibility = Visibility.Hidden;
+            _cancelToken = new System.Threading.CancellationTokenSource();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            workThread = new System.Threading.Thread(() =>
+            buttonCancel.IsEnabled = true;
+            _workTask = System.Threading.Tasks.Task.Run(() =>
             {
-                //Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                //{
-                SyncWindow.RemoveAllWiimotes();
+                SyncWindow.RemoveAllWiimotes(_cancelToken.Token);
                 Application.Current.Dispatcher.BeginInvoke(new Action(() => Close()));
-                //}));
             });
-
-            workThread.IsBackground = true;
-
-            workThread.Start();
-
-            //Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-            //{
-            //    SyncWindow.RemoveAllWiimotes();
-            //    Close();
-            //}));
         }
 
         private void buttonCancel_Click(object sender, RoutedEventArgs e)
         {
-            //if (workThread != null && workThread.IsAlive)
-            //{
-            //    workThread.Abort();
-
-            //}
+            _cancelToken.Cancel();
+            buttonCancel.IsEnabled = false;
+            labelCancelling.Visibility = Visibility.Visible;
         }
     }
 }

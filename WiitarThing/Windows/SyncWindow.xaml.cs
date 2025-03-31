@@ -6,6 +6,7 @@ using System.Windows;
 using System.ComponentModel;
 using System.Windows.Interop;
 using System.Linq;
+using System.Threading;
 
 namespace WiitarThing.Windows
 {
@@ -51,14 +52,14 @@ namespace WiitarThing.Windows
                 case BluetoothError.Success: msg = "Success."; break;
                 case BluetoothError.Disconnected: msg = "Wiimote broke connection."; break;
                 case BluetoothError.HardwareFailure: msg = "Bluetooth hardware failure."; break;
-                case BluetoothError.AuthFailure: msg = "Failed to authenticate. Wiimote rejected auto-generated PIN."; break;
+                case BluetoothError.AuthFailure: msg = "Failed to authenticate. Wiimote rejected auto-generated PIN... does your bluetooth module support PIN-based paring?"; break;
                 case BluetoothError.OutOfMemory: msg = "Not enough RAM to connect."; break;
-                case BluetoothError.Timeout: msg = "Wiimote not responding to Bluetooth pair signal..."; break;
+                case BluetoothError.Timeout: msg = "Wiimote not responding to Bluetooth pair signal... does your bluetooth module support PIN-based paring?"; break;
                 case BluetoothError.MaxConnections: msg = "Max number of Bluetooth connections for this adapter has already been reached. Cannot pair any more devices."; break;
                 case BluetoothError.PairingNotAllowed: msg = "Couldn't get permission to pair."; break;
                 case BluetoothError.ConnectionTerminated: msg = "Windows forced the connection to be dropped."; break;
-                case BluetoothError.AlreadyAuthenticated: msg = "Be patient; Wiimote restarted the pairing process for some reason..."; break;
-                case BluetoothError.Unspecified: msg = "Unspecified error; Windows has refused to connect the Wiimote without telling us why."; break;
+                case BluetoothError.AlreadyAuthenticated: msg = "Be patient; Wiimote restarted the pairing process..."; break;
+                case BluetoothError.Unspecified: msg = "Unspecified error; Windows has refused to connect the Wiimote with no reason specified."; break;
                 default: msg = "Unhandled error!"; break;
             }
 
@@ -97,7 +98,7 @@ namespace WiitarThing.Windows
             }
         }
 
-        public static void RemoveAllWiimotes()
+        public static void RemoveAllWiimotes(CancellationToken cancellationToken)
         {
             WiitarDebug.Log("FUNC BEGIN - RemoveAllWiimotes");
 
@@ -106,6 +107,13 @@ namespace WiitarThing.Windows
 
             // Get Bluetooth radios
             var btRadios = BluetoothRadio.FindAllRadios();
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                WiitarDebug.Log("FUNC ABORT - RemoveAllWiimotes");
+                return;
+            }
+
             if (btRadios.Count > 0)
             {
                 foreach (var radio in btRadios) using (radio)
@@ -142,6 +150,12 @@ namespace WiitarThing.Windows
                         }
 
                     }
+
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        WiitarDebug.Log("FUNC ABORT - RemoveAllWiimotes");
+                        return;
+                    }
                 }
             }
 
@@ -157,7 +171,7 @@ namespace WiitarThing.Windows
             if (btRadios.Count < 1)
             {
                 // No compatible Bluetooth
-                Prompt("No compatible Bluetooth Radios found, or Bluetooth is disabled! (IF YOU SEE THIS MESSAGE, MENTION IT WHEN ASKING FOR HELP!)",
+                Prompt("No compatible Bluetooth modules found, Bluetooth module is disable, or Bluetooth is disabled. (IF YOU SEE THIS MESSAGE, MENTION IT WHEN ASKING FOR HELP!)",
                 isBold: true, isItalic: true);
                 _notCompatable = true;
                 return;
@@ -173,7 +187,7 @@ namespace WiitarThing.Windows
                     // Get radio info
                     if (!radio.TryGetInfo(out var radioInfo))
                     {
-                        Prompt("Found Bluetooth adapter but was unable to interact with it.");
+                        Prompt("Found Bluetooth module, but was unable to interact with it.");
                         continue;
                     }
 
@@ -192,7 +206,7 @@ namespace WiitarThing.Windows
                         if (!deviceName.StartsWith("Nintendo RVL-CNT-01"))
                         {
 #if DEBUG
-                            Prompt("(Found \"" + deviceName + "\", but it is not a Wiimote)", isBold: false, isItalic: false, isSmall: true, isDebug: true);
+                            Prompt($"(Found \"{deviceName}\", but it is not a Wiimote)", isBold: false, isItalic: false, isSmall: true, isDebug: true);
 #endif
                             continue;
                         }
@@ -202,19 +216,19 @@ namespace WiitarThing.Windows
 
                         if (deviceName.Equals("Nintendo RVL-CNT-01"))
                         {
-                            Prompt("Found Wiimote (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
+                            Prompt($"Found Wiimote (\"{deviceName}\"){str_fRemembered}", isBold: !remembered, isItalic: remembered, isSmall: remembered);
                         }
                         else if (deviceName.Equals("Nintendo RVL-CNT-01-TR"))
                         {
-                            Prompt("Found 2nd-Gen Wiimote+ (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
+                            Prompt($"Found 2nd-Gen Wiimote+ (\"{deviceName}\"){str_fRemembered}", isBold: !remembered, isItalic: remembered, isSmall: remembered);
                         }
                         else if (deviceName.Equals("Nintendo RVL-CNT-01-UC"))
                         {
-                            Prompt("Found Wii U Pro Controller (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
+                            Prompt($"Found Wii U Pro Controller (\"{deviceName}\"){str_fRemembered}", isBold: !remembered, isItalic: remembered, isSmall: remembered);
                         }
                         else
                         {
-                            Prompt("Found Unknown Wii Device Type (\"" + deviceName + "\")" + str_fRemembered, isBold: !remembered, isItalic: remembered, isSmall: remembered);
+                            Prompt($"Found Unknown Wii Device Type (\"{deviceName}\"){str_fRemembered}", isBold: !remembered, isItalic: remembered, isSmall: remembered);
                         }
 
                         // Skip already-paired devices
@@ -309,12 +323,12 @@ namespace WiitarThing.Windows
 
                             if (errService != 0)
                             {
-                                sb.AppendLine(" >>> SERVICE ERROR: " + new Win32Exception((int)errService).Message);
+                                sb.AppendLine($" >>> SERVICE ERROR: {new Win32Exception((int)errService).Message}");
                             }
 
                             if (errActivate != 0)
                             {
-                                sb.AppendLine(" >>> ACTIVATION ERROR: " + new Win32Exception((int)errActivate).Message);
+                                sb.AppendLine($" >>> ACTIVATION ERROR: {new Win32Exception((int)errActivate).Message}");
                             }
 
                             Prompt(sb.ToString(), isBold: true, isItalic: true);
@@ -337,7 +351,7 @@ namespace WiitarThing.Windows
 
         private void Prompt(string text, bool isBold = false, bool isItalic = false, bool isSmall = false, bool isDebug = false)
         {
-            WiitarDebug.Log("SYNC WINDOW OUTPUT: \n\n" + text + "\n\n");
+            WiitarDebug.Log($"SYNC WINDOW OUTPUT: \n\n{text}\n\n");
 
             Dispatcher.BeginInvoke(new Action(() =>
             {
