@@ -74,6 +74,7 @@ namespace WiitarThing.Windows
                 prop.calString = copy.calString;
                 prop.rumbleIntensity = copy.rumbleIntensity;
                 prop.useRumble = copy.useRumble;
+                prop.enableJoystick = copy.enableJoystick;
             }
 
             UserPrefs.Instance.defaultProperty = prop;

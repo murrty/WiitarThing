@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
-using System.Windows;
-using System.Windows.Forms;
 
 namespace NintrollerLib
 {
@@ -94,6 +93,7 @@ namespace NintrollerLib
             CALIB_Whammy_Max = 0;
 
             CALIB_Enable_TouchStrip = false;
+            CALIB_Enable_Joystick = false;
 
             oldTouchStripValue = GTR_TOUCH_STRIP_None;
             oldTilt = 0;
@@ -112,6 +112,12 @@ namespace NintrollerLib
             Joy.Calibrate(Calibrations.Defaults.GuitarDefault.Joy);
         }
 
+        public Guitar(Wiimote wm, bool enableJoystick, bool enableTouchStrip) : this(wm: wm)
+        {
+            CALIB_Enable_Joystick = enableJoystick;
+            CALIB_Enable_TouchStrip = enableTouchStrip;
+        }
+
         public bool Start
         {
             get { return Plus; }
@@ -124,12 +130,8 @@ namespace NintrollerLib
             set { Minus = value; }
         }
 
-        public bool CALIB_Enable_TouchStrip;
-
-        public static bool AllowJoystick {
-            get;
-            set;
-        }
+        private bool CALIB_Enable_Joystick;
+        private bool CALIB_Enable_TouchStrip;
 
         public float CALIB_Tilt_Neutral;
         public float CALIB_Tilt_Weight;
@@ -148,7 +150,9 @@ namespace NintrollerLib
         private const byte GTR_TOUCH_STRIP_Red3 = 0x0C;
         private const byte GTR_TOUCH_STRIP_RedToYellow = 0x0D;
         private const byte GTR_TOUCH_STRIP_RedToYellow2 = 0x0E;
-        //private const byte GTR_TOUCH_STRIP_RedToYellow3 = 0x0F; //conflicts with None
+        [Obsolete("This value conflicts iwth 'GTR_TOUCH_STRIP_None.")]
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>")]
+        private const byte GTR_TOUCH_STRIP_RedToYellow3 = 0x0F; //conflicts with GTR_TOUCH_STRIP_None
         private const byte GTR_TOUCH_STRIP_RedToYellow4 = 0x10;
         private const byte GTR_TOUCH_STRIP_RedToYellow5 = 0x11;
         private const byte GTR_TOUCH_STRIP_Yellow = 0x12;
@@ -174,6 +178,16 @@ namespace NintrollerLib
         private static float _MapRange(float s, float a1, float a2, float b1, float b2)
         {
             return b1 + (s - a1) * (b2 - b1) / (a2 - a1);
+        }
+
+        public Guitar SetJoystickState(bool state) {
+            CALIB_Enable_Joystick = state;
+            return this;
+        }
+
+        public Guitar SetTouchStripState(bool state) {
+            CALIB_Enable_TouchStrip = state;
+            return this;
         }
 
         public void Update(byte[] data)
@@ -274,155 +288,156 @@ namespace NintrollerLib
                     double joyDirection = (int)((Math.Atan2(Joy.Y, Joy.X) + (Math.PI / 2)) / (Math.PI / 8));
                     int joyDirStep = (int)(Math.Abs(joyDirection));
 
-                    if (AllowJoystick && isJoyPressed)
+                    if (isJoyPressed)
                     {
-                        if (joyDirection < 0)
+                        if (CALIB_Enable_Joystick)
                         {
-                            switch (joyDirStep)
+                            if (joyDirection < 0)
                             {
-                                case 0: //N
-                                    Down = true;
-                                    break;
-                                case 1: //NE
-                                case 2: //NE
-                                    Down = true;
-                                    Left = true;
-                                    break;
-                                case 3: //E
-                                case 4: //E
-                                    Left = true;
-                                    break;
-                                case 5: //SE
-                                case 6: //SE
-                                    Left = true;
-                                    Up = true;
-                                    break;
-                                case 7: //S
-                                case 8: //S
-                                    Up = true;
-                                    break;
-                                case 9: //SW
-                                case 10: //SW
-                                    Up = true;
-                                    Right = true;
-                                    break;
-                                case 11: //W
-                                case 12: //W
-                                    Right = true;
-                                    break;
+                                switch (joyDirStep)
+                                {
+                                    case 0: //N
+                                        Down = true;
+                                        break;
+                                    case 1: //NE
+                                    case 2: //NE
+                                        Down = true;
+                                        Left = true;
+                                        break;
+                                    case 3: //E
+                                    case 4: //E
+                                        Left = true;
+                                        break;
+                                    case 5: //SE
+                                    case 6: //SE
+                                        Left = true;
+                                        Up = true;
+                                        break;
+                                    case 7: //S
+                                    case 8: //S
+                                        Up = true;
+                                        break;
+                                    case 9: //SW
+                                    case 10: //SW
+                                        Up = true;
+                                        Right = true;
+                                        break;
+                                    case 11: //W
+                                    case 12: //W
+                                        Right = true;
+                                        break;
 
+                                }
+                            }
+                            else
+                            {
+                                switch (joyDirStep)
+                                {
+                                    case 0: //N
+                                        Down = true;
+                                        break;
+                                    case 1: //NW
+                                    case 2: //NW
+                                        Down = true;
+                                        Right = true;
+                                        break;
+                                    case 3: //W
+                                    case 4: //W
+                                        Right = true;
+                                        break;
+                                    case 5: //SW
+                                    case 6: //SW
+                                        Right = true;
+                                        Up = true;
+                                        break;
+                                    case 7: //S
+                                    case 8: //S
+                                        Up = true;
+                                        break;
+                                    case 9: //SE
+                                    case 10: //SE
+                                        Up = true;
+                                        Left = true;
+                                        break;
+                                    case 11: //E
+                                    case 12: //E
+                                        Left = true;
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!IsGH3)
+                {
+                    if (CALIB_Enable_TouchStrip) {
+                        if (G || R || Y || B || O)
+                        {
+                            if (data[offset + 2] != GTR_TOUCH_STRIP_None && oldTouchStripValue == GTR_TOUCH_STRIP_None)
+                            {
+                                Down = true;
                             }
                         }
                         else
                         {
-                            switch (joyDirStep)
+                            switch (data[offset + 2] & 0x1F)
                             {
-                                case 0: //N
-                                    Down = true;
+                                case GTR_TOUCH_STRIP_Green:
+                                case GTR_TOUCH_STRIP_Green2:
+                                    G = true;
                                     break;
-                                case 1: //NW
-                                case 2: //NW
-                                    Down = true;
-                                    Right = true;
+                                case GTR_TOUCH_STRIP_GreenToRed:
+                                case GTR_TOUCH_STRIP_GreenToRed2:
+                                case GTR_TOUCH_STRIP_GreenToRed3:
+                                case GTR_TOUCH_STRIP_GreenToRed4:
+                                    G = true;
+                                    R = true;
                                     break;
-                                case 3: //W
-                                case 4: //W
-                                    Right = true;
+                                case GTR_TOUCH_STRIP_Red:
+                                case GTR_TOUCH_STRIP_Red2:
+                                case GTR_TOUCH_STRIP_Red3:
+                                    R = true;
                                     break;
-                                case 5: //SW
-                                case 6: //SW
-                                    Right = true;
-                                    Up = true;
+                                case GTR_TOUCH_STRIP_RedToYellow:
+                                case GTR_TOUCH_STRIP_RedToYellow2:
+                                //case GTR_TOUCH_STRIP_RedToYellow3: //conflicts with GTR_TOUCH_STRIP_None
+                                case GTR_TOUCH_STRIP_RedToYellow4:
+                                case GTR_TOUCH_STRIP_RedToYellow5:
+                                    R = true;
+                                    Y = true;
                                     break;
-                                case 7: //S
-                                case 8: //S
-                                    Up = true;
+                                case GTR_TOUCH_STRIP_Yellow:
+                                case GTR_TOUCH_STRIP_Yellow2:
+                                    Y = true;
                                     break;
-                                case 9: //SE
-                                case 10: //SE
-                                    Up = true;
-                                    Left = true;
+                                case GTR_TOUCH_STRIP_YellowToBlue:
+                                case GTR_TOUCH_STRIP_YellowToBlue2:
+                                case GTR_TOUCH_STRIP_YellowToBlue3:
+                                    Y = true;
+                                    B = true;
                                     break;
-                                case 11: //E
-                                case 12: //E
-                                    Left = true;
+                                case GTR_TOUCH_STRIP_Blue:
+                                case GTR_TOUCH_STRIP_Blue2:
+                                case GTR_TOUCH_STRIP_Blue3:
+                                    B = true;
+                                    break;
+                                case GTR_TOUCH_STRIP_BlueToOrange:
+                                case GTR_TOUCH_STRIP_BlueToOrange2:
+                                case GTR_TOUCH_STRIP_BlueToOrange3:
+                                case GTR_TOUCH_STRIP_BlueToOrange4:
+                                case GTR_TOUCH_STRIP_BlueToOrange5:
+                                    B = true;
+                                    O = true;
+                                    break;
+                                case GTR_TOUCH_STRIP_Orange:
+                                    O = true;
                                     break;
                             }
                         }
 
-
+                        oldTouchStripValue = data[offset + 2];
                     }
-                }
-
-
-
-                if ((!IsGH3) && CALIB_Enable_TouchStrip)
-                {
-                    if (G || R || Y || B || O)
-                    {
-                        if (data[offset + 2] != GTR_TOUCH_STRIP_None && oldTouchStripValue == GTR_TOUCH_STRIP_None)
-                        {
-                            Down = true;
-                        }
-                    }
-                    else
-                    {
-                        switch (data[offset + 2] & 0x1F)
-                        {
-                            case GTR_TOUCH_STRIP_Green:
-                            case GTR_TOUCH_STRIP_Green2:
-                                G = true;
-                                break;
-                            case GTR_TOUCH_STRIP_GreenToRed:
-                            case GTR_TOUCH_STRIP_GreenToRed2:
-                            case GTR_TOUCH_STRIP_GreenToRed3:
-                            case GTR_TOUCH_STRIP_GreenToRed4:
-                                G = true;
-                                R = true;
-                                break;
-                            case GTR_TOUCH_STRIP_Red:
-                            case GTR_TOUCH_STRIP_Red2:
-                            case GTR_TOUCH_STRIP_Red3:
-                                R = true;
-                                break;
-                            case GTR_TOUCH_STRIP_RedToYellow:
-                            case GTR_TOUCH_STRIP_RedToYellow2:
-                            //case GTR_TOUCH_STRIP_RedToYellow3: //conflicts with None
-                            case GTR_TOUCH_STRIP_RedToYellow4:
-                            case GTR_TOUCH_STRIP_RedToYellow5:
-                                R = true;
-                                Y = true;
-                                break;
-                            case GTR_TOUCH_STRIP_Yellow:
-                            case GTR_TOUCH_STRIP_Yellow2:
-                                Y = true;
-                                break;
-                            case GTR_TOUCH_STRIP_YellowToBlue:
-                            case GTR_TOUCH_STRIP_YellowToBlue2:
-                            case GTR_TOUCH_STRIP_YellowToBlue3:
-                                Y = true;
-                                B = true;
-                                break;
-                            case GTR_TOUCH_STRIP_Blue:
-                            case GTR_TOUCH_STRIP_Blue2:
-                            case GTR_TOUCH_STRIP_Blue3:
-                                B = true;
-                                break;
-                            case GTR_TOUCH_STRIP_BlueToOrange:
-                            case GTR_TOUCH_STRIP_BlueToOrange2:
-                            case GTR_TOUCH_STRIP_BlueToOrange3:
-                            case GTR_TOUCH_STRIP_BlueToOrange4:
-                            case GTR_TOUCH_STRIP_BlueToOrange5:
-                                B = true;
-                                O = true;
-                                break;
-                            case GTR_TOUCH_STRIP_Orange:
-                                O = true;
-                                break;
-                        }
-                    }
-
-                    oldTouchStripValue = data[offset + 2];
                 }
 
                 //// Normalize
@@ -528,11 +543,6 @@ namespace NintrollerLib
                     CALIB_Enable_TouchStrip = false;
             }
 #endif
-
-
-
-
-
 
 #if DEBUG
             if (offset > 0)

@@ -46,7 +46,7 @@
             <Image Source="../Images/wrench-icon.png" />
         </Button>-->
         
-        <Button x:Name="btnDetatch" HorizontalAlignment="Left" Margin="185,36,0,0" VerticalAlignment="Top" Width="79" Height="38" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderThickness="2" FontSize="10" Click="btnDetatch_Click" Visibility="Hidden" ToolTip="Detatch" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
+        <Button x:Name="btnDetatch" HorizontalAlignment="Left" Margin="184,36,0,0" VerticalAlignment="Top" Width="80" Height="38" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderThickness="2" FontSize="10" Click="btnDetatch_Click" Visibility="Hidden" ToolTip="Detatch" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
             Disconnect
         </Button>
     </Grid>

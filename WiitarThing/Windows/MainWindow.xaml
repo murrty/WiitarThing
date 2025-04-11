@@ -8,7 +8,7 @@
         <Grid.Resources>
             <local:ShowWindowCommand x:Key="ShowWindow" />
         </Grid.Resources>
-        <Label xml:space="preserve" Content="Hover for credits" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="0" FontSize="14" Margin="4,0,0,4" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" ToolTip="Justin Keys - WiinUSoft &#10;Meowmaritus - Guitar support &#10;shockdude - Turntable support &#10;MWisBest - ViGEm support &#10;Aida Enna - explain yourself &#10;murrty - Quality of life">
+        <Label xml:space="preserve" Content="Hover for credits" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="0" FontSize="14" Margin="4,0,0,8" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" ToolTip="Justin Keys - WiinUSoft &#10;Meowmaritus - Guitar support &#10;shockdude - Turntable support &#10;MWisBest - ViGEm support &#10;Aida Enna - explain yourself &#10;murrty - Quality of life">
         </Label>
         <tb:TaskbarIcon x:Name="trayIcon" 
                         IconSource="/WiitarThing;component/GHWT_Wii_Guitar.ico"
@@ -75,7 +75,6 @@
                     <MenuItem x:Name="menu_AutoStart" Header="Auto Startup" Click="menu_AutoStart_Click"/>
                     <MenuItem x:Name="menu_StartMinimized" Header="Start Minimized" Click="menu_StartMinimized_Click"/>
                     <MenuItem x:Name="menu_AutoRefresh" Header="Use Auto Refresh" Click="menu_AutoRefresh_Click"/>
-                    <MenuItem x:Name="menu_EnableJoystick" Header="Enable Joystick" Click="menu_EnableJoystick_Click"/>
                     <MenuItem x:Name="menu_NoSharing" Header="Greedy Mode" Click="menu_NoSharing_Click"/>
                     <MenuItem x:Name="menu_MsBluetooth" Header="Microsoft Bluetooth" Click="menu_MsBluetooth_Click"/>
                     <MenuItem x:Name="menu_SetDefaultCalibration" Visibility="Collapsed"

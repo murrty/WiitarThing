@@ -271,7 +271,7 @@
                     deadY   = 64
                 }
             };
-            
+
             /// <summary>
             /// Minimum calibration for the Wii Remote
             /// </summary>

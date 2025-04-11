@@ -104,7 +104,7 @@ namespace WiitarThing
                 if (device == null)
                     return false;
 
-                return device.Connected;
+                return device.IsConnected;
             }
         }
 
@@ -273,6 +273,8 @@ namespace WiitarThing
                     xHolder.ConnectXInput(targetXDevice);
                     holder = xHolder;
                     device.SetPlayerLED(targetXDevice + 1);
+                    device.IsGuitarJoystickEnabled = properties.enableJoystick;
+                    device.IsGuitarTouchStripEnabled = properties.enableTouchStrip;
                     updateTimer = new System.Threading.Timer(HolderUpdate, device, 1000, UPDATE_SPEED);
                     break;
 
@@ -671,12 +673,12 @@ namespace WiitarThing
         {
             if (identifying) return;
 
-            bool currentRumbleState = device.RumbleEnabled;
+            bool currentRumbleState = device.IsRumbleEnabled;
 
             // disable rumble for turntables
             if (!properties.useRumble || device.Type == ControllerType.Turntable)
             {
-                if (currentRumbleState) device.RumbleEnabled = false;
+                if (currentRumbleState) device.IsRumbleEnabled = false;
                 return;
             }
 
@@ -698,11 +700,11 @@ namespace WiitarThing
 
             if (rumbleStepCount < stopStep)
             {
-                if (!currentRumbleState) device.RumbleEnabled = true;
+                if (!currentRumbleState) device.IsRumbleEnabled = true;
             }
             else
             {
-                if (currentRumbleState) device.RumbleEnabled = false;
+                if (currentRumbleState) device.IsRumbleEnabled = false;
             }
 
             rumbleStepCount += 1;
@@ -969,7 +971,7 @@ namespace WiitarThing
                     if (!wasConnected)
                         device.BeginReading();
 
-                    device.RumbleEnabled = true;
+                    device.IsRumbleEnabled = true;
 
                     // O___
                     // _O__
@@ -985,7 +987,7 @@ namespace WiitarThing
                         Thread.Sleep(75);
                     }
 
-                    device.RumbleEnabled = false;
+                    device.IsRumbleEnabled = false;
                     if (targetXDevice > -1)
                         device.SetPlayerLED(targetXDevice + 1);
                     else
@@ -1049,10 +1051,19 @@ namespace WiitarThing
 
             if (win.doSave)
             {
-                ApplyCalibration(win.props.calPref, win.props.calString);
-                properties = new Property(win.props);
+                properties.CopyFrom(win.props);
+                properties.Reset();
+
+                ApplyCalibration(properties.calPref, properties.calString);
                 snapIRpointer = properties.pointerMode != Property.PointerOffScreenMode.Center;
                 SetName(properties.name);
+
+                if (device != null)
+                {
+                    device.IsGuitarTouchStripEnabled = properties.enableTouchStrip;
+                    device.IsGuitarJoystickEnabled = properties.enableJoystick;
+                }
+
                 UserPrefs.Instance.AddDevicePref(properties);
                 UserPrefs.SavePrefs();
             }

@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Threading;
 
 namespace NintrollerLib
@@ -28,7 +27,7 @@ namespace NintrollerLib
         /// Called when the connection loss is detected.
         /// </summary>
         public event EventHandler<DisconnectedEventArgs>        Disconnected    = delegate { };
-        
+
         // General
         private bool               _connected                   = false;
         private INintrollerState   _state                       = new Wiimote();
@@ -47,14 +46,16 @@ namespace NintrollerLib
         private bool             _reading    = false;        // true if actively reading
         private readonly object  _readingObj = new object(); // for locking/blocking
         private readonly object  _writingObj = new object(); // for locking/blocking
-        
+
         // help with parsing Reports
         private AcknowledgementType _ackType    = AcknowledgementType.NA;
         private StatusType          _statusType = StatusType.DiscoverExtension; // initial value was originally StatusType.Unknown, but it's a good idea to be able to distinguish the first received status report from subsequent ones
         private ReadReportType      _readType   = ReadReportType.Unknown;
 
         // boolean flag indicating whether guitar encryption has been fully set up and guitar bytes should be decrypted in every data report received
-        private bool _encryptionEnabled = false;
+        private bool _encryptionEnabled    = false;
+        private bool _enableGuitarJoystick = false;
+        private bool _enableGuitarTouchStrip = false;
         #endregion
 
         #region Properties
@@ -62,7 +63,7 @@ namespace NintrollerLib
         /// <summary>
         /// True if the controller is open to communication.
         /// </summary>
-        public bool Connected { get { return _connected; } }
+        public bool IsConnected { get { return _connected; } }
         /// <summary>
         /// The data stream to the controller.
         /// </summary>
@@ -160,7 +161,7 @@ namespace NintrollerLib
         /// <summary>
         /// Gets or Sets the controller's force feedback
         /// </summary>
-        public bool RumbleEnabled
+        public bool IsRumbleEnabled
         {
             get
             {
@@ -176,7 +177,7 @@ namespace NintrollerLib
         /// <summary>
         /// Gets or Sets the LED in position 1
         /// </summary>
-        public bool Led1
+        public bool IsLed1Enabled
         {
             get
             {
@@ -194,7 +195,7 @@ namespace NintrollerLib
         /// <summary>
         /// Gets or Sets the LED in position 2
         /// </summary>
-        public bool Led2
+        public bool IsLed2Enabled
         {
             get
             {
@@ -212,7 +213,7 @@ namespace NintrollerLib
         /// <summary>
         /// Gets or Sets the LED in position 3
         /// </summary>
-        public bool Led3
+        public bool IsLed3Enabled
         {
             get
             {
@@ -230,7 +231,7 @@ namespace NintrollerLib
         /// <summary>
         /// Gets or Sets the LED in position 4
         /// </summary>
-        public bool Led4
+        public bool IsLed4Enabled
         {
             get
             {
@@ -296,7 +297,7 @@ namespace NintrollerLib
         }
 
         // wrapping the encryption flag in a property so that each change in its value will automatically be followed by an appropriate debug message
-        public bool EncryptionEnabled
+        public bool IsEncryptionEnabled
         {
             get
             {
@@ -309,6 +310,40 @@ namespace NintrollerLib
                     Log("Guitar Encryption " + (value ? "enabled" : "disabled"));
                 }
                 _encryptionEnabled = value;
+            }
+        }
+
+        public bool IsGuitarJoystickEnabled {
+            get {
+                return _enableGuitarJoystick;
+            }
+            set {
+                if (value != _enableGuitarJoystick)
+                {
+                    this._enableGuitarJoystick = value;
+                }
+
+                if (_state is Guitar guitar)
+                {
+                    _state = guitar.SetJoystickState(value);
+                }
+            }
+        }
+
+        public bool IsGuitarTouchStripEnabled {
+            get {
+                return this._enableGuitarTouchStrip;
+            }
+            set {
+                if (value != _enableGuitarTouchStrip)
+                {
+                    this._enableGuitarTouchStrip = value;
+                }
+
+                if (_state is Guitar guitar)
+                {
+                    _state = guitar.SetTouchStripState(value);
+                }
             }
         }
 
@@ -335,7 +370,7 @@ namespace NintrollerLib
         {
             _currentType = hintType; // overwrites the value given during declaration (ControllerType.Unknown)
         }
-        
+
         /// <summary>
         /// Disposes
         /// </summary>
@@ -358,7 +393,7 @@ namespace NintrollerLib
         #endregion
 
         #region Connectivity
-        
+
         /// <summary>
         /// Opens a connection stream to the device.
         /// (Reading is not yet started)
@@ -379,7 +414,7 @@ namespace NintrollerLib
 
             return _connected;
         }
-        
+
         /// <summary>
         /// Closes the connection stream to the device.
         /// </summary>
@@ -697,7 +732,7 @@ namespace NintrollerLib
                             */
                             if (_statusType == StatusType.Unknown && _currentType == ControllerType.Guitar)
                             {
-                                EncryptionEnabled = false; // in either case we start over, so no need to keep decrypting guitar bytes in data streams
+                                IsEncryptionEnabled = false; // in either case we start over, so no need to keep decrypting guitar bytes in data streams
                                 if ((report[3] & 0x02) != 0)
                                 {
                                     // in the second case, we don't ignore the current report but we make sure to ignore subsequent reports by setting _state to null
@@ -944,7 +979,9 @@ namespace NintrollerLib
                                         break;
 
                                     case ControllerType.Guitar:
-                                        _state = new Guitar(_calibrations.WiimoteCalibration);
+                                        _state = new Guitar(wm: _calibrations.WiimoteCalibration,
+                                            enableJoystick: IsGuitarJoystickEnabled,
+                                            enableTouchStrip: IsGuitarTouchStripEnabled);
 
                                         if (_calibrations.ClassicProCalibration.CalibrationEmpty)
                                         {
@@ -959,7 +996,6 @@ namespace NintrollerLib
 #else
                                         applyReport = InputReport.BtnsAccExt;
 #endif
-
                                         break;
 
                                     case ControllerType.Turntable:
@@ -1046,7 +1082,7 @@ namespace NintrollerLib
                     break;
 
                 case InputReport.Acknowledge:
-#region Parse Acknowledgement
+                    #region Parse Acknowledgement
                     Log("Output Acknowledged");
 
                     if (report[4] == 0x03)
@@ -1075,7 +1111,7 @@ namespace NintrollerLib
                     switch (_ackType)
                     {
                         case AcknowledgementType.NA:
-#region Default Acknowledgement
+                            #region Default Acknowledgement
                             Log("Acknowledgement Report");
                             // Core buttons can be parsed here
                             // 20 BB BB LF 00 00 VV
@@ -1122,13 +1158,13 @@ namespace NintrollerLib
                             //    // and set report
                             //    SetReportType(InputReport.BtnsAccIR);
                             //}
-#endregion
+                            #endregion
                             break;
 
                         case AcknowledgementType.IR_Step1:
-#region IR Step 1
+                        #region IR Step 1
                             byte[] sensitivityBlock1 = null;
-                            
+
                             switch (_irSensitivity)
                             {
                                 case IRCamSensitivity.Custom:
@@ -1167,11 +1203,11 @@ namespace NintrollerLib
 
                             _ackType = AcknowledgementType.IR_Step2;
                             WriteToMemory(Constants.REGISTER_IR_SENSITIVITY_1, sensitivityBlock1);
-#endregion
+                            #endregion
                             break;
 
                         case AcknowledgementType.IR_Step2:
-#region IR Step 2
+                            #region IR Step 2
                             byte[] sensitivityBlock2 = null;
                             
                             switch (_irSensitivity)
@@ -1212,7 +1248,7 @@ namespace NintrollerLib
 
                             _ackType = AcknowledgementType.IR_Step3;
                             WriteToMemory(Constants.REGISTER_IR_SENSITIVITY_2, sensitivityBlock2);
-#endregion
+                            #endregion
                             break;
 
                         case AcknowledgementType.IR_Step3:
@@ -1226,7 +1262,7 @@ namespace NintrollerLib
                             break;
 
                         case AcknowledgementType.IR_Step5:
-#region Final IR Step
+                            #region Final IR Step
                             Log("IR Camera Enabled");
                             _ackType = AcknowledgementType.NA;
 
@@ -1249,7 +1285,7 @@ namespace NintrollerLib
                                     SetReportType(InputReport.BtnsIRExt);
                                     break;
                             }
-#endregion
+                            #endregion
                             break;
 
                         // The encryption key used is 16 zero bytes, since it makes decryption easier as seen in GuitarDecryptBuffer()
@@ -1267,7 +1303,7 @@ namespace NintrollerLib
                             break;
                         case AcknowledgementType.EncryptionSetup_Step4:
                             _ackType = AcknowledgementType.NA;
-                            EncryptionEnabled = true; // having completed encryption setup, we turn on the flag to start decrypting guitar bytes in the incoming data reports
+                            IsEncryptionEnabled = true; // having completed encryption setup, we turn on the flag to start decrypting guitar bytes in the incoming data reports
                             ApplyReportingType(InputReport.BtnsAccIRExt, true); // requesting the Wiimote to stream 0x37 data reports (the report type observed in GH3 Bluetooth traffic)
                             break;
 
@@ -1276,11 +1312,11 @@ namespace NintrollerLib
                             _ackType = AcknowledgementType.NA;
                             break;
                     }
-#endregion
+                    #endregion
                     break;
-#endregion
+                #endregion
 
-#region Data Reports
+                #region Data Reports
                 case InputReport.BtnsOnly:
                 case InputReport.BtnsAcc:
                 case InputReport.BtnsExt:
@@ -1341,6 +1377,12 @@ namespace NintrollerLib
                                 return;
                                 // continue other steps in Acknowledgement Reporting
                             }
+
+                            if (_state is Guitar guitar)
+                            {
+                                guitar.SetJoystickState(IsGuitarTouchStripEnabled);
+                                guitar.SetTouchStripState(IsGuitarTouchStripEnabled);
+                            }
                         }
 
                         _state.Update(report);
@@ -1365,7 +1407,7 @@ namespace NintrollerLib
                         GetStatus();
                     }
                     break;
-#endregion
+                #endregion
 
                 default:
                     Log("Unexpected Report type: " + input.ToString("x"));
@@ -1373,9 +1415,9 @@ namespace NintrollerLib
             }
         }
 
-#endregion
+        #endregion
 
-#region General
+        #region General
 
         internal static float Normalize(int raw, int min, int center, int max)
         {
@@ -1397,7 +1439,7 @@ namespace NintrollerLib
 
             return actual / range;
         }
-        
+
         internal static float Normalize(int raw, int min, int center, int max, int dead)
         {
             float actual = 0;
@@ -1484,7 +1526,7 @@ namespace NintrollerLib
         private void EnableIR()
         {
             byte[] buffer = new byte[2];
-            
+
             buffer[0] = (byte)OutputReport.IREnable;
             buffer[1] = (byte)(0x04);
             SendData(buffer);
@@ -1501,7 +1543,7 @@ namespace NintrollerLib
         private void DisableIR()
         {
             byte[] buffer = new byte[2];
-            
+
             buffer[0] = (byte)OutputReport.IREnable;
             buffer[1] = (byte)(0x00);
             SendData(buffer);
@@ -1595,9 +1637,9 @@ namespace NintrollerLib
             _readType = ReadReportType.Unknown;
         }
 
-#endregion
+        #endregion
 
-#region Calibration
+        #region Calibration
 
         /// <summary>
         /// Sets the device's calibrations based on a preset.
@@ -1618,7 +1660,7 @@ namespace NintrollerLib
         public void SetCalibration(string calibrationStorageString)
         {
             _calibrations.SetCalibrations(calibrationStorageString);
-            
+
             // TODO: apply 
         }
         /// <summary>
@@ -1630,10 +1672,10 @@ namespace NintrollerLib
             _calibrations.WiimoteCalibration = wiimoteCalibration;
 
             if (_state != null &&(
-                _currentType == ControllerType.Wiimote || 
-                _currentType == ControllerType.Nunchuk || 
+                _currentType == ControllerType.Wiimote ||
+                _currentType == ControllerType.Nunchuk ||
                 _currentType == ControllerType.NunchukB ||
-                _currentType == ControllerType.ClassicController || 
+                _currentType == ControllerType.ClassicController ||
                 _currentType == ControllerType.ClassicControllerPro ||
                 _currentType == ControllerType.Guitar ||
                 _currentType == ControllerType.Turntable))
@@ -1707,10 +1749,10 @@ namespace NintrollerLib
             }
         }
 
-#endregion
+        #endregion
     }
 
-#region New Event Args
+    #region New Event Args
 
     /// <summary>
     /// Class for controller state update.
@@ -1804,6 +1846,6 @@ namespace NintrollerLib
         }
     }
 
-#endregion
+    #endregion
 
 }

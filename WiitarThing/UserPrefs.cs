@@ -98,7 +98,6 @@ namespace WiitarThing
         public Property defaultProperty;
         public bool autoStartup;
         public bool startMinimized;
-        public bool enableJoystick;
         public bool greedyMode;
         public bool toshibaMode;
         public bool autoRefresh = true;
@@ -193,14 +192,16 @@ namespace WiitarThing
             {
                 if (pref.hid == property.hid)
                 {
-                    pref.name            = property.name;
-                    pref.autoConnect     = property.autoConnect;
-                    pref.profile         = property.profile;
-                    pref.connType        = property.connType;
-                    pref.autoNum         = property.autoNum;
-                    pref.rumbleIntensity = property.rumbleIntensity;
-                    pref.useRumble       = property.useRumble;
-                    pref.calPref         = property.calPref;
+                    pref.name               = property.name;
+                    pref.autoConnect        = property.autoConnect;
+                    pref.profile            = property.profile;
+                    pref.connType           = property.connType;
+                    pref.autoNum            = property.autoNum;
+                    pref.rumbleIntensity    = property.rumbleIntensity;
+                    pref.useRumble          = property.useRumble;
+                    pref.enableTouchStrip   = property.enableTouchStrip;
+                    pref.enableJoystick     = property.enableJoystick;
+                    pref.calPref            = property.calPref;
 
                     return;
                 }
@@ -265,6 +266,8 @@ namespace WiitarThing
         public string lastIcon = "";
         public bool autoConnect = false;
         public bool useRumble = true;
+        public bool enableTouchStrip = false;
+        public bool enableJoystick = false;
         public int autoNum = 0;
         public int rumbleIntensity = 2;
         public ProfHolderType connType;
@@ -275,7 +278,6 @@ namespace WiitarThing
 
         public Property()
         {
-            hid = "";
             connType = ProfHolderType.XInput;
             calPref = CalibrationPreference.Default;
             pointerMode = PointerOffScreenMode.Center;
@@ -291,17 +293,28 @@ namespace WiitarThing
 
         public Property(Property copy)
         {
-            hid = copy.hid;
-            name = copy.name;
-            autoConnect = copy.autoConnect;
-            autoNum = copy.autoNum;
-            useRumble = copy.useRumble;
-            rumbleIntensity = copy.rumbleIntensity;
-            connType = copy.connType;
-            profile = copy.profile;
-            calPref = copy.calPref;
-            calString = copy.calString;
-            pointerMode = copy.pointerMode;
+            CopyFrom(copy);
+        }
+
+        public void CopyFrom(Property prop)
+        {
+            hid = prop.hid;
+            name = prop.name;
+            autoConnect = prop.autoConnect;
+            autoNum = prop.autoNum;
+            useRumble = prop.useRumble;
+            enableTouchStrip = prop.enableTouchStrip;
+            enableJoystick = prop.enableJoystick;
+            rumbleIntensity = prop.rumbleIntensity;
+            connType = prop.connType;
+            profile = prop.profile;
+            calPref = prop.calPref;
+            calString = prop.calString;
+            pointerMode = prop.pointerMode;
+        }
+
+        public void Reset() {
+            lastIcon = "";
         }
     }
 

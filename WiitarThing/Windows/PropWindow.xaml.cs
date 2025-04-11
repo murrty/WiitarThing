@@ -13,14 +13,17 @@ namespace WiitarThing
         public bool customCalibrate = false;
         public Property props;
 
-        PropWindow(Property org) : this(org, "Controller") { }
+        PropWindow(Property org) : this(org, "Controller") {
+        }
 
-        public PropWindow(Property org, string defalutName)
+        public PropWindow(Property org, string defaultName)
         {
             InitializeComponent();
 
             props = new Property(org);
-            nameInput.Text = string.IsNullOrWhiteSpace(props.name) ? defalutName : props.name;
+            nameInput.Text = string.IsNullOrWhiteSpace(props.name) ? defaultName : props.name;
+            enableTouchStrip.IsChecked = org.enableTouchStrip;
+            enableJoystick.IsChecked = org.enableJoystick;
             defaultInput.Text = props.profile;
             autoCheckbox.IsChecked = props.autoConnect;
             if (props.autoNum >= 0 && props.autoNum <= autoConnectNumber.Items.Count)
@@ -68,6 +71,18 @@ namespace WiitarThing
         private void autoCheckbox_Click(object sender, RoutedEventArgs e)
         {
             props.autoConnect = autoCheckbox.IsChecked == true;
+        }
+
+        private void enableJoystick_Click(object sender, RoutedEventArgs e)
+        {
+            //props.enableJoystick = enableJoystick.IsChecked == true;
+            props.enableJoystick = enableJoystick.IsChecked ?? false;
+        }
+
+        private void enableTouchStrip_Click(object sender, RoutedEventArgs e)
+        {
+            //props.enableTouchStrip = enableTouchStrip.IsChecked == true;
+            props.enableTouchStrip = enableTouchStrip.IsChecked ?? false;
         }
 
         private void nameInput_TextChanged(object sender, TextChangedEventArgs e)

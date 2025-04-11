@@ -94,7 +94,12 @@ namespace WiitarThing
             }
 
             Version version = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
-            Title = "WiitarThing v" + version.ToString() + " (no joy)";
+
+#if LOW_BANDWIDTH
+            Title = $"WiitarThing v{version} (Low Bandwidth)";
+#else
+            Title = $"WiitarThing v{version}";
+#endif
 
 #if DEBUG
             Title += " Debug Build";
@@ -111,10 +116,6 @@ namespace WiitarThing
 
 #else
             labelDebugBuild.Visibility = Visibility.Hidden;
-#endif
-
-#if LOW_BANDWIDTH
-            Title += " - LIGHT VERSION";
 #endif
         }
 
@@ -253,7 +254,7 @@ namespace WiitarThing
                 {
                     if (Holders.XInputHolder.availabe[target] && target < 4)
                     {
-                        if (thingy.Value.Device.Connected || thingy.Value.Device.DataStream.Open())
+                        if (thingy.Value.Device.IsConnected || thingy.Value.Device.DataStream.Open())
                         {
                             thingy.Value.targetXDevice = target;
                             thingy.Value.ConnectionState = DeviceState.Connected_XInput;
@@ -284,7 +285,7 @@ namespace WiitarThing
             {
                 if (Holders.XInputHolder.availabe[target] && target < 4)
                 {
-                    if (d.Value.Device.Connected || d.Value.Device.DataStream.Open())
+                    if (d.Value.Device.IsConnected || d.Value.Device.DataStream.Open())
                     {
                         d.Value.targetXDevice = target;
                         d.Value.ConnectionState = DeviceState.Connected_XInput;
@@ -339,7 +340,6 @@ namespace WiitarThing
             
             menu_AutoStart.IsChecked = UserPrefs.Instance.autoStartup;
             menu_NoSharing.IsChecked = UserPrefs.Instance.greedyMode;
-            menu_EnableJoystick.IsChecked = Guitar.AllowJoystick = UserPrefs.Instance.enableJoystick;
             menu_AutoRefresh.IsChecked = UserPrefs.Instance.autoRefresh;
             menu_MsBluetooth.IsChecked = !UserPrefs.Instance.toshibaMode;
 
@@ -551,12 +551,6 @@ namespace WiitarThing
             UserPrefs.Instance.autoRefresh = menu_AutoRefresh.IsChecked;
             UserPrefs.SavePrefs();
             AutoRefresh(menu_AutoRefresh.IsChecked && ApplicationIsActivated());
-        }
-
-        private void menu_EnableJoystick_Click(object sender, RoutedEventArgs e) {
-            Guitar.AllowJoystick =
-                UserPrefs.Instance.enableJoystick = (menu_EnableJoystick.IsChecked ^= true);
-            UserPrefs.SavePrefs();
         }
 
         private void menu_SetDefaultCalibration_Click(object sender, RoutedEventArgs e)
