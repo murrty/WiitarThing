@@ -28,7 +28,7 @@ namespace WiitarThing
                     else
                     {
                         _instance = new UserPrefs();
-                        _instance.devicePrefs = new List<Property>();
+                        _instance.devicePrefs = new List<NintrollerLib.WiimoteSettings>();
                         _instance.defaultProfile = new Profile();
                         // we could, but just in case lets not
                         //_instance.greedyMode = Environment.OSVersion.Version.Major < 10; 
@@ -93,15 +93,15 @@ namespace WiitarThing
             }
         }
 
-        public List<Property> devicePrefs;
+        public List<NintrollerLib.WiimoteSettings> devicePrefs;
         public Profile defaultProfile;
-        public Property defaultProperty;
+        public NintrollerLib.WiimoteSettings defaultProperty;
         public bool autoStartup;
         public bool startMinimized;
         public bool greedyMode;
         public bool toshibaMode;
         public bool autoRefresh = true;
-        public PointD lastPos = new(-32_000, -32_000);
+        public PointD lastPos = new PointD(-32_000, -32_000);
 
         public static bool LoadPrefs()
         {
@@ -122,8 +122,11 @@ namespace WiitarThing
 
                     successful = true;
 
-                    if (_instance != null && _instance.devicePrefs != null)
-                        _instance.defaultProperty = _instance.devicePrefs.Find((p) => p.hid.ToLower().Equals("all"));
+                    if (_instance?.devicePrefs != null)
+                    {
+                        _instance.defaultProperty = _instance.devicePrefs.Find((p) =>
+                            p.hid.Equals("all", StringComparison.OrdinalIgnoreCase));
+                    }
                 }
             }
             catch (Exception e) 
@@ -173,7 +176,7 @@ namespace WiitarThing
             return successful;
         }
 
-        public Property GetDevicePref(string hid)
+        public NintrollerLib.WiimoteSettings GetDevicePref(string hid)
         {
             foreach (var pref in devicePrefs)
             {
@@ -186,7 +189,7 @@ namespace WiitarThing
             return defaultProperty;
         }
 
-        public void AddDevicePref(Property property)
+        public void AddDevicePref(NintrollerLib.WiimoteSettings property)
         {
             foreach (var pref in devicePrefs)
             {
@@ -231,90 +234,6 @@ namespace WiitarThing
             }
 
             return "";
-        }
-    }
-
-    public class Property
-    {
-        public enum ProfHolderType
-        {
-            XInput = 0,
-            DInput = 1
-        }
-
-        public enum CalibrationPreference
-        {
-            Raw     = -2,
-            Minimal = -1,
-            Default = 0,
-            Defalut = 0,
-            More    = 1,
-            Extra   = 2,
-            Custom  = 3
-        }
-
-        public enum PointerOffScreenMode
-        {
-            Center = 0,
-            SnapX  = 1,
-            SnapY  = 2,
-            SnapXY = 3
-        }
-
-        public string hid = "";
-        public string name = "";
-        public string lastIcon = "";
-        public bool autoConnect = false;
-        public bool useRumble = true;
-        public bool enableTouchStrip = false;
-        public bool enableJoystick = false;
-        public int autoNum = 0;
-        public int rumbleIntensity = 2;
-        public ProfHolderType connType;
-        public string profile = "";
-        public CalibrationPreference calPref;
-        public string calString = ""; // not the best solution for saving the custom config but makes it easy
-        public PointerOffScreenMode pointerMode = PointerOffScreenMode.Center;
-
-        public Property()
-        {
-            connType = ProfHolderType.XInput;
-            calPref = CalibrationPreference.Default;
-            pointerMode = PointerOffScreenMode.Center;
-        }
-
-        public Property(string ID)
-        {
-            hid = ID;
-            connType = ProfHolderType.XInput;
-            calPref = CalibrationPreference.Default;
-            pointerMode = PointerOffScreenMode.Center;
-        }
-
-        public Property(Property copy)
-        {
-            CopyFrom(copy);
-        }
-
-        public void CopyFrom(Property prop)
-        {
-            hid = prop.hid;
-            name = prop.name;
-            autoConnect = prop.autoConnect;
-            autoNum = prop.autoNum;
-            useRumble = prop.useRumble;
-            enableTouchStrip = prop.enableTouchStrip;
-            enableJoystick = prop.enableJoystick;
-            rumbleIntensity = prop.rumbleIntensity;
-            connType = prop.connType;
-            profile = prop.profile;
-            calPref = prop.calPref;
-            calString = prop.calString;
-            pointerMode = prop.pointerMode;
-        }
-
-        public void Reset() {
-            lastIcon = "";
         }
     }
 

@@ -979,9 +979,10 @@ namespace NintrollerLib
                                         break;
 
                                     case ControllerType.Guitar:
-                                        _state = new Guitar(wm: _calibrations.WiimoteCalibration,
-                                            enableJoystick: IsGuitarJoystickEnabled,
-                                            enableTouchStrip: IsGuitarTouchStripEnabled);
+                                        _state = new Guitar(wm: _calibrations.WiimoteCalibration) {
+                                            CALIB_Enable_Joystick = IsGuitarJoystickEnabled,
+                                            CALIB_Enable_TouchStrip = IsGuitarJoystickEnabled,
+                                        };
 
                                         if (_calibrations.ClassicProCalibration.CalibrationEmpty)
                                         {
@@ -1586,7 +1587,7 @@ namespace NintrollerLib
         {
             // 1st LED
             if (num == 1 || num == 5 || num == 8 || num == 10 || num == 11 || num > 12)
-                _led1 = true;
+                _led1 = num == 1 || num == 5 || num == 8 || num == 10 || num == 11 || num > 12;
             else
                 _led1 = false;
 
@@ -1607,6 +1608,15 @@ namespace NintrollerLib
                 _led4 = true;
             else
                 _led4 = false;
+
+            ApplyLEDs();
+        }
+
+        public void SetPlayerLED(bool led1, bool led2, bool led3, bool led4) {
+            _led1 = led1;
+            _led2 = led2;
+            _led3 = led3;
+            _led4 = led4;
 
             ApplyLEDs();
         }

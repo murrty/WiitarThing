@@ -1,7 +1,5 @@
 using Microsoft.Shell;
 using System;
-using System.Collections.Generic;
-using System.Windows;
 
 namespace WiitarThing
 {
@@ -12,6 +10,7 @@ namespace WiitarThing
         [STAThread]
         public static void Main()
         {
+
             if (SingleInstance<App>.InitializeAsFirstInstance(Unique))
             {
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;

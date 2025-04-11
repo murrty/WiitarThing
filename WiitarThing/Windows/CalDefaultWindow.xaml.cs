@@ -18,13 +18,13 @@ namespace WiitarThing.Windows
             {
                 switch (UserPrefs.Instance.defaultProperty.calPref)
                 {
-                    case Property.CalibrationPreference.Minimal:
+                    case NintrollerLib.WiimoteSettings.CalibrationPreference.Minimal:
                         radioMin.IsChecked = true; break;
-                    case Property.CalibrationPreference.Default:
+                    case NintrollerLib.WiimoteSettings.CalibrationPreference.Default:
                         radioDefault.IsChecked = true; break;
-                    case Property.CalibrationPreference.More:
+                    case NintrollerLib.WiimoteSettings.CalibrationPreference.More:
                         radioMod.IsChecked = true; break;
-                    case Property.CalibrationPreference.Extra:
+                    case NintrollerLib.WiimoteSettings.CalibrationPreference.Extra:
                         radioExt.IsChecked = true; break;
                 }
             }
@@ -45,29 +45,29 @@ namespace WiitarThing.Windows
 
         private void saveBtn_Click(object sender, RoutedEventArgs e)
         {
-            Property prop = new Property();
+            NintrollerLib.WiimoteSettings prop = new NintrollerLib.WiimoteSettings();
             prop.hid = "all";
             prop.name = "Default";
             
             if (radioDefault.IsChecked ?? false)
             {
-                prop.calPref = Property.CalibrationPreference.Default;
+                prop.calPref = NintrollerLib.WiimoteSettings.CalibrationPreference.Default;
             }
             else if (radioMin.IsChecked ?? false)
             {
-                prop.calPref = Property.CalibrationPreference.Minimal;
+                prop.calPref = NintrollerLib.WiimoteSettings.CalibrationPreference.Minimal;
             }
             else if (radioMod.IsChecked ?? false)
             {
-                prop.calPref = Property.CalibrationPreference.More;
+                prop.calPref = NintrollerLib.WiimoteSettings.CalibrationPreference.More;
             }
             else if (radioExt.IsChecked ?? false)
             {
-                prop.calPref = Property.CalibrationPreference.Extra;
+                prop.calPref = NintrollerLib.WiimoteSettings.CalibrationPreference.Extra;
             }
             else if (radioCopy.IsChecked ?? false)
             {
-                prop.calPref = Property.CalibrationPreference.Custom;
+                prop.calPref = NintrollerLib.WiimoteSettings.CalibrationPreference.Custom;
                 var copy = UserPrefs.Instance.devicePrefs[copyCombo.SelectedIndex];
                 prop.autoConnect = copy.autoConnect;
                 prop.autoNum = copy.autoNum;

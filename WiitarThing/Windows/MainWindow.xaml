@@ -40,11 +40,10 @@
         </Border>
         <Label Content="Detected (But not Connected) Devices:" HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top" FontWeight="SemiBold" Width="230" Height="18" Padding="5,0" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Label Content="If your device doesn't show up, try restarting the app." HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="290" Height="16" FontSize="10" Padding="5,0" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-        <Button x:Name="buttonTestInputs" HorizontalAlignment="Left" Margin="308,11,0,0" VerticalAlignment="Top" Width="292" Height="42" FontSize="12" Padding="5,0" FontWeight="SemiBold" Click="buttonTestInputs_Click"
+        <Button x:Name="buttonTestInputs" HorizontalAlignment="Left" Margin="308,11,0,0" VerticalAlignment="Top" Width="292" Height="42" FontSize="12" FontWeight="SemiBold" Click="buttonTestInputs_Click"
                 Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
                 BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
-                BorderThickness="2" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                >
+                BorderThickness="3" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
             <TextBlock>
                 <Run Text="Click here to open controller test menu."/>
                 <LineBreak/>
@@ -55,7 +54,7 @@
         </Button>
         <Label Content="Devices Connected as Xbox 360 Controllers:" HorizontalAlignment="Left" Margin="308,53,0,0" VerticalAlignment="Top" FontWeight="Bold" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
         <!--<Label Content="Connected as VJoy Devices:" HorizontalAlignment="Left" Margin="637,10,0,0" VerticalAlignment="Top" Visibility="Visible" FontWeight="Bold" />-->
-        <Button x:Name="btnSync" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="44" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderThickness="2" FontWeight="Black" FontSize="12" ToolTip="Sync" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Click="btnSync_Click" Foreground="#FFDE5E5E" Padding="0.6,1,1,1" >
+        <Button x:Name="btnSync" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="44" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderThickness="2" FontWeight="Black" FontSize="12" ToolTip="Sync" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Click="btnSync_Click" Foreground="#FFDE5E5E">
             Sync
         </Button>
         <Button x:Name="btnRefresh" HorizontalAlignment="Left" Margin="8,0,0,35" VerticalAlignment="Bottom" Width="292" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderThickness="2" FontSize="10" FontWeight="SemiBold" ToolTip="Refresh Connected Device List" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Click="btnRefresh_Click" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
@@ -69,7 +68,8 @@
         </Button>
         <Button x:Name="btnSettings" HorizontalAlignment="Left" Margin="219,10,0,0" VerticalAlignment="Top" Width="81" Height="24" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" 
                 BorderThickness="2" FontSize="12" FontWeight="SemiBold" ToolTip="Advanced Configuration (don't mess with this unless you know what you're doing)." 
-                Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Click="btnSettings_Click" VerticalContentAlignment="Center" Padding="0,2,0,1">
+                Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" Click="btnSettings_Click" VerticalContentAlignment="Center">
+            Config
             <Button.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="menu_AutoStart" Header="Auto Startup" Click="menu_AutoStart_Click"/>
@@ -83,7 +83,6 @@
                     <MenuItem x:Name="menu_version" Header="version 2.0" IsEnabled="False"/>
                 </ContextMenu>
             </Button.ContextMenu>
-            Config
         </Button>
         <Label x:Name="labelDebugBuild" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="162" FontWeight="Black" FontSize="14" Foreground="Firebrick" Padding="0" Height="32" Margin="0,0,2,2">
             <!--<Label.Effect>

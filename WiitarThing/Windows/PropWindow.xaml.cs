@@ -11,16 +11,16 @@ namespace WiitarThing
     {
         public bool doSave = false;
         public bool customCalibrate = false;
-        public Property props;
+        public NintrollerLib.WiimoteSettings props;
 
-        PropWindow(Property org) : this(org, "Controller") {
+        PropWindow(NintrollerLib.WiimoteSettings org) : this(org, "Controller") {
         }
 
-        public PropWindow(Property org, string defaultName)
+        public PropWindow(NintrollerLib.WiimoteSettings org, string defaultName)
         {
             InitializeComponent();
 
-            props = new Property(org);
+            props = new NintrollerLib.WiimoteSettings(org);
             nameInput.Text = string.IsNullOrWhiteSpace(props.name) ? defaultName : props.name;
             enableTouchStrip.IsChecked = org.enableTouchStrip;
             enableJoystick.IsChecked = org.enableJoystick;
@@ -36,19 +36,19 @@ namespace WiitarThing
             }
             switch (props.calPref)
             {
-                case Property.CalibrationPreference.Default:
+                case NintrollerLib.WiimoteSettings.CalibrationPreference.Default:
                     calibrationSelection.SelectedIndex = 0;
                     break;
-                case Property.CalibrationPreference.Minimal:
+                case NintrollerLib.WiimoteSettings.CalibrationPreference.Minimal:
                     calibrationSelection.SelectedIndex = 1;
                     break;
-                case Property.CalibrationPreference.More:
+                case NintrollerLib.WiimoteSettings.CalibrationPreference.More:
                     calibrationSelection.SelectedIndex = 2;
                     break;
-                case Property.CalibrationPreference.Extra:
+                case NintrollerLib.WiimoteSettings.CalibrationPreference.Extra:
                     calibrationSelection.SelectedIndex = 3;
                     break;
-                case Property.CalibrationPreference.Custom:
+                case NintrollerLib.WiimoteSettings.CalibrationPreference.Custom:
                     calibrationSelection.SelectedIndex = 4;
                     break;
             }
@@ -134,22 +134,22 @@ namespace WiitarThing
                 switch (calibrationSelection.SelectedIndex)
                 {
                     case 0:
-                        props.calPref = Property.CalibrationPreference.Default;
+                        props.calPref = NintrollerLib.WiimoteSettings.CalibrationPreference.Default;
                         customCalibrate = false;
                         break;
 
                     case 1:
-                        props.calPref = Property.CalibrationPreference.Minimal;
+                        props.calPref = NintrollerLib.WiimoteSettings.CalibrationPreference.Minimal;
                         customCalibrate = false;
                         break;
 
                     case 2:
-                        props.calPref = Property.CalibrationPreference.More;
+                        props.calPref = NintrollerLib.WiimoteSettings.CalibrationPreference.More;
                         customCalibrate = false;
                         break;
 
                     case 3:
-                        props.calPref = Property.CalibrationPreference.Extra;
+                        props.calPref = NintrollerLib.WiimoteSettings.CalibrationPreference.Extra;
                         customCalibrate = false;
                         break;
 
@@ -166,7 +166,7 @@ namespace WiitarThing
         {
             if (props != null && calibrationSelection.SelectedIndex == 4)
             {
-                props.calPref = Property.CalibrationPreference.Custom;
+                props.calPref = NintrollerLib.WiimoteSettings.CalibrationPreference.Custom;
                 customCalibrate = true;
                 Hide();
             }
@@ -176,7 +176,7 @@ namespace WiitarThing
         {
             if (props != null)
             {
-                props.pointerMode = (Property.PointerOffScreenMode)pointerSelection.SelectedIndex;
+                props.pointerMode = (NintrollerLib.WiimoteSettings.PointerOffScreenMode)pointerSelection.SelectedIndex;
             }
         }
     }

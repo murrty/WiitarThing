@@ -41,18 +41,10 @@ namespace NintrollerLib
         private bool SpecialButtonDebugDump => wiimote.buttons.Home;
 
 #if DEBUG
-        private bool _debugViewActive;
-        public bool DebugViewActive
-        {
-            get
-            {
-                return _debugViewActive;
-            }
-            set
-            {
-                _debugViewActive = value;
-            }
-        }
+        public bool DebugViewActive { get; set; }
+
+        public byte[] DebugLastData;
+        private bool DebugButton_Dump;
 #endif
 
         public Wiimote wiimote;
@@ -72,14 +64,6 @@ namespace NintrollerLib
 
         public float TiltHigh;
         public float TiltLow;
-
-#if DEBUG
-        public byte[] DebugLastData;
-#endif
-
-#if DEBUG
-        private bool DebugButton_Dump;
-#endif
 
         private byte CALIB_Whammy_Min;
         private byte CALIB_Whammy_Max;
@@ -112,12 +96,6 @@ namespace NintrollerLib
             Joy.Calibrate(Calibrations.Defaults.GuitarDefault.Joy);
         }
 
-        public Guitar(Wiimote wm, bool enableJoystick, bool enableTouchStrip) : this(wm: wm)
-        {
-            CALIB_Enable_Joystick = enableJoystick;
-            CALIB_Enable_TouchStrip = enableTouchStrip;
-        }
-
         public bool Start
         {
             get { return Plus; }
@@ -130,8 +108,8 @@ namespace NintrollerLib
             set { Minus = value; }
         }
 
-        private bool CALIB_Enable_Joystick;
-        private bool CALIB_Enable_TouchStrip;
+        public bool CALIB_Enable_Joystick;
+        public bool CALIB_Enable_TouchStrip;
 
         public float CALIB_Tilt_Neutral;
         public float CALIB_Tilt_Weight;
@@ -152,6 +130,7 @@ namespace NintrollerLib
         private const byte GTR_TOUCH_STRIP_RedToYellow2 = 0x0E;
         [Obsolete("This value conflicts iwth 'GTR_TOUCH_STRIP_None.")]
         [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>")]
+        [SuppressMessage("Roslynator", "RCS1213:Remove unused member declaration", Justification = "<Pending>")]
         private const byte GTR_TOUCH_STRIP_RedToYellow3 = 0x0F; //conflicts with GTR_TOUCH_STRIP_None
         private const byte GTR_TOUCH_STRIP_RedToYellow4 = 0x10;
         private const byte GTR_TOUCH_STRIP_RedToYellow5 = 0x11;
@@ -522,8 +501,8 @@ namespace NintrollerLib
 
                 CALIB_Tilt_Neutral = 0;
             }
-            
-            float tiltAngle = (float)Math.Atan(Math.Sqrt(Math.Pow(wiimote.accelerometer.X,2)+ Math.Pow(wiimote.accelerometer.Y,2) / wiimote.accelerometer.Z));
+
+            float tiltAngle = (float)Math.Atan(Math.Sqrt(Math.Pow(wiimote.accelerometer.X, 2) + Math.Pow(wiimote.accelerometer.Y, 2) / wiimote.accelerometer.Z));
 
             // Tilt calibration max
             if (SpecialButtonTiltCalibMax)
@@ -571,8 +550,6 @@ namespace NintrollerLib
                 {
                     DebugButton_Dump = false;
                 }
-
-                
             }
 #endif
 

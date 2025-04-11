@@ -9,7 +9,6 @@
             Raw = -2,
             Minimal = -1,
             Default = 0,
-            Defalut = 0,
             More = 1,
             Extra = 2,
             Custom = 3

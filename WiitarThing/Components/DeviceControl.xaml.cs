@@ -8,7 +8,7 @@ using NintrollerLib;
 using System.Xml.Serialization;
 using System.IO;
 using System.Threading;
-using System.Diagnostics;
+using System.Security.Cryptography;
 
 namespace WiitarThing
 {
@@ -27,6 +27,9 @@ namespace WiitarThing
     {
         #region Members
 
+        // static
+        private static readonly Random _rng;
+
         // private members
         private string devicePath;
         private Nintroller device;
@@ -40,7 +43,7 @@ namespace WiitarThing
         
         // internally public members
         internal Holders.Holder holder;
-        internal Property       properties;
+        internal WiimoteSettings       properties;
         internal int            targetXDevice = -1;
         internal bool           lowBatteryFired = false;
         internal bool           identifying = false;
@@ -132,6 +135,11 @@ namespace WiitarThing
 
         #endregion
 
+        static DeviceControl()
+        {
+            _rng = new Random(DateTime.Now.GetHashCode());
+        }
+
         public DeviceControl()
         {
             InitializeComponent();
@@ -187,7 +195,7 @@ namespace WiitarThing
             {
                 SetName(string.IsNullOrWhiteSpace(properties.name) ? device.Type.ToString() : properties.name);
                 ApplyCalibration(properties.calPref, properties.calString ?? "");
-                snapIRpointer = properties.pointerMode != Property.PointerOffScreenMode.Center;
+                snapIRpointer = properties.pointerMode != WiimoteSettings.PointerOffScreenMode.Center;
                 if (!string.IsNullOrEmpty(properties.lastIcon))
                 {
                     icon.Source = (ImageSource)Application.Current.Resources[properties.lastIcon];
@@ -195,7 +203,7 @@ namespace WiitarThing
             }
             else
             {
-                properties = new Property(devicePath);
+                properties = new WiimoteSettings(devicePath);
                 UpdateIcon(device.Type);
                 SetName(device.Type.ToString());
             }
@@ -632,14 +640,14 @@ namespace WiitarThing
 
             if (snapIRpointer && !wm.irSensor.point1.visible && !wm.irSensor.point2.visible)
             {
-                if (properties.pointerMode == Property.PointerOffScreenMode.SnapX ||
-                    properties.pointerMode == Property.PointerOffScreenMode.SnapXY)
+                if (properties.pointerMode == WiimoteSettings.PointerOffScreenMode.SnapX ||
+                    properties.pointerMode == WiimoteSettings.PointerOffScreenMode.SnapXY)
                 {
                     wm.irSensor.X = previousIR.X;
                 }
 
-                if (properties.pointerMode == Property.PointerOffScreenMode.SnapY ||
-                    properties.pointerMode == Property.PointerOffScreenMode.SnapXY)
+                if (properties.pointerMode == WiimoteSettings.PointerOffScreenMode.SnapY ||
+                    properties.pointerMode == WiimoteSettings.PointerOffScreenMode.SnapXY)
                 {
                     wm.irSensor.Y = previousIR.Y;
                 }
@@ -827,32 +835,32 @@ namespace WiitarThing
             }
         }
 
-        private void ApplyCalibration(Property.CalibrationPreference calPref, string calString)
+        private void ApplyCalibration(WiimoteSettings.CalibrationPreference calPref, string calString)
         {
             // Load calibration settings
             switch (calPref)
             {
-                case Property.CalibrationPreference.Default:
+                case WiimoteSettings.CalibrationPreference.Default:
                     device.SetCalibration(Calibrations.CalibrationPreset.Default);
                     break;
 
-                case Property.CalibrationPreference.More:
+                case WiimoteSettings.CalibrationPreference.More:
                     device.SetCalibration(Calibrations.CalibrationPreset.Modest);
                     break;
 
-                case Property.CalibrationPreference.Extra:
+                case WiimoteSettings.CalibrationPreference.Extra:
                     device.SetCalibration(Calibrations.CalibrationPreset.Extra);
                     break;
 
-                case Property.CalibrationPreference.Minimal:
+                case WiimoteSettings.CalibrationPreference.Minimal:
                     device.SetCalibration(Calibrations.CalibrationPreset.Minimum);
                     break;
 
-                case Property.CalibrationPreference.Raw:
+                case WiimoteSettings.CalibrationPreference.Raw:
                     device.SetCalibration(Calibrations.CalibrationPreset.None);
                     break;
 
-                case Property.CalibrationPreference.Custom:
+                case WiimoteSettings.CalibrationPreference.Custom:
                     CalibrationStorage calStor = new CalibrationStorage(calString);
                     device.SetCalibration(calStor.ProCalibration);
                     device.SetCalibration(calStor.NunchukCalibration);
@@ -876,7 +884,7 @@ namespace WiitarThing
             }
         }
 
-#region UI Events
+        #region UI Events
         private void btnXinput_Click(object sender, RoutedEventArgs e)
         {
             if (btnXinput.ContextMenu != null)
@@ -900,6 +908,7 @@ namespace WiitarThing
             ConnectionState = DeviceState.Connected_XInput;
 
             RefreshState();
+            //device.GetStatus();
         }
 
         private void XOption_Click(object sender, RoutedEventArgs e)
@@ -973,21 +982,93 @@ namespace WiitarThing
 
                     device.IsRumbleEnabled = true;
 
-                    // O___
-                    // _O__
-                    // __O_
-                    // ___O
-                    // __O_
-                    // _O__
-                    // O___
-                    for (int i = -3; i < 4; i++)
-                    {
-                        int led = 4 - Math.Abs(i);
-                        device.SetPlayerLED(led);
-                        Thread.Sleep(75);
+                    switch (_rng.Next(0, 3)) {
+                        case 0:
+                            // o___ 0
+                            // oo__ 1
+                            // ooo_ 2
+                            // oooo 3
+                            // _ooo 4
+                            // __oo 5
+                            // ___o 6
+                            // __oo 7
+                            // _ooo 8
+                            // oooo 9
+                            // ooo_ 10
+                            // oo__ 11
+                            // o___ 12
+
+                            for (int i = 0; i < 13; i++) {
+                                switch (i) {
+                                    case 1:
+                                    case 11:
+                                        device.SetBinaryLEDs(0b0011);
+                                        break;
+                                    case 2:
+                                    case 10:
+                                        device.SetBinaryLEDs(0b0111);
+                                        break;
+                                    case 3:
+                                    case 9:
+                                        device.SetBinaryLEDs(0b1111);
+                                        break;
+                                    case 4:
+                                    case 8:
+                                        device.SetBinaryLEDs(0b1110);
+                                        break;
+                                    case 5:
+                                    case 7:
+                                        device.SetBinaryLEDs(0b1100);
+                                        break;
+                                    case 6:
+                                        device.SetBinaryLEDs(0b1000);
+                                        break;
+                                    default:
+                                        device.SetBinaryLEDs(0b0001);
+                                        break;
+                                }
+
+                                Thread.Sleep(75);
+                            }
+                            break;
+
+                        case 1:
+                            // o___
+                            // _o__
+                            // __o_
+                            // ___o
+                            // x3
+
+                            for (int i = 0; i < 3; i++) {
+                                for (int x = -3; x < 1; x++) {
+                                    int led = 4 - Math.Abs(x);
+                                    device.SetPlayerLED(led);
+                                    Thread.Sleep(75);
+                                }
+
+                                Thread.Sleep(75);
+                            }
+                            break;
+
+                        default:
+                            // o___
+                            // _o__
+                            // __o_
+                            // ___o
+                            // __o_
+                            // _o__
+                            // o___
+
+                            for (int i = -3; i < 4; i++) {
+                                int led = 4 - Math.Abs(i);
+                                device.SetPlayerLED(led);
+                                Thread.Sleep(75);
+                            }
+                            break;
                     }
 
                     device.IsRumbleEnabled = false;
+
                     if (targetXDevice > -1)
                         device.SetPlayerLED(targetXDevice + 1);
                     else
@@ -1055,7 +1136,7 @@ namespace WiitarThing
                 properties.Reset();
 
                 ApplyCalibration(properties.calPref, properties.calString);
-                snapIRpointer = properties.pointerMode != Property.PointerOffScreenMode.Center;
+                snapIRpointer = properties.pointerMode != WiimoteSettings.PointerOffScreenMode.Center;
                 SetName(properties.name);
 
                 if (device != null)
@@ -1068,7 +1149,7 @@ namespace WiitarThing
                 UserPrefs.SavePrefs();
             }
         }
-#endregion
+        #endregion
 
         private void btnDebugView_Click(object sender, RoutedEventArgs e)
         {
