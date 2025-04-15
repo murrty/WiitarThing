@@ -76,13 +76,13 @@ namespace WiitarThing
         private void enableJoystick_Click(object sender, RoutedEventArgs e)
         {
             //props.enableJoystick = enableJoystick.IsChecked == true;
-            props.enableJoystick = enableJoystick.IsChecked ?? false;
+            props.enableJoystick = enableJoystick.IsChecked == true;
         }
 
         private void enableTouchStrip_Click(object sender, RoutedEventArgs e)
         {
             //props.enableTouchStrip = enableTouchStrip.IsChecked == true;
-            props.enableTouchStrip = enableTouchStrip.IsChecked ?? false;
+            props.enableTouchStrip = enableTouchStrip.IsChecked == true;
         }
 
         private void nameInput_TextChanged(object sender, TextChangedEventArgs e)

@@ -8,7 +8,6 @@ using NintrollerLib;
 using System.Xml.Serialization;
 using System.IO;
 using System.Threading;
-using System.Security.Cryptography;
 
 namespace WiitarThing
 {
