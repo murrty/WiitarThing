@@ -1381,8 +1381,8 @@ namespace NintrollerLib
 
                             if (_state is Guitar guitar)
                             {
-                                guitar.SetJoystickState(IsGuitarTouchStripEnabled);
-                                guitar.SetTouchStripState(IsGuitarTouchStripEnabled);
+                                _state = guitar.SetJoystickState(IsGuitarTouchStripEnabled)
+                                    .SetTouchStripState(IsGuitarTouchStripEnabled);
                             }
                         }
 
