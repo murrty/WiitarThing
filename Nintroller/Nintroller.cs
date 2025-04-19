@@ -1378,12 +1378,6 @@ namespace NintrollerLib
                                 return;
                                 // continue other steps in Acknowledgement Reporting
                             }
-
-                            if (_state is Guitar guitar)
-                            {
-                                _state = guitar.SetJoystickState(IsGuitarTouchStripEnabled)
-                                    .SetTouchStripState(IsGuitarTouchStripEnabled);
-                            }
                         }
 
                         _state.Update(report);

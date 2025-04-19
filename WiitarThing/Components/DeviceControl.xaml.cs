@@ -195,6 +195,8 @@ namespace WiitarThing
                 SetName(string.IsNullOrWhiteSpace(properties.name) ? device.Type.ToString() : properties.name);
                 ApplyCalibration(properties.calPref, properties.calString ?? "");
                 snapIRpointer = properties.pointerMode != WiimoteSettings.PointerOffScreenMode.Center;
+                device.IsGuitarJoystickEnabled = properties.enableJoystick;
+                device.IsGuitarTouchStripEnabled = properties.enableTouchStrip;
                 if (!string.IsNullOrEmpty(properties.lastIcon))
                 {
                     icon.Source = (ImageSource)Application.Current.Resources[properties.lastIcon];
