@@ -915,7 +915,7 @@ namespace WiitarThing
         private void XOption_Click(object sender, RoutedEventArgs e)
         {
             if (Device.Type != ControllerType.ProController)
-                MessageBox.Show("Press 1+2 on the Wii remote and press OK to continue.\r\n\r\nAdditionally, if the guitar peripheral does not appear on the device list item, pressing any button on the wiimote itself should refresh the peripheral state.", "Connect Wii Remote", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("To connect your Wiimote, turn it on by pressing any button.\r\n\r\nIf your guitar peripheral is attached to your Wiimote before it gets connected, the device may not register peripheral inputs; a possible fix is to press buttons on your Wiimote until it registers the perihperal (A, B, A + B, Plus, or Minus are known buttons to recognize the peripheral.\r\nAdditionally, if the peripheral does not appear on the device list item, pressing any button on the wiimote itself should refresh the peripheral state.", "Connect Wii Remote", MessageBoxButton.OK, MessageBoxImage.Information);
 
             if (sender is MenuItem m && device.DataStream.Open() && device.DataStream.CanRead)
             {
